@@ -6,18 +6,19 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <link rel="stylesheet" href="css/font-awesome.min.css">
-<div class="main">
+<script src="js/telafull.js"></script>
+<div class="main" onload="fullScren();">
 
     <div class="container">
         <center>
             <div class="middle">
                 <div id="login">
-
-                    <form action="#" method="post">
+                    <div style="color: red;"><strong>${erro}</strong></div>
+                    <form action="login" method="get">
 
                         <fieldset class="clearfix">
 
-                            <p ><span class="fa fa-user"></span><input type="text"  Placeholder="Digite seu nome" required name="nome"></p>
+                            <p ><span class="fa fa-user"></span><input type="text"  Placeholder="Digite seu nome" required name="login"></p>
                             <p><span class="fa fa-lock"></span><input type="password"  Placeholder="Digite a senha" required name="senha"></p>
                             <div>
                                 <span style="width:90%; text-align:right;  display: inline-block;"><input type="submit" value="Entrar"></span>
