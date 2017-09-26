@@ -6,8 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <link rel="stylesheet" href="css/font-awesome.min.css">
-<script src="js/telafull.js"></script>
-<div class="main" onload="fullScren();">
+<div class="main">
 
     <div class="container">
         <center>
