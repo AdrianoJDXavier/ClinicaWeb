@@ -2,7 +2,7 @@
     <div class="row">
         <div class="main col-md-10 col-md-push-2">
 
-            <div class="panel panel-primary" style="margin:10px;">
+            <div class="panel panel-default" style="margin:10px;">
                 <div class="panel-heading">
                     <h3 class="panel-title">Cadastrar Paciente</h3>
                 </div>

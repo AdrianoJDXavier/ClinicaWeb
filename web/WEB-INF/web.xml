@@ -33,9 +33,17 @@
         <servlet-name>loginController</servlet-name>
         <servlet-class>Controller.loginController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ClienteController</servlet-name>
+        <servlet-class>Controller.PacienteController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>loginController</servlet-name>
         <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClienteController</servlet-name>
+        <url-pattern>/cadPaciente</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
