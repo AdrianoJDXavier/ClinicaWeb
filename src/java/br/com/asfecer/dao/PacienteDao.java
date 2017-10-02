@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,14 +32,16 @@ public class PacienteDao {
     }
 
     public List<Paciente> listarTodos() throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         List<Paciente> pacientes = new ArrayList<>();
-
+        Paciente pacienteAtual;
+        opListar.clearParameters();
         ResultSet resultado = opListar.executeQuery();
         while (resultado.next()) {
-            Paciente pacienteAtual = new Paciente();
+            pacienteAtual = new Paciente();
             pacienteAtual.setIdPaciente(resultado.getInt("idPaciente"));
             pacienteAtual.setNomePaciente(resultado.getString("nomePaciente"));
-            //pacienteAtual.setDataNascimento(resultado.getString("dataNascimento"));
+            pacienteAtual.setDataNascimento(dateFormat.parse(resultado.getString("dataNascimento")));
             pacienteAtual.setNomeMae(resultado.getString("nomeMae"));
             //pacienteAtual.setNaturalidadeCidade(resultado.getString("NaturalidadeCidade"));
             pacienteAtual.setCpf(resultado.getString("cpf"));
