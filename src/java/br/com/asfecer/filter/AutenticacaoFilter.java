@@ -1,4 +1,4 @@
-package Filter;
+package br.com.asfecer.filter;
 
 import java.io.IOException;
 import javax.servlet.Filter;

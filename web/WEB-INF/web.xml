@@ -7,15 +7,15 @@
     </welcome-file-list>
     <filter>
         <filter-name>AutenticacaoFilter</filter-name>
-        <filter-class>Filter.AutenticacaoFilter</filter-class>
+        <filter-class>br.com.asfecer.filter.AutenticacaoFilter</filter-class>
     </filter>
     <filter>
         <filter-name>TempoRequisicao</filter-name>
-        <filter-class>Filter.TempoRequisicaoFilter</filter-class>
+        <filter-class>br.com.asfecer.filter.TempoRequisicaoFilter</filter-class>
     </filter>
     <filter>
         <filter-name>TratamentoErroFilter</filter-name>
-        <filter-class>Filter.TratamentoErroFilter</filter-class>
+        <filter-class>br.com.asfecer.filter.TratamentoErroFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>TratamentoErroFilter</filter-name>
@@ -31,11 +31,11 @@
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
-        <servlet-class>Controller.loginController</servlet-class>
+        <servlet-class>br.com.asfecer.controller.loginController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ClienteController</servlet-name>
-        <servlet-class>Controller.PacienteController</servlet-class>
+        <servlet-class>br.com.asfecer.controller.PacienteController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>loginController</servlet-name>

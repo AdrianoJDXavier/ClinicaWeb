@@ -42,7 +42,7 @@ public class Estados implements Serializable {
     @Column(name = "estado")
     private String estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estados")
-    private Collection<Endereco> enderecoCollection;
+    private Collection<Cidade> cidadeCollection;
 
     public Estados() {
     }
@@ -72,12 +72,12 @@ public class Estados implements Serializable {
         this.estado = estado;
     }
 
-    public Collection<Endereco> getEnderecoCollection() {
-        return enderecoCollection;
+    public Collection<Cidade> getCidadeCollection() {
+        return cidadeCollection;
     }
 
-    public void setEnderecoCollection(Collection<Endereco> enderecoCollection) {
-        this.enderecoCollection = enderecoCollection;
+    public void setCidadeCollection(Collection<Cidade> cidadeCollection) {
+        this.cidadeCollection = cidadeCollection;
     }
 
     @Override

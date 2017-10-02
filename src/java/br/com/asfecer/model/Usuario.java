@@ -54,86 +54,6 @@ public class Usuario implements Serializable {
     private String senha;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "cadFuncionario")
-    private boolean cadFuncionario;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadFuncao")
-    private boolean cadFuncao;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadDepartamento")
-    private boolean cadDepartamento;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadUsuario")
-    private boolean cadUsuario;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadPaciente")
-    private boolean cadPaciente;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadEndereco")
-    private boolean cadEndereco;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadEspecialidade")
-    private boolean cadEspecialidade;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadMedico")
-    private boolean cadMedico;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadConvenio")
-    private boolean cadConvenio;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadTipoAtestado")
-    private boolean cadTipoAtestado;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadTipoReceituario")
-    private boolean cadTipoReceituario;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadMedicamento")
-    private boolean cadMedicamento;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadPatologia")
-    private boolean cadPatologia;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadExame")
-    private boolean cadExame;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cadTipoExame")
-    private boolean cadTipoExame;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "receituario")
-    private boolean receituario;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "pedidoExame")
-    private boolean pedidoExame;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "atestado")
-    private boolean atestado;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "agendaConsulta")
-    private boolean agendaConsulta;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "cancelaConsulta")
-    private boolean cancelaConsulta;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "moduloAdministrativo")
     private boolean moduloAdministrativo;
     @Basic(optional = false)
@@ -144,6 +64,14 @@ public class Usuario implements Serializable {
     @NotNull
     @Column(name = "moduloAtendimento")
     private boolean moduloAtendimento;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "moduloAcesso")
+    private boolean moduloAcesso;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "moduloAdmBD")
+    private boolean moduloAdmBD;
 
     public Usuario() {
     }
@@ -152,35 +80,17 @@ public class Usuario implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public Usuario(Integer idUsuario, boolean tipoUsuario, boolean status, String login, String senha, boolean cadFuncionario, boolean cadFuncao, boolean cadDepartamento, boolean cadUsuario, boolean cadPaciente, boolean cadEndereco, boolean cadEspecialidade, boolean cadMedico, boolean cadConvenio, boolean cadTipoAtestado, boolean cadTipoReceituario, boolean cadMedicamento, boolean cadPatologia, boolean cadExame, boolean cadTipoExame, boolean receituario, boolean pedidoExame, boolean atestado, boolean agendaConsulta, boolean cancelaConsulta, boolean moduloAdministrativo, boolean moduloAgendamento, boolean moduloAtendimento) {
+    public Usuario(Integer idUsuario, boolean tipoUsuario, boolean status, String login, String senha, boolean moduloAdministrativo, boolean moduloAgendamento, boolean moduloAtendimento, boolean moduloAcesso, boolean moduloAdmBD) {
         this.idUsuario = idUsuario;
         this.tipoUsuario = tipoUsuario;
         this.status = status;
         this.login = login;
         this.senha = senha;
-        this.cadFuncionario = cadFuncionario;
-        this.cadFuncao = cadFuncao;
-        this.cadDepartamento = cadDepartamento;
-        this.cadUsuario = cadUsuario;
-        this.cadPaciente = cadPaciente;
-        this.cadEndereco = cadEndereco;
-        this.cadEspecialidade = cadEspecialidade;
-        this.cadMedico = cadMedico;
-        this.cadConvenio = cadConvenio;
-        this.cadTipoAtestado = cadTipoAtestado;
-        this.cadTipoReceituario = cadTipoReceituario;
-        this.cadMedicamento = cadMedicamento;
-        this.cadPatologia = cadPatologia;
-        this.cadExame = cadExame;
-        this.cadTipoExame = cadTipoExame;
-        this.receituario = receituario;
-        this.pedidoExame = pedidoExame;
-        this.atestado = atestado;
-        this.agendaConsulta = agendaConsulta;
-        this.cancelaConsulta = cancelaConsulta;
         this.moduloAdministrativo = moduloAdministrativo;
         this.moduloAgendamento = moduloAgendamento;
         this.moduloAtendimento = moduloAtendimento;
+        this.moduloAcesso = moduloAcesso;
+        this.moduloAdmBD = moduloAdmBD;
     }
 
     public Integer getIdUsuario() {
@@ -223,166 +133,6 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public boolean getCadFuncionario() {
-        return cadFuncionario;
-    }
-
-    public void setCadFuncionario(boolean cadFuncionario) {
-        this.cadFuncionario = cadFuncionario;
-    }
-
-    public boolean getCadFuncao() {
-        return cadFuncao;
-    }
-
-    public void setCadFuncao(boolean cadFuncao) {
-        this.cadFuncao = cadFuncao;
-    }
-
-    public boolean getCadDepartamento() {
-        return cadDepartamento;
-    }
-
-    public void setCadDepartamento(boolean cadDepartamento) {
-        this.cadDepartamento = cadDepartamento;
-    }
-
-    public boolean getCadUsuario() {
-        return cadUsuario;
-    }
-
-    public void setCadUsuario(boolean cadUsuario) {
-        this.cadUsuario = cadUsuario;
-    }
-
-    public boolean getCadPaciente() {
-        return cadPaciente;
-    }
-
-    public void setCadPaciente(boolean cadPaciente) {
-        this.cadPaciente = cadPaciente;
-    }
-
-    public boolean getCadEndereco() {
-        return cadEndereco;
-    }
-
-    public void setCadEndereco(boolean cadEndereco) {
-        this.cadEndereco = cadEndereco;
-    }
-
-    public boolean getCadEspecialidade() {
-        return cadEspecialidade;
-    }
-
-    public void setCadEspecialidade(boolean cadEspecialidade) {
-        this.cadEspecialidade = cadEspecialidade;
-    }
-
-    public boolean getCadMedico() {
-        return cadMedico;
-    }
-
-    public void setCadMedico(boolean cadMedico) {
-        this.cadMedico = cadMedico;
-    }
-
-    public boolean getCadConvenio() {
-        return cadConvenio;
-    }
-
-    public void setCadConvenio(boolean cadConvenio) {
-        this.cadConvenio = cadConvenio;
-    }
-
-    public boolean getCadTipoAtestado() {
-        return cadTipoAtestado;
-    }
-
-    public void setCadTipoAtestado(boolean cadTipoAtestado) {
-        this.cadTipoAtestado = cadTipoAtestado;
-    }
-
-    public boolean getCadTipoReceituario() {
-        return cadTipoReceituario;
-    }
-
-    public void setCadTipoReceituario(boolean cadTipoReceituario) {
-        this.cadTipoReceituario = cadTipoReceituario;
-    }
-
-    public boolean getCadMedicamento() {
-        return cadMedicamento;
-    }
-
-    public void setCadMedicamento(boolean cadMedicamento) {
-        this.cadMedicamento = cadMedicamento;
-    }
-
-    public boolean getCadPatologia() {
-        return cadPatologia;
-    }
-
-    public void setCadPatologia(boolean cadPatologia) {
-        this.cadPatologia = cadPatologia;
-    }
-
-    public boolean getCadExame() {
-        return cadExame;
-    }
-
-    public void setCadExame(boolean cadExame) {
-        this.cadExame = cadExame;
-    }
-
-    public boolean getCadTipoExame() {
-        return cadTipoExame;
-    }
-
-    public void setCadTipoExame(boolean cadTipoExame) {
-        this.cadTipoExame = cadTipoExame;
-    }
-
-    public boolean getReceituario() {
-        return receituario;
-    }
-
-    public void setReceituario(boolean receituario) {
-        this.receituario = receituario;
-    }
-
-    public boolean getPedidoExame() {
-        return pedidoExame;
-    }
-
-    public void setPedidoExame(boolean pedidoExame) {
-        this.pedidoExame = pedidoExame;
-    }
-
-    public boolean getAtestado() {
-        return atestado;
-    }
-
-    public void setAtestado(boolean atestado) {
-        this.atestado = atestado;
-    }
-
-    public boolean getAgendaConsulta() {
-        return agendaConsulta;
-    }
-
-    public void setAgendaConsulta(boolean agendaConsulta) {
-        this.agendaConsulta = agendaConsulta;
-    }
-
-    public boolean getCancelaConsulta() {
-        return cancelaConsulta;
-    }
-
-    public void setCancelaConsulta(boolean cancelaConsulta) {
-        this.cancelaConsulta = cancelaConsulta;
-    }
-
     public boolean getModuloAdministrativo() {
         return moduloAdministrativo;
     }
@@ -405,6 +155,22 @@ public class Usuario implements Serializable {
 
     public void setModuloAtendimento(boolean moduloAtendimento) {
         this.moduloAtendimento = moduloAtendimento;
+    }
+
+    public boolean getModuloAcesso() {
+        return moduloAcesso;
+    }
+
+    public void setModuloAcesso(boolean moduloAcesso) {
+        this.moduloAcesso = moduloAcesso;
+    }
+
+    public boolean getModuloAdmBD() {
+        return moduloAdmBD;
+    }
+
+    public void setModuloAdmBD(boolean moduloAdmBD) {
+        this.moduloAdmBD = moduloAdmBD;
     }
 
     @Override

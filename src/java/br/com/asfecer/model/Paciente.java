@@ -47,6 +47,9 @@ public class Paciente implements Serializable {
     @Column(name = "dataNascimento")
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
+    @Size(max = 100)
+    @Column(name = "nomeMae")
+    private String nomeMae;
     @Size(max = 14)
     @Column(name = "cpf")
     private String cpf;
@@ -60,9 +63,6 @@ public class Paciente implements Serializable {
     private Character fatorRH;
     @Column(name = "sexo")
     private Character sexo;
-    @Size(max = 30)
-    @Column(name = "profissao")
-    private String profissao;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="E-mail inválido")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 100)
     @Column(name = "email")
@@ -82,6 +82,9 @@ public class Paciente implements Serializable {
     @JoinColumn(name = "Endereco", referencedColumnName = "idEndereco")
     @ManyToOne
     private Endereco endereco;
+    @JoinColumn(name = "NaturalidadeCidade", referencedColumnName = "idCidade")
+    @ManyToOne
+    private Cidade cidade;
 
     public Paciente() {
     }
@@ -117,6 +120,14 @@ public class Paciente implements Serializable {
 
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+    public String getNomeMae() {
+        return nomeMae;
+    }
+
+    public void setNomeMae(String nomeMae) {
+        this.nomeMae = nomeMae;
     }
 
     public String getCpf() {
@@ -157,14 +168,6 @@ public class Paciente implements Serializable {
 
     public void setSexo(Character sexo) {
         this.sexo = sexo;
-    }
-
-    public String getProfissao() {
-        return profissao;
-    }
-
-    public void setProfissao(String profissao) {
-        this.profissao = profissao;
     }
 
     public String getEmail() {
@@ -213,6 +216,14 @@ public class Paciente implements Serializable {
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public Cidade getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
     }
 
     @Override

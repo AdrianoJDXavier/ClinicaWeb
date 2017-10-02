@@ -56,17 +56,12 @@ public class Endereco implements Serializable {
     @Size(max = 45)
     @Column(name = "bairro")
     private String bairro;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "cidade")
-    private String cidade;
     @Size(max = 10)
     @Column(name = "cep")
     private String cep;
-    @JoinColumn(name = "Uf", referencedColumnName = "sigla")
+    @JoinColumn(name = "Cidade", referencedColumnName = "idCidade")
     @ManyToOne(optional = false)
-    private Estados estados;
+    private Cidade cidade;
     @OneToMany(mappedBy = "endereco")
     private Collection<Paciente> pacienteCollection;
 
@@ -77,11 +72,10 @@ public class Endereco implements Serializable {
         this.idEndereco = idEndereco;
     }
 
-    public Endereco(Integer idEndereco, String tipoLogradouro, String nomeNogradouro, String cidade) {
+    public Endereco(Integer idEndereco, String tipoLogradouro, String nomeNogradouro) {
         this.idEndereco = idEndereco;
         this.tipoLogradouro = tipoLogradouro;
         this.nomeNogradouro = nomeNogradouro;
-        this.cidade = cidade;
     }
 
     public Integer getIdEndereco() {
@@ -132,14 +126,6 @@ public class Endereco implements Serializable {
         this.bairro = bairro;
     }
 
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
     public String getCep() {
         return cep;
     }
@@ -148,12 +134,12 @@ public class Endereco implements Serializable {
         this.cep = cep;
     }
 
-    public Estados getEstados() {
-        return estados;
+    public Cidade getCidade() {
+        return cidade;
     }
 
-    public void setEstados(Estados estados) {
-        this.estados = estados;
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
     }
 
     public Collection<Paciente> getPacienteCollection() {

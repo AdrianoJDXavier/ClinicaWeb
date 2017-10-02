@@ -1,46 +1,39 @@
-package Filter;
+package br.com.asfecer.filter;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-public class TratamentoErroFilter implements Filter {
+public class TempoRequisicaoFilter implements Filter {
     
 private final static Logger logger = Logger.getLogger(TempoRequisicaoFilter.class.getName());
-   
+    
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
             throws IOException, ServletException {
-        
-        try {
-             chain.doFilter(request, response);
-        } catch (Exception e) {
             HttpServletRequest req = (HttpServletRequest) request;
+            
+            long tempoInicial = System.currentTimeMillis();
+        
+            chain.doFilter(request, response);
+
+            long tempoFinal = System.currentTimeMillis();
             String uri = req.getRequestURI(); 
             
-            req.setAttribute("erro", e.getMessage());
-            logger.severe("Erro ao acessar página '"+ uri + "': "+ e.getMessage());
+            logger.info("Tempo de resposta "+uri+": "+ (tempoFinal - tempoInicial) + "ms");
             
-            RequestDispatcher rd = request.getRequestDispatcher("/erro.jsp");
-            rd.forward(request,response);
-        }
-        
     }
 
     @Override
-    public void destroy() {
-    }
-   
-    
+    public void destroy() {}
+       
 }
