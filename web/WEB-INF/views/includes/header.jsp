@@ -36,7 +36,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li><a href="cadPaciente">Cadastrar Paciente</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="#">Listar Paciente</a></li>
+                                        <li><a href="listPaciente">Listar Paciente</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color: #e3e3e3;">Exames<span class="caret"></span></a>
