@@ -61,14 +61,14 @@ public class PacienteDao {
     }
     
     
-    PAREI AQUI;
+    /*PAREI AQUI;
     
 
     public boolean criarPaciente(Paciente novoPaciente) throws Exception {
         try {
             opSalvar.clearParameters();
             opSalvar.setString(1, novoPaciente.getNomePaciente());
-            opSalvar.setString(2, novoPaciente.getProntuario());
+            opSalvar.setString(2, novoPaciente.getProntuario);
             opSalvar.setString(3, novoPaciente.getEndereco());
             opSalvar.setString(4, novoPaciente.getCidade());
             opSalvar.setString(5, novoPaciente.getTelFixo());
@@ -137,4 +137,5 @@ public class PacienteDao {
         }
     }
     
+    */
 }

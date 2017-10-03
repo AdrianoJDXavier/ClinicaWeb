@@ -9,7 +9,7 @@
                 <div class="panel-body">
 
 
-                    <form action="pacienteController" method="POST"  style="margin: 8% 0;">
+                    <form action="pacienteController" method="POST"  style="margin: 0% 0;">
                         <label>Nome Completo</label>
                         <input class="form-control" type="text" name="nome" placeholder="Nome Completo" />
                         <label>Endereço</label>
@@ -88,13 +88,33 @@
                             <div class="col-md-4">
                                 <label>Convênio</label>
                                 <input class="form-control" type="text" name="convenio" placeholder="Convênio" />
-                            </di>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Nascimento</label>
+                                <input class="form-control" type="date" name="dataNascimento" placeholder="Data de Nascimento" />
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Telefone</label>
+                                <input class="form-control" type="tel" name="telefoen" placeholder="Telefone" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Celular</label>
+                                <input class="form-control" type="tel" name="celular" placeholder="Celular" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Email</label>
+                                <input class="form-control" type="email" name="email" placeholder="Email" />
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary btn-lg pull-right"><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> Salvar</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        
+
     <jsp:include page="includes/menu.jsp"></jsp:include>
     <jsp:include page="includes/footer.jsp"></jsp:include>
