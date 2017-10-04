@@ -21,49 +21,60 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Paulo
+ * @author PToledo
  */
 @Entity
-@Table(name = "endereco")
+@Table(catalog = "db_asfecer", schema = "")
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Endereco.findAll", query = "SELECT e FROM Endereco e")})
+    @NamedQuery(name = "Endereco.findAll", query = "SELECT e FROM Endereco e")
+    , @NamedQuery(name = "Endereco.findByIdEndereco", query = "SELECT e FROM Endereco e WHERE e.idEndereco = :idEndereco")
+    , @NamedQuery(name = "Endereco.findByTipoLogradouro", query = "SELECT e FROM Endereco e WHERE e.tipoLogradouro = :tipoLogradouro")
+    , @NamedQuery(name = "Endereco.findByNomeNogradouro", query = "SELECT e FROM Endereco e WHERE e.nomeNogradouro = :nomeNogradouro")
+    , @NamedQuery(name = "Endereco.findByNumero", query = "SELECT e FROM Endereco e WHERE e.numero = :numero")
+    , @NamedQuery(name = "Endereco.findByComplemento", query = "SELECT e FROM Endereco e WHERE e.complemento = :complemento")
+    , @NamedQuery(name = "Endereco.findByBairro", query = "SELECT e FROM Endereco e WHERE e.bairro = :bairro")
+    , @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")})
 public class Endereco implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "idEndereco")
+    @Column(nullable = false)
     private Integer idEndereco;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "tipo_logradouro")
+    @Column(name = "tipo_logradouro", nullable = false, length = 20)
     private String tipoLogradouro;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "nome_nogradouro")
+    @Column(name = "nome_nogradouro", nullable = false, length = 100)
     private String nomeNogradouro;
-    @Column(name = "numero")
     private Integer numero;
     @Size(max = 15)
-    @Column(name = "complemento")
+    @Column(length = 15)
     private String complemento;
     @Size(max = 45)
-    @Column(name = "bairro")
+    @Column(length = 45)
     private String bairro;
     @Size(max = 10)
-    @Column(name = "cep")
+    @Column(length = 10)
     private String cep;
-    @JoinColumn(name = "Cidade", referencedColumnName = "idCidade")
+    @JoinColumn(name = "Cidade", referencedColumnName = "idCidade", nullable = false)
     @ManyToOne(optional = false)
     private Cidade cidade;
     @OneToMany(mappedBy = "endereco")
     private Collection<Paciente> pacienteCollection;
+    @OneToMany(mappedBy = "endereco")
+    private Collection<Funcionario> funcionarioCollection;
 
     public Endereco() {
     }
@@ -142,12 +153,22 @@ public class Endereco implements Serializable {
         this.cidade = cidade;
     }
 
+    @XmlTransient
     public Collection<Paciente> getPacienteCollection() {
         return pacienteCollection;
     }
 
     public void setPacienteCollection(Collection<Paciente> pacienteCollection) {
         this.pacienteCollection = pacienteCollection;
+    }
+
+    @XmlTransient
+    public Collection<Funcionario> getFuncionarioCollection() {
+        return funcionarioCollection;
+    }
+
+    public void setFuncionarioCollection(Collection<Funcionario> funcionarioCollection) {
+        this.funcionarioCollection = funcionarioCollection;
     }
 
     @Override

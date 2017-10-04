@@ -20,38 +20,46 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Paulo
+ * @author PToledo
  */
 @Entity
-@Table(name = "convenio")
+@Table(catalog = "db_asfecer", schema = "")
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Convenio.findAll", query = "SELECT c FROM Convenio c")})
+    @NamedQuery(name = "Convenio.findAll", query = "SELECT c FROM Convenio c")
+    , @NamedQuery(name = "Convenio.findByIdConvenio", query = "SELECT c FROM Convenio c WHERE c.idConvenio = :idConvenio")
+    , @NamedQuery(name = "Convenio.findByEmpresaConvenio", query = "SELECT c FROM Convenio c WHERE c.empresaConvenio = :empresaConvenio")
+    , @NamedQuery(name = "Convenio.findByTipoConvenio", query = "SELECT c FROM Convenio c WHERE c.tipoConvenio = :tipoConvenio")
+    , @NamedQuery(name = "Convenio.findByTelefone", query = "SELECT c FROM Convenio c WHERE c.telefone = :telefone")
+    , @NamedQuery(name = "Convenio.findByStatus", query = "SELECT c FROM Convenio c WHERE c.status = :status")
+    , @NamedQuery(name = "Convenio.findByObs", query = "SELECT c FROM Convenio c WHERE c.obs = :obs")})
 public class Convenio implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "idConvenio")
+    @Column(nullable = false)
     private Integer idConvenio;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 60)
-    @Column(name = "empresa_convenio")
+    @Column(name = "empresa_convenio", nullable = false, length = 60)
     private String empresaConvenio;
     @Size(max = 30)
-    @Column(name = "tipo_convenio")
+    @Column(name = "tipo_convenio", length = 30)
     private String tipoConvenio;
     @Size(max = 20)
-    @Column(name = "telefone")
+    @Column(length = 20)
     private String telefone;
-    @Column(name = "status")
     private Boolean status;
     @Size(max = 300)
-    @Column(name = "obs")
+    @Column(length = 300)
     private String obs;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
     private Collection<Paciente> pacienteCollection;
@@ -116,6 +124,7 @@ public class Convenio implements Serializable {
         this.obs = obs;
     }
 
+    @XmlTransient
     public Collection<Paciente> getPacienteCollection() {
         return pacienteCollection;
     }

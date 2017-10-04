@@ -6,7 +6,9 @@
 package br.com.asfecer.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,64 +16,80 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Paulo
+ * @author PToledo
  */
 @Entity
-@Table(name = "usuario")
+@Table(catalog = "db_asfecer", schema = "")
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")
+    , @NamedQuery(name = "Usuario.findByIdUsuario", query = "SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario")
+    , @NamedQuery(name = "Usuario.findByTipoUsuario", query = "SELECT u FROM Usuario u WHERE u.tipoUsuario = :tipoUsuario")
+    , @NamedQuery(name = "Usuario.findByStatus", query = "SELECT u FROM Usuario u WHERE u.status = :status")
+    , @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login")
+    , @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")
+    , @NamedQuery(name = "Usuario.findByModuloAdministrativo", query = "SELECT u FROM Usuario u WHERE u.moduloAdministrativo = :moduloAdministrativo")
+    , @NamedQuery(name = "Usuario.findByModuloAgendamento", query = "SELECT u FROM Usuario u WHERE u.moduloAgendamento = :moduloAgendamento")
+    , @NamedQuery(name = "Usuario.findByModuloAtendimento", query = "SELECT u FROM Usuario u WHERE u.moduloAtendimento = :moduloAtendimento")
+    , @NamedQuery(name = "Usuario.findByModuloAcesso", query = "SELECT u FROM Usuario u WHERE u.moduloAcesso = :moduloAcesso")
+    , @NamedQuery(name = "Usuario.findByModuloAdmBD", query = "SELECT u FROM Usuario u WHERE u.moduloAdmBD = :moduloAdmBD")})
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "idUsuario")
+    @Column(nullable = false)
     private Integer idUsuario;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "TipoUsuario")
+    @Column(nullable = false)
     private boolean tipoUsuario;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "status")
+    @Column(nullable = false)
     private boolean status;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
-    @Column(name = "login")
+    @Column(nullable = false, length = 30)
     private String login;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 12)
-    @Column(name = "senha")
+    @Column(nullable = false, length = 12)
     private String senha;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "moduloAdministrativo")
+    @Column(nullable = false)
     private boolean moduloAdministrativo;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "moduloAgendamento")
+    @Column(nullable = false)
     private boolean moduloAgendamento;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "moduloAtendimento")
+    @Column(nullable = false)
     private boolean moduloAtendimento;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "moduloAcesso")
+    @Column(nullable = false)
     private boolean moduloAcesso;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "moduloAdmBD")
+    @Column(nullable = false)
     private boolean moduloAdmBD;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private Collection<Agenda> agendaCollection;
 
     public Usuario() {
     }
@@ -171,6 +189,15 @@ public class Usuario implements Serializable {
 
     public void setModuloAdmBD(boolean moduloAdmBD) {
         this.moduloAdmBD = moduloAdmBD;
+    }
+
+    @XmlTransient
+    public Collection<Agenda> getAgendaCollection() {
+        return agendaCollection;
+    }
+
+    public void setAgendaCollection(Collection<Agenda> agendaCollection) {
+        this.agendaCollection = agendaCollection;
     }
 
     @Override

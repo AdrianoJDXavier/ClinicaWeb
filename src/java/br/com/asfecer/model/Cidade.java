@@ -20,34 +20,39 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Paulo
+ * @author PToledo
  */
 @Entity
-@Table(name = "cidade")
+@Table(catalog = "db_asfecer", schema = "")
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c")})
+    @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c")
+    , @NamedQuery(name = "Cidade.findByIdCidade", query = "SELECT c FROM Cidade c WHERE c.idCidade = :idCidade")
+    , @NamedQuery(name = "Cidade.findByCidade", query = "SELECT c FROM Cidade c WHERE c.cidade = :cidade")})
 public class Cidade implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "idCidade")
+    @Column(nullable = false)
     private Integer idCidade;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(name = "cidade")
+    @Column(nullable = false, length = 45)
     private String cidade;
-    @JoinColumn(name = "Estado", referencedColumnName = "sigla")
+    @JoinColumn(name = "Estado", referencedColumnName = "sigla", nullable = false)
     @ManyToOne(optional = false)
-    private Estados estados;
+    private Estados estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cidade")
     private Collection<Endereco> enderecoCollection;
-    @OneToMany(mappedBy = "cidade")
+    @OneToMany(mappedBy = "naturalidadeCidade")
     private Collection<Paciente> pacienteCollection;
 
     public Cidade() {
@@ -78,14 +83,15 @@ public class Cidade implements Serializable {
         this.cidade = cidade;
     }
 
-    public Estados getEstados() {
-        return estados;
+    public Estados getEstado() {
+        return estado;
     }
 
-    public void setEstados(Estados estados) {
-        this.estados = estados;
+    public void setEstado(Estados estado) {
+        this.estado = estado;
     }
 
+    @XmlTransient
     public Collection<Endereco> getEnderecoCollection() {
         return enderecoCollection;
     }
@@ -94,6 +100,7 @@ public class Cidade implements Serializable {
         this.enderecoCollection = enderecoCollection;
     }
 
+    @XmlTransient
     public Collection<Paciente> getPacienteCollection() {
         return pacienteCollection;
     }
