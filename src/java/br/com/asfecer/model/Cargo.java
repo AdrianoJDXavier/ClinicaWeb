@@ -99,7 +99,7 @@ public class Cargo implements Serializable {
     public void setDepto(Departamento depto) {
         this.depto = depto;
     }
-
+  
     @Override
     public int hashCode() {
         int hash = 0;

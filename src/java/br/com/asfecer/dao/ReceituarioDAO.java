@@ -7,14 +7,14 @@ package br.com.asfecer.dao;
 
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
-import br.com.asfecer.model.Atestado;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.Tipoatestado;
+import br.com.asfecer.model.Itensreceituario;
+import br.com.asfecer.model.Receituario;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +24,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class AtestadoJpaController implements Serializable {
+public class ReceituarioDAO implements Serializable {
 
-    public AtestadoJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public ReceituarioDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -37,29 +37,29 @@ public class AtestadoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Atestado atestado) throws RollbackFailureException, Exception {
+    public void create(Receituario receituario) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Consulta consulta = atestado.getConsulta();
+            Consulta consulta = receituario.getConsulta();
             if (consulta != null) {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
-                atestado.setConsulta(consulta);
+                receituario.setConsulta(consulta);
             }
-            Tipoatestado tipoAtestado = atestado.getTipoAtestado();
-            if (tipoAtestado != null) {
-                tipoAtestado = em.getReference(tipoAtestado.getClass(), tipoAtestado.getIdTipoAtestado());
-                atestado.setTipoAtestado(tipoAtestado);
+            Itensreceituario tipoReceituario = receituario.getTipoReceituario();
+            if (tipoReceituario != null) {
+                tipoReceituario = em.getReference(tipoReceituario.getClass(), tipoReceituario.getIdItensReceituario());
+                receituario.setTipoReceituario(tipoReceituario);
             }
-            em.persist(atestado);
+            em.persist(receituario);
             if (consulta != null) {
-                consulta.getAtestadoCollection().add(atestado);
+                consulta.getReceituarioCollection().add(receituario);
                 consulta = em.merge(consulta);
             }
-            if (tipoAtestado != null) {
-                tipoAtestado.getAtestadoCollection().add(atestado);
-                tipoAtestado = em.merge(tipoAtestado);
+            if (tipoReceituario != null) {
+                tipoReceituario.getReceituarioCollection().add(receituario);
+                tipoReceituario = em.merge(tipoReceituario);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -76,40 +76,40 @@ public class AtestadoJpaController implements Serializable {
         }
     }
 
-    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Receituario receituario) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Atestado persistentAtestado = em.find(Atestado.class, atestado.getIdAtestado());
-            Consulta consultaOld = persistentAtestado.getConsulta();
-            Consulta consultaNew = atestado.getConsulta();
-            Tipoatestado tipoAtestadoOld = persistentAtestado.getTipoAtestado();
-            Tipoatestado tipoAtestadoNew = atestado.getTipoAtestado();
+            Receituario persistentReceituario = em.find(Receituario.class, receituario.getIdReceituario());
+            Consulta consultaOld = persistentReceituario.getConsulta();
+            Consulta consultaNew = receituario.getConsulta();
+            Itensreceituario tipoReceituarioOld = persistentReceituario.getTipoReceituario();
+            Itensreceituario tipoReceituarioNew = receituario.getTipoReceituario();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
-                atestado.setConsulta(consultaNew);
+                receituario.setConsulta(consultaNew);
             }
-            if (tipoAtestadoNew != null) {
-                tipoAtestadoNew = em.getReference(tipoAtestadoNew.getClass(), tipoAtestadoNew.getIdTipoAtestado());
-                atestado.setTipoAtestado(tipoAtestadoNew);
+            if (tipoReceituarioNew != null) {
+                tipoReceituarioNew = em.getReference(tipoReceituarioNew.getClass(), tipoReceituarioNew.getIdItensReceituario());
+                receituario.setTipoReceituario(tipoReceituarioNew);
             }
-            atestado = em.merge(atestado);
+            receituario = em.merge(receituario);
             if (consultaOld != null && !consultaOld.equals(consultaNew)) {
-                consultaOld.getAtestadoCollection().remove(atestado);
+                consultaOld.getReceituarioCollection().remove(receituario);
                 consultaOld = em.merge(consultaOld);
             }
             if (consultaNew != null && !consultaNew.equals(consultaOld)) {
-                consultaNew.getAtestadoCollection().add(atestado);
+                consultaNew.getReceituarioCollection().add(receituario);
                 consultaNew = em.merge(consultaNew);
             }
-            if (tipoAtestadoOld != null && !tipoAtestadoOld.equals(tipoAtestadoNew)) {
-                tipoAtestadoOld.getAtestadoCollection().remove(atestado);
-                tipoAtestadoOld = em.merge(tipoAtestadoOld);
+            if (tipoReceituarioOld != null && !tipoReceituarioOld.equals(tipoReceituarioNew)) {
+                tipoReceituarioOld.getReceituarioCollection().remove(receituario);
+                tipoReceituarioOld = em.merge(tipoReceituarioOld);
             }
-            if (tipoAtestadoNew != null && !tipoAtestadoNew.equals(tipoAtestadoOld)) {
-                tipoAtestadoNew.getAtestadoCollection().add(atestado);
-                tipoAtestadoNew = em.merge(tipoAtestadoNew);
+            if (tipoReceituarioNew != null && !tipoReceituarioNew.equals(tipoReceituarioOld)) {
+                tipoReceituarioNew.getReceituarioCollection().add(receituario);
+                tipoReceituarioNew = em.merge(tipoReceituarioNew);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -120,9 +120,9 @@ public class AtestadoJpaController implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = atestado.getIdAtestado();
-                if (findAtestado(id) == null) {
-                    throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.");
+                Integer id = receituario.getIdReceituario();
+                if (findReceituario(id) == null) {
+                    throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -138,24 +138,24 @@ public class AtestadoJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Atestado atestado;
+            Receituario receituario;
             try {
-                atestado = em.getReference(Atestado.class, id);
-                atestado.getIdAtestado();
+                receituario = em.getReference(Receituario.class, id);
+                receituario.getIdReceituario();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.", enfe);
             }
-            Consulta consulta = atestado.getConsulta();
+            Consulta consulta = receituario.getConsulta();
             if (consulta != null) {
-                consulta.getAtestadoCollection().remove(atestado);
+                consulta.getReceituarioCollection().remove(receituario);
                 consulta = em.merge(consulta);
             }
-            Tipoatestado tipoAtestado = atestado.getTipoAtestado();
-            if (tipoAtestado != null) {
-                tipoAtestado.getAtestadoCollection().remove(atestado);
-                tipoAtestado = em.merge(tipoAtestado);
+            Itensreceituario tipoReceituario = receituario.getTipoReceituario();
+            if (tipoReceituario != null) {
+                tipoReceituario.getReceituarioCollection().remove(receituario);
+                tipoReceituario = em.merge(tipoReceituario);
             }
-            em.remove(atestado);
+            em.remove(receituario);
             utx.commit();
         } catch (Exception ex) {
             try {
@@ -171,19 +171,19 @@ public class AtestadoJpaController implements Serializable {
         }
     }
 
-    public List<Atestado> findAtestadoEntities() {
-        return findAtestadoEntities(true, -1, -1);
+    public List<Receituario> findReceituarioEntities() {
+        return findReceituarioEntities(true, -1, -1);
     }
 
-    public List<Atestado> findAtestadoEntities(int maxResults, int firstResult) {
-        return findAtestadoEntities(false, maxResults, firstResult);
+    public List<Receituario> findReceituarioEntities(int maxResults, int firstResult) {
+        return findReceituarioEntities(false, maxResults, firstResult);
     }
 
-    private List<Atestado> findAtestadoEntities(boolean all, int maxResults, int firstResult) {
+    private List<Receituario> findReceituarioEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Atestado.class));
+            cq.select(cq.from(Receituario.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -195,20 +195,20 @@ public class AtestadoJpaController implements Serializable {
         }
     }
 
-    public Atestado findAtestado(Integer id) {
+    public Receituario findReceituario(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Atestado.class, id);
+            return em.find(Receituario.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getAtestadoCount() {
+    public int getReceituarioCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Atestado> rt = cq.from(Atestado.class);
+            Root<Receituario> rt = cq.from(Receituario.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

@@ -26,9 +26,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class ConvenioJpaController implements Serializable {
+public class ConvenioDAO implements Serializable {
 
-    public ConvenioJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public ConvenioDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

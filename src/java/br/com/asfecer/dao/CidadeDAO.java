@@ -29,9 +29,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class CidadeJpaController implements Serializable {
+public class CidadeDAO implements Serializable {
 
-    public CidadeJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public CidadeDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

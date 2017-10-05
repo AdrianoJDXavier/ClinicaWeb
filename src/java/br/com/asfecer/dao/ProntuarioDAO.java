@@ -6,6 +6,7 @@
 package br.com.asfecer.dao;
 
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
+import br.com.asfecer.dao.exceptions.PreexistingEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import java.io.Serializable;
 import javax.persistence.Query;
@@ -13,8 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.Itensreceituario;
-import br.com.asfecer.model.Receituario;
+import br.com.asfecer.model.Prontuario;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +24,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class ReceituarioJpaController implements Serializable {
+public class ProntuarioDAO implements Serializable {
 
-    public ReceituarioJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public ProntuarioDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -37,29 +37,20 @@ public class ReceituarioJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Receituario receituario) throws RollbackFailureException, Exception {
+    public void create(Prontuario prontuario) throws PreexistingEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Consulta consulta = receituario.getConsulta();
+            Consulta consulta = prontuario.getConsulta();
             if (consulta != null) {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
-                receituario.setConsulta(consulta);
+                prontuario.setConsulta(consulta);
             }
-            Itensreceituario tipoReceituario = receituario.getTipoReceituario();
-            if (tipoReceituario != null) {
-                tipoReceituario = em.getReference(tipoReceituario.getClass(), tipoReceituario.getIdItensReceituario());
-                receituario.setTipoReceituario(tipoReceituario);
-            }
-            em.persist(receituario);
+            em.persist(prontuario);
             if (consulta != null) {
-                consulta.getReceituarioCollection().add(receituario);
+                consulta.getProntuarioCollection().add(prontuario);
                 consulta = em.merge(consulta);
-            }
-            if (tipoReceituario != null) {
-                tipoReceituario.getReceituarioCollection().add(receituario);
-                tipoReceituario = em.merge(tipoReceituario);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -67,6 +58,9 @@ public class ReceituarioJpaController implements Serializable {
                 utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
+            }
+            if (findProntuario(prontuario.getIdProntuario()) != null) {
+                throw new PreexistingEntityException("Prontuario " + prontuario + " already exists.", ex);
             }
             throw ex;
         } finally {
@@ -76,40 +70,26 @@ public class ReceituarioJpaController implements Serializable {
         }
     }
 
-    public void edit(Receituario receituario) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Prontuario prontuario) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Receituario persistentReceituario = em.find(Receituario.class, receituario.getIdReceituario());
-            Consulta consultaOld = persistentReceituario.getConsulta();
-            Consulta consultaNew = receituario.getConsulta();
-            Itensreceituario tipoReceituarioOld = persistentReceituario.getTipoReceituario();
-            Itensreceituario tipoReceituarioNew = receituario.getTipoReceituario();
+            Prontuario persistentProntuario = em.find(Prontuario.class, prontuario.getIdProntuario());
+            Consulta consultaOld = persistentProntuario.getConsulta();
+            Consulta consultaNew = prontuario.getConsulta();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
-                receituario.setConsulta(consultaNew);
+                prontuario.setConsulta(consultaNew);
             }
-            if (tipoReceituarioNew != null) {
-                tipoReceituarioNew = em.getReference(tipoReceituarioNew.getClass(), tipoReceituarioNew.getIdItensReceituario());
-                receituario.setTipoReceituario(tipoReceituarioNew);
-            }
-            receituario = em.merge(receituario);
+            prontuario = em.merge(prontuario);
             if (consultaOld != null && !consultaOld.equals(consultaNew)) {
-                consultaOld.getReceituarioCollection().remove(receituario);
+                consultaOld.getProntuarioCollection().remove(prontuario);
                 consultaOld = em.merge(consultaOld);
             }
             if (consultaNew != null && !consultaNew.equals(consultaOld)) {
-                consultaNew.getReceituarioCollection().add(receituario);
+                consultaNew.getProntuarioCollection().add(prontuario);
                 consultaNew = em.merge(consultaNew);
-            }
-            if (tipoReceituarioOld != null && !tipoReceituarioOld.equals(tipoReceituarioNew)) {
-                tipoReceituarioOld.getReceituarioCollection().remove(receituario);
-                tipoReceituarioOld = em.merge(tipoReceituarioOld);
-            }
-            if (tipoReceituarioNew != null && !tipoReceituarioNew.equals(tipoReceituarioOld)) {
-                tipoReceituarioNew.getReceituarioCollection().add(receituario);
-                tipoReceituarioNew = em.merge(tipoReceituarioNew);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -120,9 +100,9 @@ public class ReceituarioJpaController implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = receituario.getIdReceituario();
-                if (findReceituario(id) == null) {
-                    throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.");
+                Integer id = prontuario.getIdProntuario();
+                if (findProntuario(id) == null) {
+                    throw new NonexistentEntityException("The prontuario with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -138,24 +118,19 @@ public class ReceituarioJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Receituario receituario;
+            Prontuario prontuario;
             try {
-                receituario = em.getReference(Receituario.class, id);
-                receituario.getIdReceituario();
+                prontuario = em.getReference(Prontuario.class, id);
+                prontuario.getIdProntuario();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The prontuario with id " + id + " no longer exists.", enfe);
             }
-            Consulta consulta = receituario.getConsulta();
+            Consulta consulta = prontuario.getConsulta();
             if (consulta != null) {
-                consulta.getReceituarioCollection().remove(receituario);
+                consulta.getProntuarioCollection().remove(prontuario);
                 consulta = em.merge(consulta);
             }
-            Itensreceituario tipoReceituario = receituario.getTipoReceituario();
-            if (tipoReceituario != null) {
-                tipoReceituario.getReceituarioCollection().remove(receituario);
-                tipoReceituario = em.merge(tipoReceituario);
-            }
-            em.remove(receituario);
+            em.remove(prontuario);
             utx.commit();
         } catch (Exception ex) {
             try {
@@ -171,19 +146,19 @@ public class ReceituarioJpaController implements Serializable {
         }
     }
 
-    public List<Receituario> findReceituarioEntities() {
-        return findReceituarioEntities(true, -1, -1);
+    public List<Prontuario> findProntuarioEntities() {
+        return findProntuarioEntities(true, -1, -1);
     }
 
-    public List<Receituario> findReceituarioEntities(int maxResults, int firstResult) {
-        return findReceituarioEntities(false, maxResults, firstResult);
+    public List<Prontuario> findProntuarioEntities(int maxResults, int firstResult) {
+        return findProntuarioEntities(false, maxResults, firstResult);
     }
 
-    private List<Receituario> findReceituarioEntities(boolean all, int maxResults, int firstResult) {
+    private List<Prontuario> findProntuarioEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Receituario.class));
+            cq.select(cq.from(Prontuario.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -195,20 +170,20 @@ public class ReceituarioJpaController implements Serializable {
         }
     }
 
-    public Receituario findReceituario(Integer id) {
+    public Prontuario findProntuario(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Receituario.class, id);
+            return em.find(Prontuario.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getReceituarioCount() {
+    public int getProntuarioCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Receituario> rt = cq.from(Receituario.class);
+            Root<Prontuario> rt = cq.from(Prontuario.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

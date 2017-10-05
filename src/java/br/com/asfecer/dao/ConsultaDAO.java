@@ -32,9 +32,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class ConsultaJpaController implements Serializable {
+public class ConsultaDAO implements Serializable {
 
-    public ConsultaJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public ConsultaDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

@@ -27,9 +27,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class EnderecoJpaController implements Serializable {
+public class EnderecoDAO implements Serializable {
 
-    public EnderecoJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public EnderecoDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

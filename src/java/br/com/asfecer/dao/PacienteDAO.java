@@ -30,9 +30,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class PacienteJpaController implements Serializable {
+public class PacienteDAO implements Serializable {
 
-    public PacienteJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public PacienteDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

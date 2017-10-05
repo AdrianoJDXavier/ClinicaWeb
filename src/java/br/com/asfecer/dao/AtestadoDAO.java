@@ -6,15 +6,15 @@
 package br.com.asfecer.dao;
 
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
-import br.com.asfecer.dao.exceptions.PreexistingEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
+import br.com.asfecer.model.Atestado;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.Prontuario;
+import br.com.asfecer.model.Tipoatestado;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +24,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class ProntuarioJpaController implements Serializable {
+public class AtestadoDAO implements Serializable {
 
-    public ProntuarioJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public AtestadoDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -37,20 +37,29 @@ public class ProntuarioJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Prontuario prontuario) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Atestado atestado) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Consulta consulta = prontuario.getConsulta();
+            Consulta consulta = atestado.getConsulta();
             if (consulta != null) {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
-                prontuario.setConsulta(consulta);
+                atestado.setConsulta(consulta);
             }
-            em.persist(prontuario);
+            Tipoatestado tipoAtestado = atestado.getTipoAtestado();
+            if (tipoAtestado != null) {
+                tipoAtestado = em.getReference(tipoAtestado.getClass(), tipoAtestado.getIdTipoAtestado());
+                atestado.setTipoAtestado(tipoAtestado);
+            }
+            em.persist(atestado);
             if (consulta != null) {
-                consulta.getProntuarioCollection().add(prontuario);
+                consulta.getAtestadoCollection().add(atestado);
                 consulta = em.merge(consulta);
+            }
+            if (tipoAtestado != null) {
+                tipoAtestado.getAtestadoCollection().add(atestado);
+                tipoAtestado = em.merge(tipoAtestado);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -58,9 +67,6 @@ public class ProntuarioJpaController implements Serializable {
                 utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
-            if (findProntuario(prontuario.getIdProntuario()) != null) {
-                throw new PreexistingEntityException("Prontuario " + prontuario + " already exists.", ex);
             }
             throw ex;
         } finally {
@@ -70,26 +76,40 @@ public class ProntuarioJpaController implements Serializable {
         }
     }
 
-    public void edit(Prontuario prontuario) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Prontuario persistentProntuario = em.find(Prontuario.class, prontuario.getIdProntuario());
-            Consulta consultaOld = persistentProntuario.getConsulta();
-            Consulta consultaNew = prontuario.getConsulta();
+            Atestado persistentAtestado = em.find(Atestado.class, atestado.getIdAtestado());
+            Consulta consultaOld = persistentAtestado.getConsulta();
+            Consulta consultaNew = atestado.getConsulta();
+            Tipoatestado tipoAtestadoOld = persistentAtestado.getTipoAtestado();
+            Tipoatestado tipoAtestadoNew = atestado.getTipoAtestado();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
-                prontuario.setConsulta(consultaNew);
+                atestado.setConsulta(consultaNew);
             }
-            prontuario = em.merge(prontuario);
+            if (tipoAtestadoNew != null) {
+                tipoAtestadoNew = em.getReference(tipoAtestadoNew.getClass(), tipoAtestadoNew.getIdTipoAtestado());
+                atestado.setTipoAtestado(tipoAtestadoNew);
+            }
+            atestado = em.merge(atestado);
             if (consultaOld != null && !consultaOld.equals(consultaNew)) {
-                consultaOld.getProntuarioCollection().remove(prontuario);
+                consultaOld.getAtestadoCollection().remove(atestado);
                 consultaOld = em.merge(consultaOld);
             }
             if (consultaNew != null && !consultaNew.equals(consultaOld)) {
-                consultaNew.getProntuarioCollection().add(prontuario);
+                consultaNew.getAtestadoCollection().add(atestado);
                 consultaNew = em.merge(consultaNew);
+            }
+            if (tipoAtestadoOld != null && !tipoAtestadoOld.equals(tipoAtestadoNew)) {
+                tipoAtestadoOld.getAtestadoCollection().remove(atestado);
+                tipoAtestadoOld = em.merge(tipoAtestadoOld);
+            }
+            if (tipoAtestadoNew != null && !tipoAtestadoNew.equals(tipoAtestadoOld)) {
+                tipoAtestadoNew.getAtestadoCollection().add(atestado);
+                tipoAtestadoNew = em.merge(tipoAtestadoNew);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -100,9 +120,9 @@ public class ProntuarioJpaController implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = prontuario.getIdProntuario();
-                if (findProntuario(id) == null) {
-                    throw new NonexistentEntityException("The prontuario with id " + id + " no longer exists.");
+                Integer id = atestado.getIdAtestado();
+                if (findAtestado(id) == null) {
+                    throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -118,19 +138,24 @@ public class ProntuarioJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Prontuario prontuario;
+            Atestado atestado;
             try {
-                prontuario = em.getReference(Prontuario.class, id);
-                prontuario.getIdProntuario();
+                atestado = em.getReference(Atestado.class, id);
+                atestado.getIdAtestado();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The prontuario with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.", enfe);
             }
-            Consulta consulta = prontuario.getConsulta();
+            Consulta consulta = atestado.getConsulta();
             if (consulta != null) {
-                consulta.getProntuarioCollection().remove(prontuario);
+                consulta.getAtestadoCollection().remove(atestado);
                 consulta = em.merge(consulta);
             }
-            em.remove(prontuario);
+            Tipoatestado tipoAtestado = atestado.getTipoAtestado();
+            if (tipoAtestado != null) {
+                tipoAtestado.getAtestadoCollection().remove(atestado);
+                tipoAtestado = em.merge(tipoAtestado);
+            }
+            em.remove(atestado);
             utx.commit();
         } catch (Exception ex) {
             try {
@@ -146,19 +171,19 @@ public class ProntuarioJpaController implements Serializable {
         }
     }
 
-    public List<Prontuario> findProntuarioEntities() {
-        return findProntuarioEntities(true, -1, -1);
+    public List<Atestado> findAtestadoEntities() {
+        return findAtestadoEntities(true, -1, -1);
     }
 
-    public List<Prontuario> findProntuarioEntities(int maxResults, int firstResult) {
-        return findProntuarioEntities(false, maxResults, firstResult);
+    public List<Atestado> findAtestadoEntities(int maxResults, int firstResult) {
+        return findAtestadoEntities(false, maxResults, firstResult);
     }
 
-    private List<Prontuario> findProntuarioEntities(boolean all, int maxResults, int firstResult) {
+    private List<Atestado> findAtestadoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Prontuario.class));
+            cq.select(cq.from(Atestado.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -170,20 +195,20 @@ public class ProntuarioJpaController implements Serializable {
         }
     }
 
-    public Prontuario findProntuario(Integer id) {
+    public Atestado findAtestado(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Prontuario.class, id);
+            return em.find(Atestado.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getProntuarioCount() {
+    public int getAtestadoCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Prontuario> rt = cq.from(Prontuario.class);
+            Root<Atestado> rt = cq.from(Atestado.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

@@ -28,9 +28,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class AgendaJpaController implements Serializable {
+public class AgendaDAO implements Serializable {
 
-    public AgendaJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public AgendaDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

@@ -13,8 +13,9 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import br.com.asfecer.model.Medico;
 import br.com.asfecer.model.Agenda;
-import br.com.asfecer.model.Usuario;
+import br.com.asfecer.model.Horario;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,9 +27,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class UsuarioJpaController implements Serializable {
+public class HorarioDAO implements Serializable {
 
-    public UsuarioJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public HorarioDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -39,28 +40,37 @@ public class UsuarioJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Usuario usuario) throws RollbackFailureException, Exception {
-        if (usuario.getAgendaCollection() == null) {
-            usuario.setAgendaCollection(new ArrayList<Agenda>());
+    public void create(Horario horario) throws RollbackFailureException, Exception {
+        if (horario.getAgendaCollection() == null) {
+            horario.setAgendaCollection(new ArrayList<Agenda>());
         }
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
+            Medico medico = horario.getMedico();
+            if (medico != null) {
+                medico = em.getReference(medico.getClass(), medico.getIdMedico());
+                horario.setMedico(medico);
+            }
             Collection<Agenda> attachedAgendaCollection = new ArrayList<Agenda>();
-            for (Agenda agendaCollectionAgendaToAttach : usuario.getAgendaCollection()) {
+            for (Agenda agendaCollectionAgendaToAttach : horario.getAgendaCollection()) {
                 agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroAgenda());
                 attachedAgendaCollection.add(agendaCollectionAgendaToAttach);
             }
-            usuario.setAgendaCollection(attachedAgendaCollection);
-            em.persist(usuario);
-            for (Agenda agendaCollectionAgenda : usuario.getAgendaCollection()) {
-                Usuario oldUsuarioOfAgendaCollectionAgenda = agendaCollectionAgenda.getUsuario();
-                agendaCollectionAgenda.setUsuario(usuario);
+            horario.setAgendaCollection(attachedAgendaCollection);
+            em.persist(horario);
+            if (medico != null) {
+                medico.getHorarioCollection().add(horario);
+                medico = em.merge(medico);
+            }
+            for (Agenda agendaCollectionAgenda : horario.getAgendaCollection()) {
+                Horario oldMedicoOfAgendaCollectionAgenda = agendaCollectionAgenda.getMedico();
+                agendaCollectionAgenda.setMedico(horario);
                 agendaCollectionAgenda = em.merge(agendaCollectionAgenda);
-                if (oldUsuarioOfAgendaCollectionAgenda != null) {
-                    oldUsuarioOfAgendaCollectionAgenda.getAgendaCollection().remove(agendaCollectionAgenda);
-                    oldUsuarioOfAgendaCollectionAgenda = em.merge(oldUsuarioOfAgendaCollectionAgenda);
+                if (oldMedicoOfAgendaCollectionAgenda != null) {
+                    oldMedicoOfAgendaCollectionAgenda.getAgendaCollection().remove(agendaCollectionAgenda);
+                    oldMedicoOfAgendaCollectionAgenda = em.merge(oldMedicoOfAgendaCollectionAgenda);
                 }
             }
             utx.commit();
@@ -78,25 +88,31 @@ public class UsuarioJpaController implements Serializable {
         }
     }
 
-    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Horario horario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Usuario persistentUsuario = em.find(Usuario.class, usuario.getIdUsuario());
-            Collection<Agenda> agendaCollectionOld = persistentUsuario.getAgendaCollection();
-            Collection<Agenda> agendaCollectionNew = usuario.getAgendaCollection();
+            Horario persistentHorario = em.find(Horario.class, horario.getIdHorario());
+            Medico medicoOld = persistentHorario.getMedico();
+            Medico medicoNew = horario.getMedico();
+            Collection<Agenda> agendaCollectionOld = persistentHorario.getAgendaCollection();
+            Collection<Agenda> agendaCollectionNew = horario.getAgendaCollection();
             List<String> illegalOrphanMessages = null;
             for (Agenda agendaCollectionOldAgenda : agendaCollectionOld) {
                 if (!agendaCollectionNew.contains(agendaCollectionOldAgenda)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Agenda " + agendaCollectionOldAgenda + " since its usuario field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Agenda " + agendaCollectionOldAgenda + " since its medico field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (medicoNew != null) {
+                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdMedico());
+                horario.setMedico(medicoNew);
             }
             Collection<Agenda> attachedAgendaCollectionNew = new ArrayList<Agenda>();
             for (Agenda agendaCollectionNewAgendaToAttach : agendaCollectionNew) {
@@ -104,16 +120,24 @@ public class UsuarioJpaController implements Serializable {
                 attachedAgendaCollectionNew.add(agendaCollectionNewAgendaToAttach);
             }
             agendaCollectionNew = attachedAgendaCollectionNew;
-            usuario.setAgendaCollection(agendaCollectionNew);
-            usuario = em.merge(usuario);
+            horario.setAgendaCollection(agendaCollectionNew);
+            horario = em.merge(horario);
+            if (medicoOld != null && !medicoOld.equals(medicoNew)) {
+                medicoOld.getHorarioCollection().remove(horario);
+                medicoOld = em.merge(medicoOld);
+            }
+            if (medicoNew != null && !medicoNew.equals(medicoOld)) {
+                medicoNew.getHorarioCollection().add(horario);
+                medicoNew = em.merge(medicoNew);
+            }
             for (Agenda agendaCollectionNewAgenda : agendaCollectionNew) {
                 if (!agendaCollectionOld.contains(agendaCollectionNewAgenda)) {
-                    Usuario oldUsuarioOfAgendaCollectionNewAgenda = agendaCollectionNewAgenda.getUsuario();
-                    agendaCollectionNewAgenda.setUsuario(usuario);
+                    Horario oldMedicoOfAgendaCollectionNewAgenda = agendaCollectionNewAgenda.getMedico();
+                    agendaCollectionNewAgenda.setMedico(horario);
                     agendaCollectionNewAgenda = em.merge(agendaCollectionNewAgenda);
-                    if (oldUsuarioOfAgendaCollectionNewAgenda != null && !oldUsuarioOfAgendaCollectionNewAgenda.equals(usuario)) {
-                        oldUsuarioOfAgendaCollectionNewAgenda.getAgendaCollection().remove(agendaCollectionNewAgenda);
-                        oldUsuarioOfAgendaCollectionNewAgenda = em.merge(oldUsuarioOfAgendaCollectionNewAgenda);
+                    if (oldMedicoOfAgendaCollectionNewAgenda != null && !oldMedicoOfAgendaCollectionNewAgenda.equals(horario)) {
+                        oldMedicoOfAgendaCollectionNewAgenda.getAgendaCollection().remove(agendaCollectionNewAgenda);
+                        oldMedicoOfAgendaCollectionNewAgenda = em.merge(oldMedicoOfAgendaCollectionNewAgenda);
                     }
                 }
             }
@@ -126,9 +150,9 @@ public class UsuarioJpaController implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = usuario.getIdUsuario();
-                if (findUsuario(id) == null) {
-                    throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.");
+                Integer id = horario.getIdHorario();
+                if (findHorario(id) == null) {
+                    throw new NonexistentEntityException("The horario with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -144,25 +168,30 @@ public class UsuarioJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Usuario usuario;
+            Horario horario;
             try {
-                usuario = em.getReference(Usuario.class, id);
-                usuario.getIdUsuario();
+                horario = em.getReference(Horario.class, id);
+                horario.getIdHorario();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The horario with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Agenda> agendaCollectionOrphanCheck = usuario.getAgendaCollection();
+            Collection<Agenda> agendaCollectionOrphanCheck = horario.getAgendaCollection();
             for (Agenda agendaCollectionOrphanCheckAgenda : agendaCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Agenda " + agendaCollectionOrphanCheckAgenda + " in its agendaCollection field has a non-nullable usuario field.");
+                illegalOrphanMessages.add("This Horario (" + horario + ") cannot be destroyed since the Agenda " + agendaCollectionOrphanCheckAgenda + " in its agendaCollection field has a non-nullable medico field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            em.remove(usuario);
+            Medico medico = horario.getMedico();
+            if (medico != null) {
+                medico.getHorarioCollection().remove(horario);
+                medico = em.merge(medico);
+            }
+            em.remove(horario);
             utx.commit();
         } catch (Exception ex) {
             try {
@@ -178,19 +207,19 @@ public class UsuarioJpaController implements Serializable {
         }
     }
 
-    public List<Usuario> findUsuarioEntities() {
-        return findUsuarioEntities(true, -1, -1);
+    public List<Horario> findHorarioEntities() {
+        return findHorarioEntities(true, -1, -1);
     }
 
-    public List<Usuario> findUsuarioEntities(int maxResults, int firstResult) {
-        return findUsuarioEntities(false, maxResults, firstResult);
+    public List<Horario> findHorarioEntities(int maxResults, int firstResult) {
+        return findHorarioEntities(false, maxResults, firstResult);
     }
 
-    private List<Usuario> findUsuarioEntities(boolean all, int maxResults, int firstResult) {
+    private List<Horario> findHorarioEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Usuario.class));
+            cq.select(cq.from(Horario.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -202,20 +231,20 @@ public class UsuarioJpaController implements Serializable {
         }
     }
 
-    public Usuario findUsuario(Integer id) {
+    public Horario findHorario(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Usuario.class, id);
+            return em.find(Horario.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUsuarioCount() {
+    public int getHorarioCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Usuario> rt = cq.from(Usuario.class);
+            Root<Horario> rt = cq.from(Horario.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

@@ -29,9 +29,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class EstadosJpaController implements Serializable {
+public class EstadosDAO implements Serializable {
 
-    public EstadosJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public EstadosDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }

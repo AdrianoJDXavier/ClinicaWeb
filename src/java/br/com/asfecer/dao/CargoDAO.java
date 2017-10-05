@@ -27,9 +27,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class CargoJpaController implements Serializable {
+public class CargoDAO implements Serializable {
 
-    public CargoJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public CargoDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
