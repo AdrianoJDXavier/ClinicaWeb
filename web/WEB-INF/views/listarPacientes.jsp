@@ -1,5 +1,5 @@
 <jsp:include page="includes/header.jsp"></jsp:include>
-    <div class="row">
+<div class="row">
         <div class="main col-md-10 col-md-push-2">
 
             <div class="panel panel-default" style="margin:10px;">
@@ -8,8 +8,8 @@
                 </div>
                 <div class="panel-body">
 
-                    <div class="table-responsive">
-                        <table class="table table-striped">
+                    <div class="table-responsive"  style="height: 500px">
+                        <table class="table table-striped" id="tabela">
                             <thead>
                                 <tr>
                                     <th>Id</th>
@@ -17,6 +17,11 @@
                                     <th>Cidade</th>
                                     <th></th>
                                 </tr>
+                                <tr>
+                                    <th><input class="form-control" type="text" id="txtColuna1" style="width: 100px" placeholder="Id!"/></th>
+                                    <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por nome!"/></th>
+                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por cidade!"/></th>
+				</tr>
                             </thead>
                             <tbody style="text-align: left">
                             <c:forEach var="paciente" items="${pacientes}">
