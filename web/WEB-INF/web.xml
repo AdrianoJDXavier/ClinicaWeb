@@ -31,7 +31,7 @@
     </filter-mapping>
     <servlet>
         <servlet-name>loginController</servlet-name>
-        <servlet-class>br.com.asfecer.controller.loginController</servlet-class>
+        <servlet-class>br.com.asfecer.controller.LoginController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ClienteController</servlet-name>
@@ -39,7 +39,7 @@
     </servlet>
     <servlet>
         <servlet-name>usuarioController</servlet-name>
-        <servlet-class>br.com.asfecer.controller.usuarioController</servlet-class>
+        <servlet-class>br.com.asfecer.controller.UsuarioControllerOLD</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>loginController</servlet-name>

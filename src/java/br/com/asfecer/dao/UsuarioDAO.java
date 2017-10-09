@@ -39,7 +39,7 @@ public class UsuarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Usuario usuario) throws RollbackFailureException, Exception {
+    public void create(Usuario usuario) throws RollbackFailureException {
         if (usuario.getAgendaCollection() == null) {
             usuario.setAgendaCollection(new ArrayList<Agenda>());
         }
@@ -70,7 +70,7 @@ public class UsuarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -78,7 +78,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -131,7 +131,7 @@ public class UsuarioDAO implements Serializable {
                     throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -139,7 +139,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -170,7 +170,7 @@ public class UsuarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

@@ -52,12 +52,13 @@ public class Usuario implements Serializable {
     private Integer idUsuario;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
-    private boolean tipoUsuario;
+    @Size(min = 1, max = 20)
+    @Column(nullable = false, length = 20)
+    private String tipoUsuario;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean status;
+    private char status;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
@@ -71,23 +72,23 @@ public class Usuario implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean moduloAdministrativo;
+    private char moduloAdministrativo;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean moduloAgendamento;
+    private char moduloAgendamento;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean moduloAtendimento;
+    private char moduloAtendimento;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean moduloAcesso;
+    private char moduloAcesso;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean moduloAdmBD;
+    private char moduloAdmBD;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Collection<Agenda> agendaCollection;
 
@@ -98,8 +99,7 @@ public class Usuario implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public Usuario(Integer idUsuario, boolean tipoUsuario, boolean status, String login, String senha, boolean moduloAdministrativo, boolean moduloAgendamento, boolean moduloAtendimento, boolean moduloAcesso, boolean moduloAdmBD) {
-        this.idUsuario = idUsuario;
+    public Usuario(String tipoUsuario, char status, String login, String senha, char moduloAdministrativo, char moduloAgendamento, char moduloAtendimento, char moduloAcesso, char moduloAdmBD) {
         this.tipoUsuario = tipoUsuario;
         this.status = status;
         this.login = login;
@@ -119,19 +119,19 @@ public class Usuario implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public boolean getTipoUsuario() {
+    public String getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(boolean tipoUsuario) {
+    public void setTipoUsuario(String tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public boolean getStatus() {
+    public char getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(char status) {
         this.status = status;
     }
 
@@ -151,43 +151,43 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public boolean getModuloAdministrativo() {
+    public char getModuloAdministrativo() {
         return moduloAdministrativo;
     }
 
-    public void setModuloAdministrativo(boolean moduloAdministrativo) {
+    public void setModuloAdministrativo(char moduloAdministrativo) {
         this.moduloAdministrativo = moduloAdministrativo;
     }
 
-    public boolean getModuloAgendamento() {
+    public char getModuloAgendamento() {
         return moduloAgendamento;
     }
 
-    public void setModuloAgendamento(boolean moduloAgendamento) {
+    public void setModuloAgendamento(char moduloAgendamento) {
         this.moduloAgendamento = moduloAgendamento;
     }
 
-    public boolean getModuloAtendimento() {
+    public char getModuloAtendimento() {
         return moduloAtendimento;
     }
 
-    public void setModuloAtendimento(boolean moduloAtendimento) {
+    public void setModuloAtendimento(char moduloAtendimento) {
         this.moduloAtendimento = moduloAtendimento;
     }
 
-    public boolean getModuloAcesso() {
+    public char getModuloAcesso() {
         return moduloAcesso;
     }
 
-    public void setModuloAcesso(boolean moduloAcesso) {
+    public void setModuloAcesso(char moduloAcesso) {
         this.moduloAcesso = moduloAcesso;
     }
 
-    public boolean getModuloAdmBD() {
+    public char getModuloAdmBD() {
         return moduloAdmBD;
     }
 
-    public void setModuloAdmBD(boolean moduloAdmBD) {
+    public void setModuloAdmBD(char moduloAdmBD) {
         this.moduloAdmBD = moduloAdmBD;
     }
 

@@ -9,14 +9,14 @@
                 <div class="panel-body">
 
 
-                    <form action="" method="POST"  style="margin: 0% 0;">
+                    <form action="" method="Post"  style="margin: 0% 0;">
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Tipo de Usuario</label>
-                                <select class="form-control" name="tipousuario">
-                                    <option value="paciente">Paciente</option>
-                                    <option value="medico">Médico</option>
-                                    <option value="atendente">atendente</option>
+                                <select class="form-control" name="tipoUsuario">
+                                    <option value="Atendente">Atendente</option>
+                                    <option value="Medico">Médico</option>
+                                    <option value="Paciente">Paciente</option>
                                 </select>
                             </div>
                             <div class="col-md-4">

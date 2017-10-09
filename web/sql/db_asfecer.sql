@@ -110,7 +110,7 @@ DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `db_asfecer`.`Usuario` (
   `idUsuario` INT(11) NOT NULL AUTO_INCREMENT,
-  `TipoUsuario` BIT(1) NOT NULL COMMENT 'Paciente\nMedico\nAtendente',
+  `TipoUsuario` VARCHAR(20) NOT NULL COMMENT 'Paciente\nMedico\nAtendente',
   `status` BIT(1) NOT NULL COMMENT 'Ativo\nInativo\n',
   `login` VARCHAR(30) NOT NULL,
   `senha` VARCHAR(12) NOT NULL,

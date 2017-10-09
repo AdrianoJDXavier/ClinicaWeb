@@ -1,6 +1,6 @@
 package br.com.asfecer.dao.exceptions;
 
-public class RollbackFailureException extends Exception {
+public class RollbackFailureException extends RuntimeException {
     public RollbackFailureException(String message, Throwable cause) {
         super(message, cause);
     }

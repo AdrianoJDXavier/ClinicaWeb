@@ -3,7 +3,7 @@ package br.com.asfecer.dao.exceptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IllegalOrphanException extends Exception {
+public class IllegalOrphanException extends RuntimeException {
     private List<String> messages;
     public IllegalOrphanException(List<String> messages) {
         super((messages != null && messages.size() > 0 ? messages.get(0) : null));

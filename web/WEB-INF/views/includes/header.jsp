@@ -57,7 +57,7 @@
                                 </li>
                                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color: #e3e3e3;">Usuários<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="criaUser">Cadastrar Usuário</a></li>
+                                        <li><a href="criaUsuario.html">Cadastrar Usuário</a></li>
                                     </ul>
                                 </li>
                             </ul>
