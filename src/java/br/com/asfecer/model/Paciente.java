@@ -121,6 +121,26 @@ public class Paciente implements Serializable {
         this.nomePaciente = nomePaciente;
     }
 
+    public Paciente(String nomePaciente, Date dataNascimento, String nomeMae, String cpf, String cartaoConvenio, String tipoSanguineo, Character fatorRH, Character sexo, String email, String telefone, String celular, String obs, Collection<Agenda> agendaCollection, Convenio convenio, Endereco endereco, Cidade naturalidadeCidade, Collection<Consulta> consultaCollection) {
+        this.nomePaciente = nomePaciente;
+        this.dataNascimento = dataNascimento;
+        this.nomeMae = nomeMae;
+        this.cpf = cpf;
+        this.cartaoConvenio = cartaoConvenio;
+        this.tipoSanguineo = tipoSanguineo;
+        this.fatorRH = fatorRH;
+        this.sexo = sexo;
+        this.email = email;
+        this.telefone = telefone;
+        this.celular = celular;
+        this.obs = obs;
+        this.agendaCollection = agendaCollection;
+        this.convenio = convenio;
+        this.endereco = endereco;
+        this.naturalidadeCidade = naturalidadeCidade;
+        this.consultaCollection = consultaCollection;
+    }
+    
     public Integer getIdPaciente() {
         return idPaciente;
     }

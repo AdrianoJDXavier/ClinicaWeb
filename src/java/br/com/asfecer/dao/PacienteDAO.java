@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import br.com.asfecer.model.Consulta;
 import br.com.asfecer.model.Paciente;
+import java.text.ParseException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -43,7 +44,7 @@ public class PacienteDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Paciente paciente) throws RollbackFailureException, Exception {
+    public void create(Paciente paciente) throws RollbackFailureException, RuntimeException, ParseException {
         if (paciente.getAgendaCollection() == null) {
             paciente.setAgendaCollection(new ArrayList<Agenda>());
         }
@@ -119,7 +120,7 @@ public class PacienteDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -127,7 +128,7 @@ public class PacienteDAO implements Serializable {
         }
     }
 
-    public void edit(Paciente paciente) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Paciente paciente) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -250,7 +251,7 @@ public class PacienteDAO implements Serializable {
                     throw new NonexistentEntityException("The paciente with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -258,7 +259,7 @@ public class PacienteDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -311,7 +312,7 @@ public class PacienteDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

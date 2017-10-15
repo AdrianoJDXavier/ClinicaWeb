@@ -99,7 +99,7 @@ public class AgendaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -196,7 +196,7 @@ public class AgendaDAO implements Serializable {
                     throw new NonexistentEntityException("The agenda with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -244,7 +244,7 @@ public class AgendaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
