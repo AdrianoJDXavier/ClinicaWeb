@@ -41,7 +41,7 @@ public class AgendaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Agenda agenda) throws RollbackFailureException, Exception {
+    public void create(Agenda agenda) throws RollbackFailureException, RuntimeException {
         if (agenda.getConsultaCollection() == null) {
             agenda.setConsultaCollection(new ArrayList<Consulta>());
         }
@@ -107,7 +107,7 @@ public class AgendaDAO implements Serializable {
         }
     }
 
-    public void edit(Agenda agenda) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Agenda agenda) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -204,7 +204,7 @@ public class AgendaDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();

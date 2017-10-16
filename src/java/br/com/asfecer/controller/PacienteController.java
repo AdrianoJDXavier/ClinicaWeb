@@ -1,25 +1,19 @@
 package br.com.asfecer.controller;
 
-import br.com.asfecer.dao.AgendaDAO;
 import br.com.asfecer.dao.CidadeDAO;
-import br.com.asfecer.dao.ConsultaDAO;
 import br.com.asfecer.dao.ConvenioDAO;
 import br.com.asfecer.dao.EnderecoDAO;
 import br.com.asfecer.dao.PacienteDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
-import br.com.asfecer.model.Agenda;
 import br.com.asfecer.model.Cidade;
-import br.com.asfecer.model.Consulta;
 import br.com.asfecer.model.Convenio;
 import br.com.asfecer.model.Endereco;
 import br.com.asfecer.model.Paciente;
-import static br.com.asfecer.model.Paciente_.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -114,11 +108,9 @@ public class PacienteController extends HttpServlet {
  
     private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
         
-        AgendaDAO agenda = new AgendaDAO(utx, emf);
         ConvenioDAO conv = new ConvenioDAO(utx, emf);
         EnderecoDAO ender = new EnderecoDAO(utx, emf);
         CidadeDAO cidd = new CidadeDAO(utx, emf);
-        ConsultaDAO cons = new ConsultaDAO(utx, emf);
         
         String nomePaciente = request.getParameter("nomePaciente");
         Date dataNascimento = formatDate.parse(request.getParameter("dataNascimento"));
@@ -132,14 +124,11 @@ public class PacienteController extends HttpServlet {
         String telefone = request.getParameter("telefone");
         String celular = request.getParameter("celular");
         String obs = request.getParameter("obs");
-        
-        Collection<Agenda> agendaCollection = (Collection<Agenda>)agenda.findAgenda(Integer.parseInt(request.getParameter("agenda")));
         Convenio convenio = conv.findConvenio(Integer.parseInt(request.getParameter("convenio"))) ;
         Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
         Cidade naturalidadeCidade = cidd.findCidade(Integer.parseInt(request.getParameter("naturalidadeCidade")));
-        Collection<Consulta> consultaCollection = (Collection<Consulta>)cons.findConsulta(Integer.parseInt(request.getParameter("consultaCollection")));
         
-        Paciente paciente = new Paciente(nomePaciente, dataNascimento, nomeMae, cpf, cartaoConvenio, tipoSanguineo, fatorRH, sexo, email, telefone, celular, obs, agendaCollection, convenio, endereco, naturalidadeCidade, consultaCollection);
+        Paciente paciente = new Paciente(nomePaciente, dataNascimento, nomeMae, cpf, cartaoConvenio, tipoSanguineo, fatorRH, sexo, email, telefone, celular, obs, convenio, endereco, naturalidadeCidade);
         PacienteDAO dao = new PacienteDAO(utx, emf);
         
         dao.create(paciente);
@@ -149,13 +138,11 @@ public class PacienteController extends HttpServlet {
 
     private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         
-        AgendaDAO agenda = new AgendaDAO(utx, emf);
         ConvenioDAO conv = new ConvenioDAO(utx, emf);
         EnderecoDAO ender = new EnderecoDAO(utx, emf);
         CidadeDAO cidd = new CidadeDAO(utx, emf);
-        ConsultaDAO cons = new ConsultaDAO(utx, emf);
         
-        int id = Integer.parseInt(request.getParameter("idPaciente"));
+        int idPaciente = Integer.parseInt(request.getParameter("idPaciente"));
         String nomePaciente = request.getParameter("nomePaciente");
         Date dataNascimento = formatDate.parse(request.getParameter("dataNascimento"));
         String nomeMae = request.getParameter("nomeMae");
@@ -168,14 +155,11 @@ public class PacienteController extends HttpServlet {
         String telefone = request.getParameter("telefone");
         String celular = request.getParameter("celular");
         String obs = request.getParameter("obs");
-        
-        Collection<Agenda> agendaCollection = (Collection<Agenda>)agenda.findAgenda(Integer.parseInt(request.getParameter("agenda")));
         Convenio convenio = conv.findConvenio(Integer.parseInt(request.getParameter("convenio"))) ;
         Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
         Cidade naturalidadeCidade = cidd.findCidade(Integer.parseInt(request.getParameter("naturalidadeCidade")));
-        Collection<Consulta> consultaCollection = (Collection<Consulta>)cons.findConsulta(Integer.parseInt(request.getParameter("consultaCollection")));
         
-        Paciente paciente = new Paciente(nomePaciente, dataNascimento, nomeMae, cpf, cartaoConvenio, tipoSanguineo, fatorRH, sexo, email, telefone, celular, obs, agendaCollection, convenio, endereco, naturalidadeCidade, consultaCollection);       
+        Paciente paciente = new Paciente(idPaciente, nomePaciente, dataNascimento, nomeMae, cpf, cartaoConvenio, tipoSanguineo, fatorRH, sexo, email, telefone, celular, obs, convenio, endereco, naturalidadeCidade);       
         
         PacienteDAO dao = new PacienteDAO(utx, emf);
         

@@ -37,7 +37,7 @@ public class PedidoexameDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Pedidoexame pedidoexame) throws RollbackFailureException, Exception {
+    public void create(Pedidoexame pedidoexame) throws RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -68,7 +68,7 @@ public class PedidoexameDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -76,7 +76,7 @@ public class PedidoexameDAO implements Serializable {
         }
     }
 
-    public void edit(Pedidoexame pedidoexame) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Pedidoexame pedidoexame) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -125,7 +125,7 @@ public class PedidoexameDAO implements Serializable {
                     throw new NonexistentEntityException("The pedidoexame with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -133,7 +133,7 @@ public class PedidoexameDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -163,7 +163,7 @@ public class PedidoexameDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

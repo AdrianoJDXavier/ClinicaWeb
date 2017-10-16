@@ -44,7 +44,7 @@ public class PacienteDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Paciente paciente) throws RollbackFailureException, RuntimeException, ParseException {
+    public void create(Paciente paciente) throws RollbackFailureException, RuntimeException {
         if (paciente.getAgendaCollection() == null) {
             paciente.setAgendaCollection(new ArrayList<Agenda>());
         }

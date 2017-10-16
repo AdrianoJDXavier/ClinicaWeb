@@ -39,7 +39,7 @@ public class DepartamentoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Departamento departamento) throws RollbackFailureException, Exception {
+    public void create(Departamento departamento) throws RollbackFailureException, RuntimeException {
         if (departamento.getCargoCollection() == null) {
             departamento.setCargoCollection(new ArrayList<Cargo>());
         }
@@ -70,7 +70,7 @@ public class DepartamentoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -78,7 +78,7 @@ public class DepartamentoDAO implements Serializable {
         }
     }
 
-    public void edit(Departamento departamento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Departamento departamento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -131,7 +131,7 @@ public class DepartamentoDAO implements Serializable {
                     throw new NonexistentEntityException("The departamento with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -139,7 +139,7 @@ public class DepartamentoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -170,7 +170,7 @@ public class DepartamentoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

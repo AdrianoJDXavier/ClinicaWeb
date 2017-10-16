@@ -42,7 +42,7 @@ public class MedicoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Medico medico) throws RollbackFailureException, Exception {
+    public void create(Medico medico) throws RollbackFailureException, RuntimeException {
         if (medico.getHorarioCollection() == null) {
             medico.setHorarioCollection(new ArrayList<Horario>());
         }
@@ -109,7 +109,7 @@ public class MedicoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -117,7 +117,7 @@ public class MedicoDAO implements Serializable {
         }
     }
 
-    public void edit(Medico medico) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Medico medico) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -226,7 +226,7 @@ public class MedicoDAO implements Serializable {
                     throw new NonexistentEntityException("The medico with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -234,7 +234,7 @@ public class MedicoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -282,7 +282,7 @@ public class MedicoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

@@ -42,7 +42,7 @@ public class CidadeDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cidade cidade) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Cidade cidade) throws PreexistingEntityException, RollbackFailureException, RuntimeException {
         if (cidade.getEnderecoCollection() == null) {
             cidade.setEnderecoCollection(new ArrayList<Endereco>());
         }
@@ -103,7 +103,7 @@ public class CidadeDAO implements Serializable {
             if (findCidade(cidade.getIdCidade()) != null) {
                 throw new PreexistingEntityException("Cidade " + cidade + " already exists.", ex);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -111,7 +111,7 @@ public class CidadeDAO implements Serializable {
         }
     }
 
-    public void edit(Cidade cidade) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Cidade cidade) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -204,7 +204,7 @@ public class CidadeDAO implements Serializable {
                     throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -212,7 +212,7 @@ public class CidadeDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -253,7 +253,7 @@ public class CidadeDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

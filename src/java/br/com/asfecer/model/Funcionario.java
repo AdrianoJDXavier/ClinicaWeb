@@ -110,6 +110,41 @@ public class Funcionario implements Serializable {
         this.nomeFuncionario = nomeFuncionario;
     }
 
+    public Funcionario(String nomeFuncionario, Date dataNascimento, String cpf, String rg, String orgaoEmissor, String ctps, String pis, String email, String telefone, String celular, String obs, Cargo cargo, Endereco endereco, Estados ufEmissor) {
+        this.nomeFuncionario = nomeFuncionario;
+        this.dataNascimento = dataNascimento;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.orgaoEmissor = orgaoEmissor;
+        this.ctps = ctps;
+        this.pis = pis;
+        this.email = email;
+        this.telefone = telefone;
+        this.celular = celular;
+        this.obs = obs;
+        this.cargo = cargo;
+        this.endereco = endereco;
+        this.ufEmissor = ufEmissor;
+    }
+
+    public Funcionario(Integer idFuncionario, String nomeFuncionario, Date dataNascimento, String cpf, String rg, String orgaoEmissor, String ctps, String pis, String email, String telefone, String celular, String obs, Cargo cargo, Endereco endereco, Estados ufEmissor) {
+        this.idFuncionario = idFuncionario;
+        this.nomeFuncionario = nomeFuncionario;
+        this.dataNascimento = dataNascimento;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.orgaoEmissor = orgaoEmissor;
+        this.ctps = ctps;
+        this.pis = pis;
+        this.email = email;
+        this.telefone = telefone;
+        this.celular = celular;
+        this.obs = obs;
+        this.cargo = cargo;
+        this.endereco = endereco;
+        this.ufEmissor = ufEmissor;
+    }
+    
     public Integer getIdFuncionario() {
         return idFuncionario;
     }

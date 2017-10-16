@@ -39,7 +39,7 @@ public class UsuarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Usuario usuario) throws RollbackFailureException {
+    public void create(Usuario usuario) throws RollbackFailureException, RuntimeException {
         if (usuario.getAgendaCollection() == null) {
             usuario.setAgendaCollection(new ArrayList<Agenda>());
         }
@@ -78,7 +78,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException {
+    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -139,7 +139,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();

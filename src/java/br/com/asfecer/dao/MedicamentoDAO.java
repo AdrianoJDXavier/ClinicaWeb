@@ -40,7 +40,7 @@ public class MedicamentoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Medicamento medicamento) throws RollbackFailureException, Exception {
+    public void create(Medicamento medicamento) throws RollbackFailureException, RuntimeException {
         if (medicamento.getTipoatestadoCollection() == null) {
             medicamento.setTipoatestadoCollection(new ArrayList<Tipoatestado>());
         }
@@ -89,7 +89,7 @@ public class MedicamentoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -97,7 +97,7 @@ public class MedicamentoDAO implements Serializable {
         }
     }
 
-    public void edit(Medicamento medicamento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Medicamento medicamento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -176,7 +176,7 @@ public class MedicamentoDAO implements Serializable {
                     throw new NonexistentEntityException("The medicamento with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -184,7 +184,7 @@ public class MedicamentoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -220,7 +220,7 @@ public class MedicamentoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

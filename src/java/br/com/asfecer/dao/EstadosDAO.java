@@ -42,7 +42,7 @@ public class EstadosDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Estados estados) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Estados estados) throws PreexistingEntityException, RollbackFailureException, RuntimeException {
         if (estados.getCidadeCollection() == null) {
             estados.setCidadeCollection(new ArrayList<Cidade>());
         }
@@ -112,7 +112,7 @@ public class EstadosDAO implements Serializable {
             if (findEstados(estados.getSigla()) != null) {
                 throw new PreexistingEntityException("Estados " + estados + " already exists.", ex);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -120,7 +120,7 @@ public class EstadosDAO implements Serializable {
         }
     }
 
-    public void edit(Estados estados) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Estados estados) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -229,7 +229,7 @@ public class EstadosDAO implements Serializable {
                     throw new NonexistentEntityException("The estados with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -237,7 +237,7 @@ public class EstadosDAO implements Serializable {
         }
     }
 
-    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -282,7 +282,7 @@ public class EstadosDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

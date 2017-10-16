@@ -40,7 +40,7 @@ public class ExameDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Exame exame) throws RollbackFailureException, Exception {
+    public void create(Exame exame) throws RollbackFailureException, RuntimeException {
         if (exame.getPedidoexameCollection() == null) {
             exame.setPedidoexameCollection(new ArrayList<Pedidoexame>());
         }
@@ -80,7 +80,7 @@ public class ExameDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -88,7 +88,7 @@ public class ExameDAO implements Serializable {
         }
     }
 
-    public void edit(Exame exame) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Exame exame) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -155,7 +155,7 @@ public class ExameDAO implements Serializable {
                     throw new NonexistentEntityException("The exame with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -163,7 +163,7 @@ public class ExameDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -199,7 +199,7 @@ public class ExameDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

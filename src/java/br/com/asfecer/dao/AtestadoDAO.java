@@ -37,7 +37,7 @@ public class AtestadoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Atestado atestado) throws RollbackFailureException {
+    public void create(Atestado atestado) throws RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -76,7 +76,7 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException {
+    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -133,7 +133,7 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();

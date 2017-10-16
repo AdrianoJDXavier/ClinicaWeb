@@ -40,7 +40,7 @@ public class EnderecoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Endereco endereco) throws RollbackFailureException, Exception {
+    public void create(Endereco endereco) throws RollbackFailureException, RuntimeException {
         if (endereco.getPacienteCollection() == null) {
             endereco.setPacienteCollection(new ArrayList<Paciente>());
         }
@@ -98,7 +98,7 @@ public class EnderecoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -106,7 +106,7 @@ public class EnderecoDAO implements Serializable {
         }
     }
 
-    public void edit(Endereco endereco) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Endereco endereco) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -193,7 +193,7 @@ public class EnderecoDAO implements Serializable {
                     throw new NonexistentEntityException("The endereco with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -201,7 +201,7 @@ public class EnderecoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -236,7 +236,7 @@ public class EnderecoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

@@ -111,6 +111,19 @@ public class Usuario implements Serializable {
         this.moduloAdmBD = moduloAdmBD;
     }
 
+    public Usuario(Integer idUsuario, String tipoUsuario, char status, String login, String senha, char moduloAdministrativo, char moduloAgendamento, char moduloAtendimento, char moduloAcesso, char moduloAdmBD) {
+        this.idUsuario = idUsuario;
+        this.tipoUsuario = tipoUsuario;
+        this.status = status;
+        this.login = login;
+        this.senha = senha;
+        this.moduloAdministrativo = moduloAdministrativo;
+        this.moduloAgendamento = moduloAgendamento;
+        this.moduloAtendimento = moduloAtendimento;
+        this.moduloAcesso = moduloAcesso;
+        this.moduloAdmBD = moduloAdmBD;
+    }
+
     public Integer getIdUsuario() {
         return idUsuario;
     }

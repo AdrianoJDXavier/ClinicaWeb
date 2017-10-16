@@ -106,7 +106,7 @@ public class UsuarioController extends HttpServlet {
 
     private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         
-        int id = Integer.parseInt(request.getParameter("idUsuario"));
+        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
         String tipoUsuario = request.getParameter("tipoUsuario");
         char status = request.getParameter("status").charAt(0); 
         String login = request.getParameter("login");
@@ -117,7 +117,7 @@ public class UsuarioController extends HttpServlet {
         char moduloAcesso = request.getParameter("moduloAcesso").charAt(0);
         char moduloAdmBD = request.getParameter("moduloAdmBD").charAt(0);
         
-        Usuario usuario = new Usuario(tipoUsuario, status, login, senha, moduloAdministrativo, moduloAgendamento, moduloAtendimento, moduloAcesso, moduloAdmBD);
+        Usuario usuario = new Usuario(idUsuario, tipoUsuario, status, login, senha, moduloAdministrativo, moduloAgendamento, moduloAtendimento, moduloAcesso, moduloAdmBD);
         UsuarioDAO dao = new UsuarioDAO(utx, emf);
         
         dao.edit(usuario);

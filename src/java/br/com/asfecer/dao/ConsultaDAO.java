@@ -45,7 +45,7 @@ public class ConsultaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Consulta consulta) throws RollbackFailureException, Exception {
+    public void create(Consulta consulta) throws RollbackFailureException, RuntimeException {
         if (consulta.getProntuarioCollection() == null) {
             consulta.setProntuarioCollection(new ArrayList<Prontuario>());
         }
@@ -157,7 +157,7 @@ public class ConsultaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -165,7 +165,7 @@ public class ConsultaDAO implements Serializable {
         }
     }
 
-    public void edit(Consulta consulta) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Consulta consulta) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -344,7 +344,7 @@ public class ConsultaDAO implements Serializable {
                     throw new NonexistentEntityException("The consulta with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -352,7 +352,7 @@ public class ConsultaDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -419,7 +419,7 @@ public class ConsultaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

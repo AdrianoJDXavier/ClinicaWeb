@@ -40,7 +40,7 @@ public class CargoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cargo cargo) throws RollbackFailureException, Exception {
+    public void create(Cargo cargo) throws RollbackFailureException, RuntimeException {
         if (cargo.getFuncionarioCollection() == null) {
             cargo.setFuncionarioCollection(new ArrayList<Funcionario>());
         }
@@ -80,7 +80,7 @@ public class CargoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -88,7 +88,7 @@ public class CargoDAO implements Serializable {
         }
     }
 
-    public void edit(Cargo cargo) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Cargo cargo) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -155,7 +155,7 @@ public class CargoDAO implements Serializable {
                     throw new NonexistentEntityException("The cargo with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -163,7 +163,7 @@ public class CargoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -199,7 +199,7 @@ public class CargoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();

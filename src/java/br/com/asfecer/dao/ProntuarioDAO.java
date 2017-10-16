@@ -37,7 +37,7 @@ public class ProntuarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Prontuario prontuario) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Prontuario prontuario) throws PreexistingEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -62,7 +62,7 @@ public class ProntuarioDAO implements Serializable {
             if (findProntuario(prontuario.getIdProntuario()) != null) {
                 throw new PreexistingEntityException("Prontuario " + prontuario + " already exists.", ex);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -70,7 +70,7 @@ public class ProntuarioDAO implements Serializable {
         }
     }
 
-    public void edit(Prontuario prontuario) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Prontuario prontuario) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -105,7 +105,7 @@ public class ProntuarioDAO implements Serializable {
                     throw new NonexistentEntityException("The prontuario with id " + id + " no longer exists.");
                 }
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -113,7 +113,7 @@ public class ProntuarioDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
@@ -138,7 +138,7 @@ public class ProntuarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw ex;
+            throw new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
