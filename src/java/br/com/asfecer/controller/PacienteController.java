@@ -77,7 +77,7 @@ public class PacienteController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("WEB-INF/cadastroPaciente.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/cadastroPaciente.jsp").forward(request, response);
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,7 +86,7 @@ public class PacienteController extends HttpServlet {
         Paciente paciente = dao.findPaciente(id);
         
         request.setAttribute("paciente", paciente);
-        request.getRequestDispatcher("WEB-INF/editaPaciente.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/editaPaciente.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -95,7 +95,7 @@ public class PacienteController extends HttpServlet {
         pacientes = dao.findPacienteEntities();
         
         request.setAttribute("pacientes", pacientes);
-        request.getRequestDispatcher("WEB-INF/listaPaciente.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/listarPacientes.jsp").forward(request, response);
     }
 
     private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {

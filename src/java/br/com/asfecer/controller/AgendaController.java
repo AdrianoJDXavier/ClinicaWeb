@@ -76,7 +76,7 @@ public class AgendaController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("WEB-INF/cadastroAgenda.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/cadastroAgenda.jsp").forward(request, response);
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -85,7 +85,7 @@ public class AgendaController extends HttpServlet {
         Agenda agenda = dao.findAgenda(id);
         
         request.setAttribute("agenda", agenda);
-        request.getRequestDispatcher("WEB-INF/editaAgenda.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/editaAgenda.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -94,7 +94,7 @@ public class AgendaController extends HttpServlet {
         agendas = dao.findAgendaEntities();
         
         request.setAttribute("agendas", agendas);
-        request.getRequestDispatcher("WEB-INF/listaAgenda.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/listaAgenda.jsp").forward(request, response);
     }
 
     private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

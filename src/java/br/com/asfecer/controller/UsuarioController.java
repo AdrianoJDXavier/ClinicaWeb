@@ -55,7 +55,7 @@ public class UsuarioController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("WEB-INF/cadastroUsuario.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/cadastroUsuario.jsp").forward(request, response);
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,7 +64,7 @@ public class UsuarioController extends HttpServlet {
         Usuario usuario = dao.findUsuario(id);
         
         request.setAttribute("usuario", usuario);
-        request.getRequestDispatcher("WEB-INF/editaUsuario.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/editaUsuario.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -73,7 +73,7 @@ public class UsuarioController extends HttpServlet {
         usuarios = dao.findUsuarioEntities();
         
         request.setAttribute("usuarios", usuarios);
-        request.getRequestDispatcher("WEB-INF/listaUsuario.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/listaUsuario.jsp").forward(request, response);
     }
 
     private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

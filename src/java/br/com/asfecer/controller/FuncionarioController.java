@@ -86,7 +86,7 @@ public class FuncionarioController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("WEB-INF/cadastroFuncionario.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/cadastroFuncionario.jsp").forward(request, response);
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -95,7 +95,7 @@ public class FuncionarioController extends HttpServlet {
         Funcionario funcionario = dao.findFuncionario(id);
         
         request.setAttribute("funcionario", funcionario);
-        request.getRequestDispatcher("WEB-INF/editaFuncionario.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/editaFuncionario.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -104,7 +104,7 @@ public class FuncionarioController extends HttpServlet {
         funcionarios = dao.findFuncionarioEntities();
         
         request.setAttribute("funcionarios", funcionarios);
-        request.getRequestDispatcher("WEB-INF/listaFuncionario.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/listaFuncionario.jsp").forward(request, response);
     }
 
     private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
