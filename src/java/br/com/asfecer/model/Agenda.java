@@ -95,15 +95,31 @@ public class Agenda implements Serializable {
         this.registroAgenda = registroAgenda;
     }
 
-    public Agenda(Integer registroAgenda, Date data, Date hora, boolean retorno, boolean cancelado, boolean status) {
+    public Agenda(Date data, Date hora, boolean retorno, boolean cancelado, String motivoCancelamento, boolean status, Horario medico, Paciente paciente, Usuario usuario) {
+        this.data = data;
+        this.hora = hora;
+        this.retorno = retorno;
+        this.cancelado = cancelado;
+        this.motivoCancelamento = motivoCancelamento;
+        this.status = status;
+        this.medico = medico;
+        this.paciente = paciente;
+        this.usuario = usuario;
+    }
+
+    public Agenda(Integer registroAgenda, Date data, Date hora, boolean retorno, boolean cancelado, String motivoCancelamento, boolean status, Horario medico, Paciente paciente, Usuario usuario) {
         this.registroAgenda = registroAgenda;
         this.data = data;
         this.hora = hora;
         this.retorno = retorno;
         this.cancelado = cancelado;
+        this.motivoCancelamento = motivoCancelamento;
         this.status = status;
+        this.medico = medico;
+        this.paciente = paciente;
+        this.usuario = usuario;
     }
-
+    
     public Integer getRegistroAgenda() {
         return registroAgenda;
     }
