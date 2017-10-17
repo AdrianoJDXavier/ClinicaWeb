@@ -17,10 +17,9 @@ public class AutenticacaoFilter implements Filter {
             throws IOException, ServletException {
         
         /*HttpServletRequest req = (HttpServletRequest) request;
-        if (!"Asfecer/login".equals(req.getRequestURI()) 
-                && req.getSession(true).getAttribute("usuario") == null) {
+        if (req.getSession(true).getAttribute("login") == null) {
             request.setAttribute("erro", "Favor realizar login para continuar.");
-            RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
             rd.forward(request,response);
         }*/
         

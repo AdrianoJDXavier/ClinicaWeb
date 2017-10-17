@@ -77,11 +77,13 @@ public class UsuarioController extends HttpServlet {
     }
 
     private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UsuarioDAO dao = new UsuarioDAO(utx, emf);
+        try{
+            UsuarioDAO dao = new UsuarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idUsuario"));
         dao.destroy(id);
-        
+        }catch(Exception ex){
         response.sendRedirect("listaUsuarios.html");
+        }
     }
  
     private void criarPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
