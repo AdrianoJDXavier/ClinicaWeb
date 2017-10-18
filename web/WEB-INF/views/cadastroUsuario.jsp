@@ -19,18 +19,12 @@
                                     <option value="Paciente">Paciente</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label>Status</label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Ativo:</label>
-                                        <input class="radio-inline" type="radio" name="status" value="0" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Inativo:</label>
-                                        <input class="radio-inline" type="radio" name="status" value="1" />
-                                    </div>
-                                </div>
+                                <select class="form-control" name="status">
+                                    <option value="1">Ativo</option>
+                                    <option value="0">Inativo</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
