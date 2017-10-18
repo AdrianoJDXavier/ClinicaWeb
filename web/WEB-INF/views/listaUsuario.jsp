@@ -22,7 +22,8 @@
                                     <th><input class="form-control" type="text" id="txtColuna1" style="width: 100px" placeholder="Id!"/></th>
                                     <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por nome!"/></th>
                                     <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por cidade!"/></th>
-				</tr>
+                                    <th><a href="criaUsuario.html"><button class="btn btn-info btn-block"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Adicionar Usuário</span></button></a></th>
+                                </tr>
                             </thead>
                             <tbody style="text-align: left">
                             <c:forEach var="usuario" items="${usuarios}">

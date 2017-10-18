@@ -19,28 +19,22 @@
                                     <option value="Paciente">Paciente</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label>Status</label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Ativo:</label>
-                                        <input class="radio-inline" type="radio" name="status" value="0" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Inativo:</label>
-                                        <input class="radio-inline" type="radio" name="status" value="1" />
-                                    </div>
-                                </div>
+                                <select class="form-control" name="status">
+                                    <option value="1" selected="${usuario.status == '1' ? "selected" : "" }">Ativo</option>
+                                    <option value="0" selected="${usuario.status == '0' ? "selected" : "" }">Inativo</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Login</label>
-                                <input class="form-control" type="text" name="login" placeholder="Digite o login desejado!"/>
+                                <input class="form-control" type="text" name="login" value="${usuario.login}"/>
                             </div>
                             <div class="col-md-6">
                                 <label>Senha</label>
-                                <input class="form-control" type="text" name="senha" placeholder="Digite a senha!"/>
+                                <input class="form-control" type="text" name="senha" value="${usuario.senha}"/>
                             </div>
                         </div>
                         <br>
@@ -52,15 +46,15 @@
                             <div class="col-md-6">
                             <label>Módulo de Administrativo</label>
                                 <select class="form-control" name="moduloAdministrativo">
-                                    <option value="0">Não permitido</option>
-                                    <option value="1">Permitido</option>
+                                    <option value="0" selected="${usuario.moduloAdministrativo == '0' ? "selected" : "" }">Não permitido</option>
+                                    <option value="1" selected="${usuario.moduloAdministrativo == '1' ? "selected" : "" }">Permitido</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                             <label>Módulo de Agendamento</label>
                                 <select class="form-control" name="moduloAgendamento">
-                                    <option value="0">Não permitido</option>
-                                    <option value="1">Permitido</option>
+                                    <option value="0" selected="${usuario.moduloAgendamento == '0' ? "selected" : "" }">Não permitido</option>
+                                    <option value="1" selected="${usuario.moduloAgendamento == '1' ? "selected" : "" }">Permitido</option>
                                 </select>
                             </div>
                         </div>
@@ -68,15 +62,15 @@
                             <div class="col-md-6">
                             <label>Módulo de Atendimento</label>
                                 <select class="form-control" name="moduloAtendimento">
-                                    <option value="0">Não permitido</option>
-                                    <option value="1">Permitido</option>
+                                    <option value="0" selected="${usuario.moduloAtendimento == '0' ? "selected" : "" }">Não permitido</option>
+                                    <option value="1" selected="${usuario.moduloAtendimento == '1' ? "selected" : "" }">Permitido</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                             <label>Módulo de Acesso</label>
                                 <select class="form-control" name="moduloAcesso">
-                                    <option value="0">Não permitido</option>
-                                    <option value="1">Permitido</option>
+                                    <option value="0" selected="${usuario.moduloAcesso == "0" ? "selected" : "" }">Não permitido</option>
+                                    <option value="1" selected="${usuario.moduloAcesso == "1" ? "selected" : "" }">Permitido</option>
                                 </select>
                             </div>
                         </div>
@@ -84,8 +78,8 @@
                             <div class="col-md-6">
                             <label>Módulo de Adimistração de </label>
                                 <select class="form-control" name="moduloAdmBD">
-                                    <option value="0">Não permitido</option>
-                                    <option value="1">Permitido</option>
+                                    <option value="0" selected="${usuario.moduloAdmBD == '0' ? "selected" : "" }">Não permitido</option>
+                                    <option value="1" selected="${usuario.moduloAdmBD == '1' ? "selected" : "" }">Permitido</option>
                                 </select>
                             </div>
                         </div>
