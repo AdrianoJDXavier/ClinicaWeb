@@ -25,7 +25,7 @@ private final static Logger logger = Logger.getLogger(TempoRequisicaoFilter.clas
         
         try {
              chain.doFilter(request, response);
-        } catch (Exception e) {
+        } catch (IOException | ServletException e) {
             HttpServletRequest req = (HttpServletRequest) request;
             String uri = req.getRequestURI(); 
             

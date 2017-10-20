@@ -26,9 +26,9 @@
                             <tbody style="text-align: left">
                             <c:forEach var="paciente" items="${pacientes}">
                             <tr>
-                                <td>02539624</td>
-                                <td>Adriano José Dias Xavier</td>
-                                <td>juiz de Fora</td>
+                                <td>${paciente.idPaciente}</td>
+                                <td>${paciente.nomePaciente}</td>
+                                <td></td>
                                 <td>
                                     <button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button>
                                     <button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button>

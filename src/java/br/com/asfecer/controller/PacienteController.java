@@ -37,7 +37,11 @@ public class PacienteController extends HttpServlet {
     @Resource
     private UserTransaction utx;
     
-    SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");  
+    SimpleDateFormat formatDate;  
+
+    public PacienteController() {
+        this.formatDate = new SimpleDateFormat("dd/MM/yyyy");
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -77,6 +81,9 @@ public class PacienteController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Cidade cid = new Cidade();
+        
+        request.setAttribute("cidade", cid);
         request.getRequestDispatcher("WEB-INF/views/cadastroPaciente.jsp").forward(request, response);
     }
 
@@ -108,27 +115,33 @@ public class PacienteController extends HttpServlet {
  
     private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
         
+        Paciente paciente = new Paciente();
         ConvenioDAO conv = new ConvenioDAO(utx, emf);
+        Endereco endereco = new Endereco();
         EnderecoDAO ender = new EnderecoDAO(utx, emf);
         CidadeDAO cidd = new CidadeDAO(utx, emf);
         
-        String nomePaciente = request.getParameter("nomePaciente");
-        Date dataNascimento = formatDate.parse(request.getParameter("dataNascimento"));
-        String nomeMae = request.getParameter("nomeMae");
-        String cpf = request.getParameter("cpf");
-        String cartaoConvenio = request.getParameter("cartaoConvenio");
-        String tipoSanguineo = request.getParameter("tipoSanguineo");
-        Character fatorRH = request.getParameter("fatorRH").charAt(0);
-        Character sexo = request.getParameter("sexo").charAt(0);
-        String email  = request.getParameter("email");
-        String telefone = request.getParameter("telefone");
-        String celular = request.getParameter("celular");
-        String obs = request.getParameter("obs");
+        paciente.setNomePaciente(request.getParameter("nomePaciente"));
+        paciente.setDataNascimento(formatDate.parse(request.getParameter("dataNascimento")));
+        paciente.setNomeMae(request.getParameter("nomeMae"));
+        paciente.setCpf(request.getParameter("cpf"));
+        paciente.setCartaoConvenio(request.getParameter("cartaoConvenio"));
+        paciente.setTipoSanguineo(request.getParameter("tipoSanguineo"));
+        paciente.setFatorRH(request.getParameter("fatorRH").charAt(0));
+        paciente.setSexo(request.getParameter("sexo").charAt(0));
+        paciente.setEmail(request.getParameter("email"));
+        paciente.setTelefone(request.getParameter("telefone"));
+        paciente.setCelular(request.getParameter("celular"));
+        paciente.setObs(request.getParameter("obs"));
+        endereco.setNomeNogradouro(request.getParameter("endereco"));
+        endereco.setBairro(request.getParameter("bairro"));
+        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
+        endereco.setComplemento(request.getParameter("complemeto"));
+        
+        ender.create(endereco);
         Convenio convenio = conv.findConvenio(Integer.parseInt(request.getParameter("convenio"))) ;
-        Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
         Cidade naturalidadeCidade = cidd.findCidade(Integer.parseInt(request.getParameter("naturalidadeCidade")));
         
-        Paciente paciente = new Paciente(nomePaciente, dataNascimento, nomeMae, cpf, cartaoConvenio, tipoSanguineo, fatorRH, sexo, email, telefone, celular, obs, convenio, endereco, naturalidadeCidade);
         PacienteDAO dao = new PacienteDAO(utx, emf);
         
         dao.create(paciente);

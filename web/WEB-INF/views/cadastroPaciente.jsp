@@ -9,9 +9,17 @@
                 <div class="panel-body">
 
 
-                    <form action="pacienteController" method="POST"  style="margin: 0% 0;">
-                        <label>Nome Completo</label>
-                        <input class="form-control" type="text" name="nome" placeholder="Nome Completo" />
+                    <form action="" method="POST"  style="margin: 0% 0;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Nome Completo</label>
+                                <input class="form-control" type="text" name="nomePaciente" placeholder="Nome Completo" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Nome da Mãe</label>
+                                <input class="form-control" type="text" name="nomeMae" placeholder="Nome Completo" />
+                            </div>
+                        </div>
                         <label>Endereço</label>
                         <input class="form-control" type="text" name="endereco" placeholder="Endereço" />
                         <div class="row">
@@ -25,7 +33,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label>Número</label>
-                                <input class="form-control" type="text" name="numero" placeholder="Número" />
+                                <input class="form-control" type="number" name="numero" placeholder="Número" />
                             </div>
                         </div>
                         <div class="row">
@@ -35,7 +43,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label>Estado</label>
-                                <select class="form-control" name="estados-brasil">
+                                <select class="form-control" name="estado">
                                     <option value="AC">Acre</option>
                                     <option value="AL">Alagoas</option>
                                     <option value="AP">Amapá</option>
@@ -67,27 +75,42 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label>CPF</label>
                                 <input class="form-control" type="text" name="cpf" placeholder="CPF" />
                             </div>
-                            <div class="col-md-4">
-                                <label>RG</label>
-                                <input class="form-control" type="text" name="rg" placeholder="RG" />
+                            <div class="col-md-2">
+                                <label>Tipo Sanguineo</label>
+                                <select name="tipoSanguineo" class="form-control">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                    <option value="O">O</option>
+                                </select> 
                             </div>
-                            <div class="col-md-4">
-                                <label>Orgão Expedidor</label>
-                                <input class="form-control" type="text" name="org_expedidor" placeholder="Orgão Expedidor" />
+                            <div class="col-md-2">
+                                <label>Fator RH</label>
+                                <select name="fatorRH" class="form-control">
+                                    <option value="positivo">Positivo</option>
+                                    <option value="negativo">Negativo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>sexo</label>
+                                <select name="sexo" class="form-control">
+                                    <option value="masculino">Masculino</option>
+                                    <option value="feminino">Feminino</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <label>Cartão SUS</label>
-                                <input class="form-control" type="text" name="cartao_sus" placeholder="Número do SUS" />
+                                <label>Cartão Convenio</label>
+                                <input class="form-control" type="text" name="cartaoConvenio" placeholder="Número do SUS" />
                             </div>
                             <div class="col-md-4">
                                 <label>Convênio</label>
-                                <input class="form-control" type="text" name="convenio" placeholder="Convênio" />
+                                <input class="form-control" type="number" name="convenio" placeholder="Convênio" />
                             </div>
                             <div class="col-md-4">
                                 <label>Nascimento</label>
@@ -97,7 +120,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label>Telefone</label>
-                                <input class="form-control" type="tel" name="telefoen" placeholder="Telefone" />
+                                <input class="form-control" type="tel" name="telefone" placeholder="Telefone" />
                             </div>
                             <div class="col-md-4">
                                 <label>Celular</label>
