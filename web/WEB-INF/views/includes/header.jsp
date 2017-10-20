@@ -61,6 +61,12 @@
                                         <li><a href="listaUsuarios.html">Listar Usuários</a></li>
                                     </ul>
                                 </li>
+                                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color: #e3e3e3;">Convenios<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="criaConvenio.html">Cadastrar Convenio</a></li>
+                                        <li><a href="listaConvenio.html">Listar Convenios</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
