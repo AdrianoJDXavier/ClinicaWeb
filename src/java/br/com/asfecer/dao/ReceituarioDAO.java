@@ -13,7 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.Itensreceituario;
+import br.com.asfecer.model.ItensReceituario;
 import br.com.asfecer.model.Receituario;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -47,7 +47,7 @@ public class ReceituarioDAO implements Serializable {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
                 receituario.setConsulta(consulta);
             }
-            Itensreceituario tipoReceituario = receituario.getTipoReceituario();
+            ItensReceituario tipoReceituario = receituario.getTipoReceituario();
             if (tipoReceituario != null) {
                 tipoReceituario = em.getReference(tipoReceituario.getClass(), tipoReceituario.getIdItensReceituario());
                 receituario.setTipoReceituario(tipoReceituario);
@@ -84,8 +84,8 @@ public class ReceituarioDAO implements Serializable {
             Receituario persistentReceituario = em.find(Receituario.class, receituario.getIdReceituario());
             Consulta consultaOld = persistentReceituario.getConsulta();
             Consulta consultaNew = receituario.getConsulta();
-            Itensreceituario tipoReceituarioOld = persistentReceituario.getTipoReceituario();
-            Itensreceituario tipoReceituarioNew = receituario.getTipoReceituario();
+            ItensReceituario tipoReceituarioOld = persistentReceituario.getTipoReceituario();
+            ItensReceituario tipoReceituarioNew = receituario.getTipoReceituario();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
                 receituario.setConsulta(consultaNew);
@@ -150,7 +150,7 @@ public class ReceituarioDAO implements Serializable {
                 consulta.getReceituarioCollection().remove(receituario);
                 consulta = em.merge(consulta);
             }
-            Itensreceituario tipoReceituario = receituario.getTipoReceituario();
+            ItensReceituario tipoReceituario = receituario.getTipoReceituario();
             if (tipoReceituario != null) {
                 tipoReceituario.getReceituarioCollection().remove(receituario);
                 tipoReceituario = em.merge(tipoReceituario);

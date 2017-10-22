@@ -57,6 +57,10 @@ public class Especialidade implements Serializable {
         this.idEspecialidade = idEspecialidade;
     }
 
+    public Especialidade(String descricao) {
+        this.descricao = descricao;
+    }
+
     public Especialidade(Integer idEspecialidade, String descricao) {
         this.idEspecialidade = idEspecialidade;
         this.descricao = descricao;

@@ -67,6 +67,17 @@ public class Cidade implements Serializable {
         this.cidade = cidade;
     }
 
+    public Cidade(String cidade, Estados estado) {
+        this.cidade = cidade;
+        this.estado = estado;
+    }
+
+    public Cidade(Integer idCidade, String cidade, Estados estado) {
+        this.idCidade = idCidade;
+        this.cidade = cidade;
+        this.estado = estado;
+    }
+   
     public Integer getIdCidade() {
         return idCidade;
     }

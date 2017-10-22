@@ -7,14 +7,14 @@ package br.com.asfecer.dao;
 
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
-import br.com.asfecer.model.Atestado;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.TipoAtestado;
+import br.com.asfecer.model.Exame;
+import br.com.asfecer.model.PedidoExame;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +24,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class AtestadoDAO implements Serializable {
+public class PedidoExameDAO implements Serializable {
 
-    public AtestadoDAO(UserTransaction utx, EntityManagerFactory emf) {
+    public PedidoExameDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -37,29 +37,29 @@ public class AtestadoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Atestado atestado) throws RollbackFailureException, RuntimeException {
+    public void create(PedidoExame pedidoexame) throws RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Consulta consulta = atestado.getConsulta();
+            Consulta consulta = pedidoexame.getConsulta();
             if (consulta != null) {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
-                atestado.setConsulta(consulta);
+                pedidoexame.setConsulta(consulta);
             }
-            TipoAtestado tipoAtestado = atestado.getTipoAtestado();
-            if (tipoAtestado != null) {
-                tipoAtestado = em.getReference(tipoAtestado.getClass(), tipoAtestado.getIdTipoAtestado());
-                atestado.setTipoAtestado(tipoAtestado);
+            Exame exame = pedidoexame.getExame();
+            if (exame != null) {
+                exame = em.getReference(exame.getClass(), exame.getIdExame());
+                pedidoexame.setExame(exame);
             }
-            em.persist(atestado);
+            em.persist(pedidoexame);
             if (consulta != null) {
-                consulta.getAtestadoCollection().add(atestado);
+                consulta.getPedidoExameCollection().add(pedidoexame);
                 consulta = em.merge(consulta);
             }
-            if (tipoAtestado != null) {
-                tipoAtestado.getAtestadoCollection().add(atestado);
-                tipoAtestado = em.merge(tipoAtestado);
+            if (exame != null) {
+                exame.getPedidoExameCollection().add(pedidoexame);
+                exame = em.merge(exame);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -76,40 +76,40 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(PedidoExame pedidoexame) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Atestado persistentAtestado = em.find(Atestado.class, atestado.getIdAtestado());
-            Consulta consultaOld = persistentAtestado.getConsulta();
-            Consulta consultaNew = atestado.getConsulta();
-            TipoAtestado tipoAtestadoOld = persistentAtestado.getTipoAtestado();
-            TipoAtestado tipoAtestadoNew = atestado.getTipoAtestado();
+            PedidoExame persistentPedidoExame = em.find(PedidoExame.class, pedidoexame.getIdPedidoExame());
+            Consulta consultaOld = persistentPedidoExame.getConsulta();
+            Consulta consultaNew = pedidoexame.getConsulta();
+            Exame exameOld = persistentPedidoExame.getExame();
+            Exame exameNew = pedidoexame.getExame();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
-                atestado.setConsulta(consultaNew);
+                pedidoexame.setConsulta(consultaNew);
             }
-            if (tipoAtestadoNew != null) {
-                tipoAtestadoNew = em.getReference(tipoAtestadoNew.getClass(), tipoAtestadoNew.getIdTipoAtestado());
-                atestado.setTipoAtestado(tipoAtestadoNew);
+            if (exameNew != null) {
+                exameNew = em.getReference(exameNew.getClass(), exameNew.getIdExame());
+                pedidoexame.setExame(exameNew);
             }
-            atestado = em.merge(atestado);
+            pedidoexame = em.merge(pedidoexame);
             if (consultaOld != null && !consultaOld.equals(consultaNew)) {
-                consultaOld.getAtestadoCollection().remove(atestado);
+                consultaOld.getPedidoExameCollection().remove(pedidoexame);
                 consultaOld = em.merge(consultaOld);
             }
             if (consultaNew != null && !consultaNew.equals(consultaOld)) {
-                consultaNew.getAtestadoCollection().add(atestado);
+                consultaNew.getPedidoExameCollection().add(pedidoexame);
                 consultaNew = em.merge(consultaNew);
             }
-            if (tipoAtestadoOld != null && !tipoAtestadoOld.equals(tipoAtestadoNew)) {
-                tipoAtestadoOld.getAtestadoCollection().remove(atestado);
-                tipoAtestadoOld = em.merge(tipoAtestadoOld);
+            if (exameOld != null && !exameOld.equals(exameNew)) {
+                exameOld.getPedidoExameCollection().remove(pedidoexame);
+                exameOld = em.merge(exameOld);
             }
-            if (tipoAtestadoNew != null && !tipoAtestadoNew.equals(tipoAtestadoOld)) {
-                tipoAtestadoNew.getAtestadoCollection().add(atestado);
-                tipoAtestadoNew = em.merge(tipoAtestadoNew);
+            if (exameNew != null && !exameNew.equals(exameOld)) {
+                exameNew.getPedidoExameCollection().add(pedidoexame);
+                exameNew = em.merge(exameNew);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -120,9 +120,9 @@ public class AtestadoDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = atestado.getIdAtestado();
-                if (findAtestado(id) == null) {
-                    throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.");
+                Integer id = pedidoexame.getIdPedidoExame();
+                if (findPedidoExame(id) == null) {
+                    throw new NonexistentEntityException("The pedidoexame with id " + id + " no longer exists.");
                 }
             }
             throw new RuntimeException(ex);
@@ -138,24 +138,24 @@ public class AtestadoDAO implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Atestado atestado;
+            PedidoExame pedidoexame;
             try {
-                atestado = em.getReference(Atestado.class, id);
-                atestado.getIdAtestado();
+                pedidoexame = em.getReference(PedidoExame.class, id);
+                pedidoexame.getIdPedidoExame();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The pedidoexame with id " + id + " no longer exists.", enfe);
             }
-            Consulta consulta = atestado.getConsulta();
+            Consulta consulta = pedidoexame.getConsulta();
             if (consulta != null) {
-                consulta.getAtestadoCollection().remove(atestado);
+                consulta.getPedidoExameCollection().remove(pedidoexame);
                 consulta = em.merge(consulta);
             }
-            TipoAtestado tipoAtestado = atestado.getTipoAtestado();
-            if (tipoAtestado != null) {
-                tipoAtestado.getAtestadoCollection().remove(atestado);
-                tipoAtestado = em.merge(tipoAtestado);
+            Exame exame = pedidoexame.getExame();
+            if (exame != null) {
+                exame.getPedidoExameCollection().remove(pedidoexame);
+                exame = em.merge(exame);
             }
-            em.remove(atestado);
+            em.remove(pedidoexame);
             utx.commit();
         } catch (Exception ex) {
             try {
@@ -171,19 +171,19 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public List<Atestado> findAtestadoEntities() {
-        return findAtestadoEntities(true, -1, -1);
+    public List<PedidoExame> findPedidoExameEntities() {
+        return findPedidoExameEntities(true, -1, -1);
     }
 
-    public List<Atestado> findAtestadoEntities(int maxResults, int firstResult) {
-        return findAtestadoEntities(false, maxResults, firstResult);
+    public List<PedidoExame> findPedidoExameEntities(int maxResults, int firstResult) {
+        return findPedidoExameEntities(false, maxResults, firstResult);
     }
 
-    private List<Atestado> findAtestadoEntities(boolean all, int maxResults, int firstResult) {
+    private List<PedidoExame> findPedidoExameEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Atestado.class));
+            cq.select(cq.from(PedidoExame.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -195,20 +195,20 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public Atestado findAtestado(Integer id) {
+    public PedidoExame findPedidoExame(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Atestado.class, id);
+            return em.find(PedidoExame.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getAtestadoCount() {
+    public int getPedidoExameCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Atestado> rt = cq.from(Atestado.class);
+            Root<PedidoExame> rt = cq.from(PedidoExame.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

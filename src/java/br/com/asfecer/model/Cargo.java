@@ -67,6 +67,17 @@ public class Cargo implements Serializable {
         this.cargo = cargo;
     }
 
+    public Cargo(Integer idCargo, String cargo, Departamento depto) {
+        this.idCargo = idCargo;
+        this.cargo = cargo;
+        this.depto = depto;
+    }
+
+    public Cargo(String cargo, Departamento depto) {
+        this.cargo = cargo;
+        this.depto = depto;
+    }
+    
     public Integer getIdCargo() {
         return idCargo;
     }

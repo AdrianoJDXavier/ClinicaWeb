@@ -13,7 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import br.com.asfecer.model.Tipoatestado;
+import br.com.asfecer.model.TipoAtestado;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,27 +39,27 @@ public class PatologiaDAO implements Serializable {
     }
 
     public void create(Patologia patologia) throws RollbackFailureException, RuntimeException {
-        if (patologia.getTipoatestadoCollection() == null) {
-            patologia.setTipoatestadoCollection(new ArrayList<Tipoatestado>());
+        if (patologia.getTipoAtestadoCollection() == null) {
+            patologia.setTipoAtestadoCollection(new ArrayList<TipoAtestado>());
         }
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Collection<Tipoatestado> attachedTipoatestadoCollection = new ArrayList<Tipoatestado>();
-            for (Tipoatestado tipoatestadoCollectionTipoatestadoToAttach : patologia.getTipoatestadoCollection()) {
-                tipoatestadoCollectionTipoatestadoToAttach = em.getReference(tipoatestadoCollectionTipoatestadoToAttach.getClass(), tipoatestadoCollectionTipoatestadoToAttach.getIdTipoAtestado());
-                attachedTipoatestadoCollection.add(tipoatestadoCollectionTipoatestadoToAttach);
+            Collection<TipoAtestado> attachedTipoAtestadoCollection = new ArrayList<TipoAtestado>();
+            for (TipoAtestado tipoatestadoCollectionTipoAtestadoToAttach : patologia.getTipoAtestadoCollection()) {
+                tipoatestadoCollectionTipoAtestadoToAttach = em.getReference(tipoatestadoCollectionTipoAtestadoToAttach.getClass(), tipoatestadoCollectionTipoAtestadoToAttach.getIdTipoAtestado());
+                attachedTipoAtestadoCollection.add(tipoatestadoCollectionTipoAtestadoToAttach);
             }
-            patologia.setTipoatestadoCollection(attachedTipoatestadoCollection);
+            patologia.setTipoAtestadoCollection(attachedTipoAtestadoCollection);
             em.persist(patologia);
-            for (Tipoatestado tipoatestadoCollectionTipoatestado : patologia.getTipoatestadoCollection()) {
-                Patologia oldPatologiaOfTipoatestadoCollectionTipoatestado = tipoatestadoCollectionTipoatestado.getPatologia();
-                tipoatestadoCollectionTipoatestado.setPatologia(patologia);
-                tipoatestadoCollectionTipoatestado = em.merge(tipoatestadoCollectionTipoatestado);
-                if (oldPatologiaOfTipoatestadoCollectionTipoatestado != null) {
-                    oldPatologiaOfTipoatestadoCollectionTipoatestado.getTipoatestadoCollection().remove(tipoatestadoCollectionTipoatestado);
-                    oldPatologiaOfTipoatestadoCollectionTipoatestado = em.merge(oldPatologiaOfTipoatestadoCollectionTipoatestado);
+            for (TipoAtestado tipoatestadoCollectionTipoAtestado : patologia.getTipoAtestadoCollection()) {
+                Patologia oldPatologiaOfTipoAtestadoCollectionTipoAtestado = tipoatestadoCollectionTipoAtestado.getPatologia();
+                tipoatestadoCollectionTipoAtestado.setPatologia(patologia);
+                tipoatestadoCollectionTipoAtestado = em.merge(tipoatestadoCollectionTipoAtestado);
+                if (oldPatologiaOfTipoAtestadoCollectionTipoAtestado != null) {
+                    oldPatologiaOfTipoAtestadoCollectionTipoAtestado.getTipoAtestadoCollection().remove(tipoatestadoCollectionTipoAtestado);
+                    oldPatologiaOfTipoAtestadoCollectionTipoAtestado = em.merge(oldPatologiaOfTipoAtestadoCollectionTipoAtestado);
                 }
             }
             utx.commit();
@@ -83,30 +83,30 @@ public class PatologiaDAO implements Serializable {
             utx.begin();
             em = getEntityManager();
             Patologia persistentPatologia = em.find(Patologia.class, patologia.getIdPatologia());
-            Collection<Tipoatestado> tipoatestadoCollectionOld = persistentPatologia.getTipoatestadoCollection();
-            Collection<Tipoatestado> tipoatestadoCollectionNew = patologia.getTipoatestadoCollection();
-            Collection<Tipoatestado> attachedTipoatestadoCollectionNew = new ArrayList<Tipoatestado>();
-            for (Tipoatestado tipoatestadoCollectionNewTipoatestadoToAttach : tipoatestadoCollectionNew) {
-                tipoatestadoCollectionNewTipoatestadoToAttach = em.getReference(tipoatestadoCollectionNewTipoatestadoToAttach.getClass(), tipoatestadoCollectionNewTipoatestadoToAttach.getIdTipoAtestado());
-                attachedTipoatestadoCollectionNew.add(tipoatestadoCollectionNewTipoatestadoToAttach);
+            Collection<TipoAtestado> tipoatestadoCollectionOld = persistentPatologia.getTipoAtestadoCollection();
+            Collection<TipoAtestado> tipoatestadoCollectionNew = patologia.getTipoAtestadoCollection();
+            Collection<TipoAtestado> attachedTipoAtestadoCollectionNew = new ArrayList<TipoAtestado>();
+            for (TipoAtestado tipoatestadoCollectionNewTipoAtestadoToAttach : tipoatestadoCollectionNew) {
+                tipoatestadoCollectionNewTipoAtestadoToAttach = em.getReference(tipoatestadoCollectionNewTipoAtestadoToAttach.getClass(), tipoatestadoCollectionNewTipoAtestadoToAttach.getIdTipoAtestado());
+                attachedTipoAtestadoCollectionNew.add(tipoatestadoCollectionNewTipoAtestadoToAttach);
             }
-            tipoatestadoCollectionNew = attachedTipoatestadoCollectionNew;
-            patologia.setTipoatestadoCollection(tipoatestadoCollectionNew);
+            tipoatestadoCollectionNew = attachedTipoAtestadoCollectionNew;
+            patologia.setTipoAtestadoCollection(tipoatestadoCollectionNew);
             patologia = em.merge(patologia);
-            for (Tipoatestado tipoatestadoCollectionOldTipoatestado : tipoatestadoCollectionOld) {
-                if (!tipoatestadoCollectionNew.contains(tipoatestadoCollectionOldTipoatestado)) {
-                    tipoatestadoCollectionOldTipoatestado.setPatologia(null);
-                    tipoatestadoCollectionOldTipoatestado = em.merge(tipoatestadoCollectionOldTipoatestado);
+            for (TipoAtestado tipoatestadoCollectionOldTipoAtestado : tipoatestadoCollectionOld) {
+                if (!tipoatestadoCollectionNew.contains(tipoatestadoCollectionOldTipoAtestado)) {
+                    tipoatestadoCollectionOldTipoAtestado.setPatologia(null);
+                    tipoatestadoCollectionOldTipoAtestado = em.merge(tipoatestadoCollectionOldTipoAtestado);
                 }
             }
-            for (Tipoatestado tipoatestadoCollectionNewTipoatestado : tipoatestadoCollectionNew) {
-                if (!tipoatestadoCollectionOld.contains(tipoatestadoCollectionNewTipoatestado)) {
-                    Patologia oldPatologiaOfTipoatestadoCollectionNewTipoatestado = tipoatestadoCollectionNewTipoatestado.getPatologia();
-                    tipoatestadoCollectionNewTipoatestado.setPatologia(patologia);
-                    tipoatestadoCollectionNewTipoatestado = em.merge(tipoatestadoCollectionNewTipoatestado);
-                    if (oldPatologiaOfTipoatestadoCollectionNewTipoatestado != null && !oldPatologiaOfTipoatestadoCollectionNewTipoatestado.equals(patologia)) {
-                        oldPatologiaOfTipoatestadoCollectionNewTipoatestado.getTipoatestadoCollection().remove(tipoatestadoCollectionNewTipoatestado);
-                        oldPatologiaOfTipoatestadoCollectionNewTipoatestado = em.merge(oldPatologiaOfTipoatestadoCollectionNewTipoatestado);
+            for (TipoAtestado tipoatestadoCollectionNewTipoAtestado : tipoatestadoCollectionNew) {
+                if (!tipoatestadoCollectionOld.contains(tipoatestadoCollectionNewTipoAtestado)) {
+                    Patologia oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado = tipoatestadoCollectionNewTipoAtestado.getPatologia();
+                    tipoatestadoCollectionNewTipoAtestado.setPatologia(patologia);
+                    tipoatestadoCollectionNewTipoAtestado = em.merge(tipoatestadoCollectionNewTipoAtestado);
+                    if (oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado != null && !oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado.equals(patologia)) {
+                        oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado.getTipoAtestadoCollection().remove(tipoatestadoCollectionNewTipoAtestado);
+                        oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado = em.merge(oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado);
                     }
                 }
             }
@@ -144,10 +144,10 @@ public class PatologiaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The patologia with id " + id + " no longer exists.", enfe);
             }
-            Collection<Tipoatestado> tipoatestadoCollection = patologia.getTipoatestadoCollection();
-            for (Tipoatestado tipoatestadoCollectionTipoatestado : tipoatestadoCollection) {
-                tipoatestadoCollectionTipoatestado.setPatologia(null);
-                tipoatestadoCollectionTipoatestado = em.merge(tipoatestadoCollectionTipoatestado);
+            Collection<TipoAtestado> tipoatestadoCollection = patologia.getTipoAtestadoCollection();
+            for (TipoAtestado tipoatestadoCollectionTipoAtestado : tipoatestadoCollection) {
+                tipoatestadoCollectionTipoAtestado.setPatologia(null);
+                tipoatestadoCollectionTipoAtestado = em.merge(tipoatestadoCollectionTipoAtestado);
             }
             em.remove(patologia);
             utx.commit();

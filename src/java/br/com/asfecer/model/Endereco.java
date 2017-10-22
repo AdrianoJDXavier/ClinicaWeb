@@ -51,8 +51,8 @@ public class Endereco implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "nome_nogradouro", nullable = false, length = 100)
-    private String nomeNogradouro;
+    @Column(name = "nome_logradouro", nullable = false, length = 100)
+    private String nomelogradouro;
     private Integer numero;
     @Size(max = 15)
     @Column(length = 15)
@@ -81,7 +81,28 @@ public class Endereco implements Serializable {
     public Endereco(Integer idEndereco, String tipoLogradouro, String nomeNogradouro) {
         this.idEndereco = idEndereco;
         this.tipoLogradouro = tipoLogradouro;
-        this.nomeNogradouro = nomeNogradouro;
+        this.nomelogradouro = nomeNogradouro;
+    }
+
+    public Endereco(String tipoLogradouro, String nomeNogradouro, Integer numero, String complemento, String bairro, String cep, Cidade cidade) {
+        this.tipoLogradouro = tipoLogradouro;
+        this.nomelogradouro = nomeNogradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.cep = cep;
+        this.cidade = cidade;
+    }
+
+    public Endereco(Integer idEndereco, String tipoLogradouro, String nomeNogradouro, Integer numero, String complemento, String bairro, String cep, Cidade cidade) {
+        this.idEndereco = idEndereco;
+        this.tipoLogradouro = tipoLogradouro;
+        this.nomelogradouro = nomeNogradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.cep = cep;
+        this.cidade = cidade;
     }
 
     public Integer getIdEndereco() {
@@ -100,12 +121,12 @@ public class Endereco implements Serializable {
         this.tipoLogradouro = tipoLogradouro;
     }
 
-    public String getNomeNogradouro() {
-        return nomeNogradouro;
+    public String getNomelogradouro() {
+        return nomelogradouro;
     }
 
-    public void setNomeNogradouro(String nomeNogradouro) {
-        this.nomeNogradouro = nomeNogradouro;
+    public void setNomelogradouro(String nomelogradouro) {
+        this.nomelogradouro = nomelogradouro;
     }
 
     public Integer getNumero() {

@@ -73,7 +73,7 @@ public class Consulta implements Serializable {
     @ManyToOne(optional = false)
     private Paciente paciente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "consulta")
-    private Collection<Pedidoexame> pedidoexameCollection;
+    private Collection<PedidoExame> pedidoexameCollection;
 
     public Consulta() {
     }
@@ -86,6 +86,23 @@ public class Consulta implements Serializable {
         this.idConsulta = idConsulta;
         this.dataConsulta = dataConsulta;
         this.horaConsulta = horaConsulta;
+    }
+
+    public Consulta(Integer idConsulta, Date dataConsulta, Date horaConsulta, Agenda agenda, Medico medico, Paciente paciente) {
+        this.idConsulta = idConsulta;
+        this.dataConsulta = dataConsulta;
+        this.horaConsulta = horaConsulta;
+        this.agenda = agenda;
+        this.medico = medico;
+        this.paciente = paciente;
+    }
+
+    public Consulta(Date dataConsulta, Date horaConsulta, Agenda agenda, Medico medico, Paciente paciente) {
+        this.dataConsulta = dataConsulta;
+        this.horaConsulta = horaConsulta;
+        this.agenda = agenda;
+        this.medico = medico;
+        this.paciente = paciente;
     }
 
     public Integer getIdConsulta() {
@@ -164,11 +181,11 @@ public class Consulta implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Pedidoexame> getPedidoexameCollection() {
+    public Collection<PedidoExame> getPedidoExameCollection() {
         return pedidoexameCollection;
     }
 
-    public void setPedidoexameCollection(Collection<Pedidoexame> pedidoexameCollection) {
+    public void setPedidoExameCollection(Collection<PedidoExame> pedidoexameCollection) {
         this.pedidoexameCollection = pedidoexameCollection;
     }
 

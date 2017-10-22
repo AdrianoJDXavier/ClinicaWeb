@@ -31,17 +31,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(catalog = "db_asfecer", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Receituario.findAll", query = "SELECT r FROM Receituario r")
-    , @NamedQuery(name = "Receituario.findByIdReceituario", query = "SELECT r FROM Receituario r WHERE r.idReceituario = :idReceituario")
-    , @NamedQuery(name = "Receituario.findByData", query = "SELECT r FROM Receituario r WHERE r.data = :data")})
-public class Receituario implements Serializable {
+    @NamedQuery(name = "Pedidoexame.findAll", query = "SELECT p FROM Pedidoexame p")
+    , @NamedQuery(name = "Pedidoexame.findByIdPedidoExame", query = "SELECT p FROM Pedidoexame p WHERE p.idPedidoExame = :idPedidoExame")
+    , @NamedQuery(name = "Pedidoexame.findByData", query = "SELECT p FROM Pedidoexame p WHERE p.data = :data")})
+public class PedidoExame implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
-    private Integer idReceituario;
+    private Integer idPedidoExame;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -50,40 +50,41 @@ public class Receituario implements Serializable {
     @JoinColumn(name = "Consulta", referencedColumnName = "idConsulta", nullable = false)
     @ManyToOne(optional = false)
     private Consulta consulta;
-    @Column(nullable = false, length = 50)
-    private String tipoReceituario;
+    @JoinColumn(name = "Exame", referencedColumnName = "idExame", nullable = false)
+    @ManyToOne(optional = false)
+    private Exame exame;
 
-    public Receituario() {
+    public PedidoExame() {
     }
 
-    public Receituario(Integer idReceituario) {
-        this.idReceituario = idReceituario;
+    public PedidoExame(Integer idPedidoExame) {
+        this.idPedidoExame = idPedidoExame;
     }
 
-    public Receituario(Integer idReceituario, Date data) {
-        this.idReceituario = idReceituario;
+    public PedidoExame(Integer idPedidoExame, Date data) {
+        this.idPedidoExame = idPedidoExame;
         this.data = data;
     }
 
-    public Receituario(Date data, Consulta consulta, String tipoReceituario) {
-        this.data = data;
-        this.consulta = consulta;
-        this.tipoReceituario = tipoReceituario;
-    }
-
-    public Receituario(Integer idReceituario, Date data, Consulta consulta, String tipoReceituario) {
-        this.idReceituario = idReceituario;
+    public PedidoExame(Date data, Consulta consulta, Exame exame) {
         this.data = data;
         this.consulta = consulta;
-        this.tipoReceituario = tipoReceituario;
+        this.exame = exame;
     }
 
-    public Integer getIdReceituario() {
-        return idReceituario;
+    public PedidoExame(Integer idPedidoExame, Date data, Consulta consulta, Exame exame) {
+        this.idPedidoExame = idPedidoExame;
+        this.data = data;
+        this.consulta = consulta;
+        this.exame = exame;
     }
 
-    public void setIdReceituario(Integer idReceituario) {
-        this.idReceituario = idReceituario;
+    public Integer getIdPedidoExame() {
+        return idPedidoExame;
+    }
+
+    public void setIdPedidoExame(Integer idPedidoExame) {
+        this.idPedidoExame = idPedidoExame;
     }
 
     public Date getData() {
@@ -102,29 +103,29 @@ public class Receituario implements Serializable {
         this.consulta = consulta;
     }
 
-    public String getTipoReceituario() {
-        return tipoReceituario;
+    public Exame getExame() {
+        return exame;
     }
 
-    public void setTipoReceituario(String tipoReceituario) {
-        this.tipoReceituario = tipoReceituario;
+    public void setExame(Exame exame) {
+        this.exame = exame;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idReceituario != null ? idReceituario.hashCode() : 0);
+        hash += (idPedidoExame != null ? idPedidoExame.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Receituario)) {
+        if (!(object instanceof PedidoExame)) {
             return false;
         }
-        Receituario other = (Receituario) object;
-        if ((this.idReceituario == null && other.idReceituario != null) || (this.idReceituario != null && !this.idReceituario.equals(other.idReceituario))) {
+        PedidoExame other = (PedidoExame) object;
+        if ((this.idPedidoExame == null && other.idPedidoExame != null) || (this.idPedidoExame != null && !this.idPedidoExame.equals(other.idPedidoExame))) {
             return false;
         }
         return true;
@@ -132,7 +133,7 @@ public class Receituario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Receituario[ idReceituario=" + idReceituario + " ]";
+        return "br.com.asfecer.model.Pedidoexame[ idPedidoExame=" + idPedidoExame + " ]";
     }
     
 }

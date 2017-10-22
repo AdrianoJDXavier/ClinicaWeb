@@ -78,6 +78,21 @@ public class Medico implements Serializable {
         this.crm = crm;
     }
 
+    public Medico(String nomeMedico, int crm, Especialidade especialidade, Estados ufCrm) {
+        this.nomeMedico = nomeMedico;
+        this.crm = crm;
+        this.especialidade = especialidade;
+        this.ufCrm = ufCrm;
+    }
+
+    public Medico(Integer idMedico, String nomeMedico, int crm, Especialidade especialidade, Estados ufCrm) {
+        this.idMedico = idMedico;
+        this.nomeMedico = nomeMedico;
+        this.crm = crm;
+        this.especialidade = especialidade;
+        this.ufCrm = ufCrm;
+    }
+
     public Integer getIdMedico() {
         return idMedico;
     }

@@ -52,7 +52,7 @@ public class Atestado implements Serializable {
     private Consulta consulta;
     @JoinColumn(name = "TipoAtestado", referencedColumnName = "idTipoAtestado", nullable = false)
     @ManyToOne(optional = false)
-    private Tipoatestado tipoAtestado;
+    private TipoAtestado tipoAtestado;
 
     public Atestado() {
     }
@@ -64,6 +64,19 @@ public class Atestado implements Serializable {
     public Atestado(Integer idAtestado, Date dataAtestado) {
         this.idAtestado = idAtestado;
         this.dataAtestado = dataAtestado;
+    }
+
+    public Atestado(Date dataAtestado, Consulta consulta, TipoAtestado tipoAtestado) {
+        this.dataAtestado = dataAtestado;
+        this.consulta = consulta;
+        this.tipoAtestado = tipoAtestado;
+    }
+
+    public Atestado(Integer idAtestado, Date dataAtestado, Consulta consulta, TipoAtestado tipoAtestado) {
+        this.idAtestado = idAtestado;
+        this.dataAtestado = dataAtestado;
+        this.consulta = consulta;
+        this.tipoAtestado = tipoAtestado;
     }
 
     public Integer getIdAtestado() {
@@ -90,11 +103,11 @@ public class Atestado implements Serializable {
         this.consulta = consulta;
     }
 
-    public Tipoatestado getTipoAtestado() {
+    public TipoAtestado getTipoAtestado() {
         return tipoAtestado;
     }
 
-    public void setTipoAtestado(Tipoatestado tipoAtestado) {
+    public void setTipoAtestado(TipoAtestado tipoAtestado) {
         this.tipoAtestado = tipoAtestado;
     }
 

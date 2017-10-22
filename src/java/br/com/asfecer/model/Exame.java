@@ -51,9 +51,9 @@ public class Exame implements Serializable {
     private String exame;
     @JoinColumn(name = "TipoExame", referencedColumnName = "idTipoExame", nullable = false)
     @ManyToOne(optional = false)
-    private Tipoexame tipoExame;
+    private TipoExame tipoExame;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exame")
-    private Collection<Pedidoexame> pedidoexameCollection;
+    private Collection<PedidoExame> pedidoexameCollection;
 
     public Exame() {
     }
@@ -62,6 +62,10 @@ public class Exame implements Serializable {
         this.idExame = idExame;
     }
 
+    public Exame(String exame) {
+        this.exame = exame;
+    }
+    
     public Exame(Integer idExame, String exame) {
         this.idExame = idExame;
         this.exame = exame;
@@ -83,20 +87,20 @@ public class Exame implements Serializable {
         this.exame = exame;
     }
 
-    public Tipoexame getTipoExame() {
+    public TipoExame getTipoExame() {
         return tipoExame;
     }
 
-    public void setTipoExame(Tipoexame tipoExame) {
+    public void setTipoExame(TipoExame tipoExame) {
         this.tipoExame = tipoExame;
     }
 
     @XmlTransient
-    public Collection<Pedidoexame> getPedidoexameCollection() {
+    public Collection<PedidoExame> getPedidoExameCollection() {
         return pedidoexameCollection;
     }
 
-    public void setPedidoexameCollection(Collection<Pedidoexame> pedidoexameCollection) {
+    public void setPedidoExameCollection(Collection<PedidoExame> pedidoexameCollection) {
         this.pedidoexameCollection = pedidoexameCollection;
     }
 

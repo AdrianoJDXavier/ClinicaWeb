@@ -47,13 +47,17 @@ public class Patologia implements Serializable {
     @Column(nullable = false, length = 100)
     private String patologia;
     @OneToMany(mappedBy = "patologia")
-    private Collection<Tipoatestado> tipoatestadoCollection;
+    private Collection<TipoAtestado> tipoatestadoCollection;
 
     public Patologia() {
     }
 
     public Patologia(Integer idPatologia) {
         this.idPatologia = idPatologia;
+    }
+
+    public Patologia(String patologia) {
+        this.patologia = patologia;
     }
 
     public Patologia(Integer idPatologia, String patologia) {
@@ -78,11 +82,11 @@ public class Patologia implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Tipoatestado> getTipoatestadoCollection() {
+    public Collection<TipoAtestado> getTipoAtestadoCollection() {
         return tipoatestadoCollection;
     }
 
-    public void setTipoatestadoCollection(Collection<Tipoatestado> tipoatestadoCollection) {
+    public void setTipoAtestadoCollection(Collection<TipoAtestado> tipoatestadoCollection) {
         this.tipoatestadoCollection = tipoatestadoCollection;
     }
 

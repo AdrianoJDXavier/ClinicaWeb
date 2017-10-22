@@ -14,8 +14,8 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import br.com.asfecer.model.Tipoexame;
-import br.com.asfecer.model.Pedidoexame;
+import br.com.asfecer.model.TipoExame;
+import br.com.asfecer.model.PedidoExame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,36 +41,36 @@ public class ExameDAO implements Serializable {
     }
 
     public void create(Exame exame) throws RollbackFailureException, RuntimeException {
-        if (exame.getPedidoexameCollection() == null) {
-            exame.setPedidoexameCollection(new ArrayList<Pedidoexame>());
+        if (exame.getPedidoExameCollection() == null) {
+            exame.setPedidoExameCollection(new ArrayList<PedidoExame>());
         }
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Tipoexame tipoExame = exame.getTipoExame();
+            TipoExame tipoExame = exame.getTipoExame();
             if (tipoExame != null) {
                 tipoExame = em.getReference(tipoExame.getClass(), tipoExame.getIdTipoExame());
                 exame.setTipoExame(tipoExame);
             }
-            Collection<Pedidoexame> attachedPedidoexameCollection = new ArrayList<Pedidoexame>();
-            for (Pedidoexame pedidoexameCollectionPedidoexameToAttach : exame.getPedidoexameCollection()) {
-                pedidoexameCollectionPedidoexameToAttach = em.getReference(pedidoexameCollectionPedidoexameToAttach.getClass(), pedidoexameCollectionPedidoexameToAttach.getIdPedidoExame());
-                attachedPedidoexameCollection.add(pedidoexameCollectionPedidoexameToAttach);
+            Collection<PedidoExame> attachedPedidoExameCollection = new ArrayList<PedidoExame>();
+            for (PedidoExame pedidoexameCollectionPedidoExameToAttach : exame.getPedidoExameCollection()) {
+                pedidoexameCollectionPedidoExameToAttach = em.getReference(pedidoexameCollectionPedidoExameToAttach.getClass(), pedidoexameCollectionPedidoExameToAttach.getIdPedidoExame());
+                attachedPedidoExameCollection.add(pedidoexameCollectionPedidoExameToAttach);
             }
-            exame.setPedidoexameCollection(attachedPedidoexameCollection);
+            exame.setPedidoExameCollection(attachedPedidoExameCollection);
             em.persist(exame);
             if (tipoExame != null) {
                 tipoExame.getExameCollection().add(exame);
                 tipoExame = em.merge(tipoExame);
             }
-            for (Pedidoexame pedidoexameCollectionPedidoexame : exame.getPedidoexameCollection()) {
-                Exame oldExameOfPedidoexameCollectionPedidoexame = pedidoexameCollectionPedidoexame.getExame();
-                pedidoexameCollectionPedidoexame.setExame(exame);
-                pedidoexameCollectionPedidoexame = em.merge(pedidoexameCollectionPedidoexame);
-                if (oldExameOfPedidoexameCollectionPedidoexame != null) {
-                    oldExameOfPedidoexameCollectionPedidoexame.getPedidoexameCollection().remove(pedidoexameCollectionPedidoexame);
-                    oldExameOfPedidoexameCollectionPedidoexame = em.merge(oldExameOfPedidoexameCollectionPedidoexame);
+            for (PedidoExame pedidoexameCollectionPedidoExame : exame.getPedidoExameCollection()) {
+                Exame oldExameOfPedidoExameCollectionPedidoExame = pedidoexameCollectionPedidoExame.getExame();
+                pedidoexameCollectionPedidoExame.setExame(exame);
+                pedidoexameCollectionPedidoExame = em.merge(pedidoexameCollectionPedidoExame);
+                if (oldExameOfPedidoExameCollectionPedidoExame != null) {
+                    oldExameOfPedidoExameCollectionPedidoExame.getPedidoExameCollection().remove(pedidoexameCollectionPedidoExame);
+                    oldExameOfPedidoExameCollectionPedidoExame = em.merge(oldExameOfPedidoExameCollectionPedidoExame);
                 }
             }
             utx.commit();
@@ -94,17 +94,17 @@ public class ExameDAO implements Serializable {
             utx.begin();
             em = getEntityManager();
             Exame persistentExame = em.find(Exame.class, exame.getIdExame());
-            Tipoexame tipoExameOld = persistentExame.getTipoExame();
-            Tipoexame tipoExameNew = exame.getTipoExame();
-            Collection<Pedidoexame> pedidoexameCollectionOld = persistentExame.getPedidoexameCollection();
-            Collection<Pedidoexame> pedidoexameCollectionNew = exame.getPedidoexameCollection();
+            TipoExame tipoExameOld = persistentExame.getTipoExame();
+            TipoExame tipoExameNew = exame.getTipoExame();
+            Collection<PedidoExame> pedidoexameCollectionOld = persistentExame.getPedidoExameCollection();
+            Collection<PedidoExame> pedidoexameCollectionNew = exame.getPedidoExameCollection();
             List<String> illegalOrphanMessages = null;
-            for (Pedidoexame pedidoexameCollectionOldPedidoexame : pedidoexameCollectionOld) {
-                if (!pedidoexameCollectionNew.contains(pedidoexameCollectionOldPedidoexame)) {
+            for (PedidoExame pedidoexameCollectionOldPedidoExame : pedidoexameCollectionOld) {
+                if (!pedidoexameCollectionNew.contains(pedidoexameCollectionOldPedidoExame)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Pedidoexame " + pedidoexameCollectionOldPedidoexame + " since its exame field is not nullable.");
+                    illegalOrphanMessages.add("You must retain PedidoExame " + pedidoexameCollectionOldPedidoExame + " since its exame field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -114,13 +114,13 @@ public class ExameDAO implements Serializable {
                 tipoExameNew = em.getReference(tipoExameNew.getClass(), tipoExameNew.getIdTipoExame());
                 exame.setTipoExame(tipoExameNew);
             }
-            Collection<Pedidoexame> attachedPedidoexameCollectionNew = new ArrayList<Pedidoexame>();
-            for (Pedidoexame pedidoexameCollectionNewPedidoexameToAttach : pedidoexameCollectionNew) {
-                pedidoexameCollectionNewPedidoexameToAttach = em.getReference(pedidoexameCollectionNewPedidoexameToAttach.getClass(), pedidoexameCollectionNewPedidoexameToAttach.getIdPedidoExame());
-                attachedPedidoexameCollectionNew.add(pedidoexameCollectionNewPedidoexameToAttach);
+            Collection<PedidoExame> attachedPedidoExameCollectionNew = new ArrayList<PedidoExame>();
+            for (PedidoExame pedidoexameCollectionNewPedidoExameToAttach : pedidoexameCollectionNew) {
+                pedidoexameCollectionNewPedidoExameToAttach = em.getReference(pedidoexameCollectionNewPedidoExameToAttach.getClass(), pedidoexameCollectionNewPedidoExameToAttach.getIdPedidoExame());
+                attachedPedidoExameCollectionNew.add(pedidoexameCollectionNewPedidoExameToAttach);
             }
-            pedidoexameCollectionNew = attachedPedidoexameCollectionNew;
-            exame.setPedidoexameCollection(pedidoexameCollectionNew);
+            pedidoexameCollectionNew = attachedPedidoExameCollectionNew;
+            exame.setPedidoExameCollection(pedidoexameCollectionNew);
             exame = em.merge(exame);
             if (tipoExameOld != null && !tipoExameOld.equals(tipoExameNew)) {
                 tipoExameOld.getExameCollection().remove(exame);
@@ -130,14 +130,14 @@ public class ExameDAO implements Serializable {
                 tipoExameNew.getExameCollection().add(exame);
                 tipoExameNew = em.merge(tipoExameNew);
             }
-            for (Pedidoexame pedidoexameCollectionNewPedidoexame : pedidoexameCollectionNew) {
-                if (!pedidoexameCollectionOld.contains(pedidoexameCollectionNewPedidoexame)) {
-                    Exame oldExameOfPedidoexameCollectionNewPedidoexame = pedidoexameCollectionNewPedidoexame.getExame();
-                    pedidoexameCollectionNewPedidoexame.setExame(exame);
-                    pedidoexameCollectionNewPedidoexame = em.merge(pedidoexameCollectionNewPedidoexame);
-                    if (oldExameOfPedidoexameCollectionNewPedidoexame != null && !oldExameOfPedidoexameCollectionNewPedidoexame.equals(exame)) {
-                        oldExameOfPedidoexameCollectionNewPedidoexame.getPedidoexameCollection().remove(pedidoexameCollectionNewPedidoexame);
-                        oldExameOfPedidoexameCollectionNewPedidoexame = em.merge(oldExameOfPedidoexameCollectionNewPedidoexame);
+            for (PedidoExame pedidoexameCollectionNewPedidoExame : pedidoexameCollectionNew) {
+                if (!pedidoexameCollectionOld.contains(pedidoexameCollectionNewPedidoExame)) {
+                    Exame oldExameOfPedidoExameCollectionNewPedidoExame = pedidoexameCollectionNewPedidoExame.getExame();
+                    pedidoexameCollectionNewPedidoExame.setExame(exame);
+                    pedidoexameCollectionNewPedidoExame = em.merge(pedidoexameCollectionNewPedidoExame);
+                    if (oldExameOfPedidoExameCollectionNewPedidoExame != null && !oldExameOfPedidoExameCollectionNewPedidoExame.equals(exame)) {
+                        oldExameOfPedidoExameCollectionNewPedidoExame.getPedidoExameCollection().remove(pedidoexameCollectionNewPedidoExame);
+                        oldExameOfPedidoExameCollectionNewPedidoExame = em.merge(oldExameOfPedidoExameCollectionNewPedidoExame);
                     }
                 }
             }
@@ -176,17 +176,17 @@ public class ExameDAO implements Serializable {
                 throw new NonexistentEntityException("The exame with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Pedidoexame> pedidoexameCollectionOrphanCheck = exame.getPedidoexameCollection();
-            for (Pedidoexame pedidoexameCollectionOrphanCheckPedidoexame : pedidoexameCollectionOrphanCheck) {
+            Collection<PedidoExame> pedidoexameCollectionOrphanCheck = exame.getPedidoExameCollection();
+            for (PedidoExame pedidoexameCollectionOrphanCheckPedidoExame : pedidoexameCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Exame (" + exame + ") cannot be destroyed since the Pedidoexame " + pedidoexameCollectionOrphanCheckPedidoexame + " in its pedidoexameCollection field has a non-nullable exame field.");
+                illegalOrphanMessages.add("This Exame (" + exame + ") cannot be destroyed since the PedidoExame " + pedidoexameCollectionOrphanCheckPedidoExame + " in its pedidoexameCollection field has a non-nullable exame field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Tipoexame tipoExame = exame.getTipoExame();
+            TipoExame tipoExame = exame.getTipoExame();
             if (tipoExame != null) {
                 tipoExame.getExameCollection().remove(exame);
                 tipoExame = em.merge(tipoExame);

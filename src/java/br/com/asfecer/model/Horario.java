@@ -84,6 +84,21 @@ public class Horario implements Serializable {
         this.fim = fim;
     }
 
+    public Horario(String diaSemana, Date inicio, Date fim, Medico medico) {
+        this.diaSemana = diaSemana;
+        this.inicio = inicio;
+        this.fim = fim;
+        this.medico = medico;
+    }
+
+    public Horario(Integer idHorario, String diaSemana, Date inicio, Date fim, Medico medico) {
+        this.idHorario = idHorario;
+        this.diaSemana = diaSemana;
+        this.inicio = inicio;
+        this.fim = fim;
+        this.medico = medico;
+    }
+
     public Integer getIdHorario() {
         return idHorario;
     }

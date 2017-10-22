@@ -60,9 +60,9 @@ public class Medicamento implements Serializable {
     @Column(length = 200)
     private String apresentacao;
     @OneToMany(mappedBy = "medicamento")
-    private Collection<Tipoatestado> tipoatestadoCollection;
+    private Collection<TipoAtestado> tipoatestadoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicamento")
-    private Collection<Itensreceituario> itensreceituarioCollection;
+    private Collection<ItensReceituario> itensReceituarioCollection;
 
     public Medicamento() {
     }
@@ -74,6 +74,21 @@ public class Medicamento implements Serializable {
     public Medicamento(Integer idMedicamento, String medicamento) {
         this.idMedicamento = idMedicamento;
         this.medicamento = medicamento;
+    }
+
+    public Medicamento(String principioAtivo, String medicamento, String laboratorio, String apresentacao) {
+        this.principioAtivo = principioAtivo;
+        this.medicamento = medicamento;
+        this.laboratorio = laboratorio;
+        this.apresentacao = apresentacao;
+    }
+
+    public Medicamento(Integer idMedicamento, String principioAtivo, String medicamento, String laboratorio, String apresentacao) {
+        this.idMedicamento = idMedicamento;
+        this.principioAtivo = principioAtivo;
+        this.medicamento = medicamento;
+        this.laboratorio = laboratorio;
+        this.apresentacao = apresentacao;
     }
 
     public Integer getIdMedicamento() {
@@ -117,21 +132,21 @@ public class Medicamento implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Tipoatestado> getTipoatestadoCollection() {
+    public Collection<TipoAtestado> getTipoAtestadoCollection() {
         return tipoatestadoCollection;
     }
 
-    public void setTipoatestadoCollection(Collection<Tipoatestado> tipoatestadoCollection) {
+    public void setTipoAtestadoCollection(Collection<TipoAtestado> tipoatestadoCollection) {
         this.tipoatestadoCollection = tipoatestadoCollection;
     }
 
     @XmlTransient
-    public Collection<Itensreceituario> getItensreceituarioCollection() {
-        return itensreceituarioCollection;
+    public Collection<ItensReceituario> getItensReceituarioCollection() {
+        return itensReceituarioCollection;
     }
 
-    public void setItensreceituarioCollection(Collection<Itensreceituario> itensreceituarioCollection) {
-        this.itensreceituarioCollection = itensreceituarioCollection;
+    public void setItensReceituarioCollection(Collection<ItensReceituario> itensReceituarioCollection) {
+        this.itensReceituarioCollection = itensReceituarioCollection;
     }
 
     @Override

@@ -133,7 +133,7 @@ public class PacienteController extends HttpServlet {
         paciente.setTelefone(request.getParameter("telefone"));
         paciente.setCelular(request.getParameter("celular"));
         paciente.setObs(request.getParameter("obs"));
-        endereco.setNomeNogradouro(request.getParameter("endereco"));
+        endereco.setNomelogradouro(request.getParameter("endereco"));
         endereco.setBairro(request.getParameter("bairro"));
         endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
         endereco.setComplemento(request.getParameter("complemeto"));

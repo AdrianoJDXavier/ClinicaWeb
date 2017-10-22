@@ -80,6 +80,31 @@ public class Prontuario implements Serializable {
         this.idProntuario = idProntuario;
     }
 
+    public Prontuario(String queixaPrincipal, String anamnese, String examesFisicos, String examesComplementares, String hipotesesDiagnosticas, String diagnosticoDefinitivo, String tratamento, String evolucao, Consulta consulta) {
+        this.queixaPrincipal = queixaPrincipal;
+        this.anamnese = anamnese;
+        this.examesFisicos = examesFisicos;
+        this.examesComplementares = examesComplementares;
+        this.hipotesesDiagnosticas = hipotesesDiagnosticas;
+        this.diagnosticoDefinitivo = diagnosticoDefinitivo;
+        this.tratamento = tratamento;
+        this.evolucao = evolucao;
+        this.consulta = consulta;
+    }
+
+    public Prontuario(Integer idProntuario, String queixaPrincipal, String anamnese, String examesFisicos, String examesComplementares, String hipotesesDiagnosticas, String diagnosticoDefinitivo, String tratamento, String evolucao, Consulta consulta) {
+        this.idProntuario = idProntuario;
+        this.queixaPrincipal = queixaPrincipal;
+        this.anamnese = anamnese;
+        this.examesFisicos = examesFisicos;
+        this.examesComplementares = examesComplementares;
+        this.hipotesesDiagnosticas = hipotesesDiagnosticas;
+        this.diagnosticoDefinitivo = diagnosticoDefinitivo;
+        this.tratamento = tratamento;
+        this.evolucao = evolucao;
+        this.consulta = consulta;
+    }
+
     public Integer getIdProntuario() {
         return idProntuario;
     }

@@ -31,81 +31,81 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(catalog = "db_asfecer", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d")
-    , @NamedQuery(name = "Departamento.findByIdDepto", query = "SELECT d FROM Departamento d WHERE d.idDepto = :idDepto")
-    , @NamedQuery(name = "Departamento.findByDepto", query = "SELECT d FROM Departamento d WHERE d.depto = :depto")})
-public class Departamento implements Serializable {
+    @NamedQuery(name = "Tipoexame.findAll", query = "SELECT t FROM Tipoexame t")
+    , @NamedQuery(name = "Tipoexame.findByIdTipoExame", query = "SELECT t FROM Tipoexame t WHERE t.idTipoExame = :idTipoExame")
+    , @NamedQuery(name = "Tipoexame.findByTipoExame", query = "SELECT t FROM Tipoexame t WHERE t.tipoExame = :tipoExame")})
+public class TipoExame implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
-    private Integer idDepto;
+    private Integer idTipoExame;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(nullable = false, length = 45)
-    private String depto;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "depto")
-    private Collection<Cargo> cargoCollection;
+    private String tipoExame;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoExame")
+    private Collection<Exame> exameCollection;
 
-    public Departamento() {
+    public TipoExame() {
     }
 
-    public Departamento(Integer idDepto) {
-        this.idDepto = idDepto;
+    public TipoExame(Integer idTipoExame) {
+        this.idTipoExame = idTipoExame;
     }
 
-    public Departamento(String depto) {
-        this.depto = depto;
-    }
-    
-    public Departamento(Integer idDepto, String depto) {
-        this.idDepto = idDepto;
-        this.depto = depto;
+    public TipoExame(Integer idTipoExame, String tipoExame) {
+        this.idTipoExame = idTipoExame;
+        this.tipoExame = tipoExame;
     }
 
-    public Integer getIdDepto() {
-        return idDepto;
+    public TipoExame(String tipoExame) {
+        this.tipoExame = tipoExame;
     }
 
-    public void setIdDepto(Integer idDepto) {
-        this.idDepto = idDepto;
+    public Integer getIdTipoExame() {
+        return idTipoExame;
     }
 
-    public String getDepto() {
-        return depto;
+    public void setIdTipoExame(Integer idTipoExame) {
+        this.idTipoExame = idTipoExame;
     }
 
-    public void setDepto(String depto) {
-        this.depto = depto;
+    public String getTipoExame() {
+        return tipoExame;
+    }
+
+    public void setTipoExame(String tipoExame) {
+        this.tipoExame = tipoExame;
     }
 
     @XmlTransient
-    public Collection<Cargo> getCargoCollection() {
-        return cargoCollection;
+    public Collection<Exame> getExameCollection() {
+        return exameCollection;
     }
 
-    public void setCargoCollection(Collection<Cargo> cargoCollection) {
-        this.cargoCollection = cargoCollection;
+    public void setExameCollection(Collection<Exame> exameCollection) {
+        this.exameCollection = exameCollection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idDepto != null ? idDepto.hashCode() : 0);
+        hash += (idTipoExame != null ? idTipoExame.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Departamento)) {
+        if (!(object instanceof TipoExame)) {
             return false;
         }
-        Departamento other = (Departamento) object;
-        if ((this.idDepto == null && other.idDepto != null) || (this.idDepto != null && !this.idDepto.equals(other.idDepto))) {
+        TipoExame other = (TipoExame) object;
+        if ((this.idTipoExame == null && other.idTipoExame != null) || (this.idTipoExame != null && !this.idTipoExame.equals(other.idTipoExame))) {
             return false;
         }
         return true;
@@ -113,7 +113,7 @@ public class Departamento implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Departamento[ idDepto=" + idDepto + " ]";
+        return "br.com.asfecer.model.Tipoexame[ idTipoExame=" + idTipoExame + " ]";
     }
     
 }

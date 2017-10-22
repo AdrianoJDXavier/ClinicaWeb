@@ -46,7 +46,7 @@ public class FuncionarioController extends HttpServlet {
     @Resource
     private UserTransaction utx;
     
-    SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");  
+    public SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");  
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
