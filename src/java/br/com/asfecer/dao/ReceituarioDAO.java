@@ -13,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.ItensReceituario;
 import br.com.asfecer.model.Receituario;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -47,19 +46,10 @@ public class ReceituarioDAO implements Serializable {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
                 receituario.setConsulta(consulta);
             }
-            ItensReceituario tipoReceituario = receituario.getTipoReceituario();
-            if (tipoReceituario != null) {
-                tipoReceituario = em.getReference(tipoReceituario.getClass(), tipoReceituario.getIdItensReceituario());
-                receituario.setTipoReceituario(tipoReceituario);
-            }
             em.persist(receituario);
             if (consulta != null) {
                 consulta.getReceituarioCollection().add(receituario);
                 consulta = em.merge(consulta);
-            }
-            if (tipoReceituario != null) {
-                tipoReceituario.getReceituarioCollection().add(receituario);
-                tipoReceituario = em.merge(tipoReceituario);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -68,7 +58,7 @@ public class ReceituarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -84,15 +74,9 @@ public class ReceituarioDAO implements Serializable {
             Receituario persistentReceituario = em.find(Receituario.class, receituario.getIdReceituario());
             Consulta consultaOld = persistentReceituario.getConsulta();
             Consulta consultaNew = receituario.getConsulta();
-            ItensReceituario tipoReceituarioOld = persistentReceituario.getTipoReceituario();
-            ItensReceituario tipoReceituarioNew = receituario.getTipoReceituario();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
                 receituario.setConsulta(consultaNew);
-            }
-            if (tipoReceituarioNew != null) {
-                tipoReceituarioNew = em.getReference(tipoReceituarioNew.getClass(), tipoReceituarioNew.getIdItensReceituario());
-                receituario.setTipoReceituario(tipoReceituarioNew);
             }
             receituario = em.merge(receituario);
             if (consultaOld != null && !consultaOld.equals(consultaNew)) {
@@ -102,14 +86,6 @@ public class ReceituarioDAO implements Serializable {
             if (consultaNew != null && !consultaNew.equals(consultaOld)) {
                 consultaNew.getReceituarioCollection().add(receituario);
                 consultaNew = em.merge(consultaNew);
-            }
-            if (tipoReceituarioOld != null && !tipoReceituarioOld.equals(tipoReceituarioNew)) {
-                tipoReceituarioOld.getReceituarioCollection().remove(receituario);
-                tipoReceituarioOld = em.merge(tipoReceituarioOld);
-            }
-            if (tipoReceituarioNew != null && !tipoReceituarioNew.equals(tipoReceituarioOld)) {
-                tipoReceituarioNew.getReceituarioCollection().add(receituario);
-                tipoReceituarioNew = em.merge(tipoReceituarioNew);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -125,7 +101,7 @@ public class ReceituarioDAO implements Serializable {
                     throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -150,11 +126,6 @@ public class ReceituarioDAO implements Serializable {
                 consulta.getReceituarioCollection().remove(receituario);
                 consulta = em.merge(consulta);
             }
-            ItensReceituario tipoReceituario = receituario.getTipoReceituario();
-            if (tipoReceituario != null) {
-                tipoReceituario.getReceituarioCollection().remove(receituario);
-                tipoReceituario = em.merge(tipoReceituario);
-            }
             em.remove(receituario);
             utx.commit();
         } catch (Exception ex) {
@@ -163,7 +134,7 @@ public class ReceituarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            new RuntimeException(ex);
         } finally {
             if (em != null) {
                 em.close();
