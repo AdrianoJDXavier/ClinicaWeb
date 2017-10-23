@@ -13,8 +13,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.ItensReceituario;
-import br.com.asfecer.model.Receituario;
+import br.com.asfecer.model.Exame;
+import br.com.asfecer.model.PedidoExame;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +24,9 @@ import javax.transaction.UserTransaction;
  *
  * @author PToledo
  */
-public class ReceituarioDAO implements Serializable {
+public class PedidoExameDAO implements Serializable {
 
-    public ReceituarioDAO(UserTransaction utx, EntityManagerFactory emf) {
+    public PedidoExameDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -37,29 +37,29 @@ public class ReceituarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Receituario receituario) throws RollbackFailureException, RuntimeException {
+    public void create(PedidoExame pedidoexame) throws RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Consulta consulta = receituario.getConsulta();
+            Consulta consulta = pedidoexame.getConsulta();
             if (consulta != null) {
                 consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
-                receituario.setConsulta(consulta);
+                pedidoexame.setConsulta(consulta);
             }
-            ItensReceituario tipoReceituario = receituario.getTipoReceituario();
-            if (tipoReceituario != null) {
-                tipoReceituario = em.getReference(tipoReceituario.getClass(), tipoReceituario.getIdItensReceituario());
-                receituario.setTipoReceituario(tipoReceituario);
+            Exame exame = pedidoexame.getExame();
+            if (exame != null) {
+                exame = em.getReference(exame.getClass(), exame.getIdExame());
+                pedidoexame.setExame(exame);
             }
-            em.persist(receituario);
+            em.persist(pedidoexame);
             if (consulta != null) {
-                consulta.getReceituarioCollection().add(receituario);
+                consulta.getPedidoExameCollection().add(pedidoexame);
                 consulta = em.merge(consulta);
             }
-            if (tipoReceituario != null) {
-                tipoReceituario.getReceituarioCollection().add(receituario);
-                tipoReceituario = em.merge(tipoReceituario);
+            if (exame != null) {
+                exame.getPedidoExameCollection().add(pedidoexame);
+                exame = em.merge(exame);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -76,40 +76,40 @@ public class ReceituarioDAO implements Serializable {
         }
     }
 
-    public void edit(Receituario receituario) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(PedidoExame pedidoexame) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Receituario persistentReceituario = em.find(Receituario.class, receituario.getIdReceituario());
-            Consulta consultaOld = persistentReceituario.getConsulta();
-            Consulta consultaNew = receituario.getConsulta();
-            ItensReceituario tipoReceituarioOld = persistentReceituario.getTipoReceituario();
-            ItensReceituario tipoReceituarioNew = receituario.getTipoReceituario();
+            PedidoExame persistentPedidoExame = em.find(PedidoExame.class, pedidoexame.getIdPedidoExame());
+            Consulta consultaOld = persistentPedidoExame.getConsulta();
+            Consulta consultaNew = pedidoexame.getConsulta();
+            Exame exameOld = persistentPedidoExame.getExame();
+            Exame exameNew = pedidoexame.getExame();
             if (consultaNew != null) {
                 consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
-                receituario.setConsulta(consultaNew);
+                pedidoexame.setConsulta(consultaNew);
             }
-            if (tipoReceituarioNew != null) {
-                tipoReceituarioNew = em.getReference(tipoReceituarioNew.getClass(), tipoReceituarioNew.getIdItensReceituario());
-                receituario.setTipoReceituario(tipoReceituarioNew);
+            if (exameNew != null) {
+                exameNew = em.getReference(exameNew.getClass(), exameNew.getIdExame());
+                pedidoexame.setExame(exameNew);
             }
-            receituario = em.merge(receituario);
+            pedidoexame = em.merge(pedidoexame);
             if (consultaOld != null && !consultaOld.equals(consultaNew)) {
-                consultaOld.getReceituarioCollection().remove(receituario);
+                consultaOld.getPedidoExameCollection().remove(pedidoexame);
                 consultaOld = em.merge(consultaOld);
             }
             if (consultaNew != null && !consultaNew.equals(consultaOld)) {
-                consultaNew.getReceituarioCollection().add(receituario);
+                consultaNew.getPedidoExameCollection().add(pedidoexame);
                 consultaNew = em.merge(consultaNew);
             }
-            if (tipoReceituarioOld != null && !tipoReceituarioOld.equals(tipoReceituarioNew)) {
-                tipoReceituarioOld.getReceituarioCollection().remove(receituario);
-                tipoReceituarioOld = em.merge(tipoReceituarioOld);
+            if (exameOld != null && !exameOld.equals(exameNew)) {
+                exameOld.getPedidoExameCollection().remove(pedidoexame);
+                exameOld = em.merge(exameOld);
             }
-            if (tipoReceituarioNew != null && !tipoReceituarioNew.equals(tipoReceituarioOld)) {
-                tipoReceituarioNew.getReceituarioCollection().add(receituario);
-                tipoReceituarioNew = em.merge(tipoReceituarioNew);
+            if (exameNew != null && !exameNew.equals(exameOld)) {
+                exameNew.getPedidoExameCollection().add(pedidoexame);
+                exameNew = em.merge(exameNew);
             }
             utx.commit();
         } catch (Exception ex) {
@@ -120,9 +120,9 @@ public class ReceituarioDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = receituario.getIdReceituario();
-                if (findReceituario(id) == null) {
-                    throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.");
+                Integer id = pedidoexame.getIdPedidoExame();
+                if (findPedidoExame(id) == null) {
+                    throw new NonexistentEntityException("The pedidoexame with id " + id + " no longer exists.");
                 }
             }
             throw new RuntimeException(ex);
@@ -138,24 +138,24 @@ public class ReceituarioDAO implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Receituario receituario;
+            PedidoExame pedidoexame;
             try {
-                receituario = em.getReference(Receituario.class, id);
-                receituario.getIdReceituario();
+                pedidoexame = em.getReference(PedidoExame.class, id);
+                pedidoexame.getIdPedidoExame();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The receituario with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The pedidoexame with id " + id + " no longer exists.", enfe);
             }
-            Consulta consulta = receituario.getConsulta();
+            Consulta consulta = pedidoexame.getConsulta();
             if (consulta != null) {
-                consulta.getReceituarioCollection().remove(receituario);
+                consulta.getPedidoExameCollection().remove(pedidoexame);
                 consulta = em.merge(consulta);
             }
-            ItensReceituario tipoReceituario = receituario.getTipoReceituario();
-            if (tipoReceituario != null) {
-                tipoReceituario.getReceituarioCollection().remove(receituario);
-                tipoReceituario = em.merge(tipoReceituario);
+            Exame exame = pedidoexame.getExame();
+            if (exame != null) {
+                exame.getPedidoExameCollection().remove(pedidoexame);
+                exame = em.merge(exame);
             }
-            em.remove(receituario);
+            em.remove(pedidoexame);
             utx.commit();
         } catch (Exception ex) {
             try {
@@ -171,19 +171,19 @@ public class ReceituarioDAO implements Serializable {
         }
     }
 
-    public List<Receituario> findReceituarioEntities() {
-        return findReceituarioEntities(true, -1, -1);
+    public List<PedidoExame> findPedidoExameEntities() {
+        return findPedidoExameEntities(true, -1, -1);
     }
 
-    public List<Receituario> findReceituarioEntities(int maxResults, int firstResult) {
-        return findReceituarioEntities(false, maxResults, firstResult);
+    public List<PedidoExame> findPedidoExameEntities(int maxResults, int firstResult) {
+        return findPedidoExameEntities(false, maxResults, firstResult);
     }
 
-    private List<Receituario> findReceituarioEntities(boolean all, int maxResults, int firstResult) {
+    private List<PedidoExame> findPedidoExameEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Receituario.class));
+            cq.select(cq.from(PedidoExame.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -195,20 +195,20 @@ public class ReceituarioDAO implements Serializable {
         }
     }
 
-    public Receituario findReceituario(Integer id) {
+    public PedidoExame findPedidoExame(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Receituario.class, id);
+            return em.find(PedidoExame.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getReceituarioCount() {
+    public int getPedidoExameCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Receituario> rt = cq.from(Receituario.class);
+            Root<PedidoExame> rt = cq.from(PedidoExame.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
