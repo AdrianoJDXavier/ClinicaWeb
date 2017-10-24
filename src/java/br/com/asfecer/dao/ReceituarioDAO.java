@@ -24,6 +24,7 @@ import javax.transaction.UserTransaction;
  * @author PToledo
  */
 public class ReceituarioDAO implements Serializable {
+    
 
     public ReceituarioDAO(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
