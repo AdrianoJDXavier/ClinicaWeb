@@ -5,7 +5,7 @@
 
             <div class="panel panel-default" style="margin:10px;">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Lista de Usuários</h3>
+                    <h3 class="panel-title">Lista de Convênios</h3>
                 </div>
                 <div class="panel-body">
 
@@ -21,19 +21,19 @@
                                 <tr>
                                     <th><input class="form-control" type="text" id="txtColuna1" style="width: 100px" placeholder="Id!"/></th>
                                     <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por nome!"/></th>
-                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por cidade!"/></th>
-                                    <th><a href="criaConvenio.html"><button class="btn btn-info btn-block"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Adicionar Usuário</span></button></a></th>
+                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por tipo de convênio!"/></th>
+                                    <th><a href="criaConvenio.html"><button class="btn btn-info btn-block"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Adicionar Convênio</span></button></a></th>
                                 </tr>
                             </thead>
                             <tbody style="text-align: left">
                             <c:forEach var="convenio" items="${convenios}">
                             <tr>
-                                <td>${convenio.idConvenio}</td>
+                                <td>${convenio.idconvenio}</td>
                                 <td>${convenio.empresaConvenio}</td>
                                 <td>${convenio.tipoConvenio}</td>
                                 <td>
-                                    <a href="excluiConvenio.html?idConvenio=${convenio.idConvenio}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
-                                    <a href="editaConvenio.html?idConvenio=${convenio.idConvenio}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
+                                    <a href="excluiConvenio.html?idConvenio=${convenio.idconvenio}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
+                                    <a href="editaConvenio.html?idConvenio=${convenio.idconvenio}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
                                 </td>
                             </tr>
                         </c:forEach>

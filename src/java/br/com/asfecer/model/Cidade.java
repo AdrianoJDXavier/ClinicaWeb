@@ -20,34 +20,28 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "cidade")
 @NamedQueries({
-    @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c")
-    , @NamedQuery(name = "Cidade.findByIdCidade", query = "SELECT c FROM Cidade c WHERE c.idCidade = :idCidade")
-    , @NamedQuery(name = "Cidade.findByCidade", query = "SELECT c FROM Cidade c WHERE c.cidade = :cidade")})
+    @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c")})
 public class Cidade implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
-    private Integer idCidade;
+    @Column(name = "IDCIDADE")
+    private Integer idcidade;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Column(name = "CIDADE")
     private String cidade;
-    @JoinColumn(name = "Estado", referencedColumnName = "sigla", nullable = false)
+    @JoinColumn(name = "Estado", referencedColumnName = "SIGLA")
     @ManyToOne(optional = false)
     private Estados estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cidade")
@@ -58,32 +52,21 @@ public class Cidade implements Serializable {
     public Cidade() {
     }
 
-    public Cidade(Integer idCidade) {
-        this.idCidade = idCidade;
+    public Cidade(Integer idcidade) {
+        this.idcidade = idcidade;
     }
 
-    public Cidade(Integer idCidade, String cidade) {
-        this.idCidade = idCidade;
+    public Cidade(Integer idcidade, String cidade) {
+        this.idcidade = idcidade;
         this.cidade = cidade;
     }
 
-    public Cidade(String cidade, Estados estado) {
-        this.cidade = cidade;
-        this.estado = estado;
+    public Integer getIdcidade() {
+        return idcidade;
     }
 
-    public Cidade(Integer idCidade, String cidade, Estados estado) {
-        this.idCidade = idCidade;
-        this.cidade = cidade;
-        this.estado = estado;
-    }
-   
-    public Integer getIdCidade() {
-        return idCidade;
-    }
-
-    public void setIdCidade(Integer idCidade) {
-        this.idCidade = idCidade;
+    public void setIdcidade(Integer idcidade) {
+        this.idcidade = idcidade;
     }
 
     public String getCidade() {
@@ -102,7 +85,6 @@ public class Cidade implements Serializable {
         this.estado = estado;
     }
 
-    @XmlTransient
     public Collection<Endereco> getEnderecoCollection() {
         return enderecoCollection;
     }
@@ -111,7 +93,6 @@ public class Cidade implements Serializable {
         this.enderecoCollection = enderecoCollection;
     }
 
-    @XmlTransient
     public Collection<Paciente> getPacienteCollection() {
         return pacienteCollection;
     }
@@ -123,7 +104,7 @@ public class Cidade implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idCidade != null ? idCidade.hashCode() : 0);
+        hash += (idcidade != null ? idcidade.hashCode() : 0);
         return hash;
     }
 
@@ -134,7 +115,7 @@ public class Cidade implements Serializable {
             return false;
         }
         Cidade other = (Cidade) object;
-        if ((this.idCidade == null && other.idCidade != null) || (this.idCidade != null && !this.idCidade.equals(other.idCidade))) {
+        if ((this.idcidade == null && other.idcidade != null) || (this.idcidade != null && !this.idcidade.equals(other.idcidade))) {
             return false;
         }
         return true;
@@ -142,7 +123,7 @@ public class Cidade implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Cidade[ idCidade=" + idCidade + " ]";
+        return "br.com.asfecer.model.Cidade[ idcidade=" + idcidade + " ]";
     }
     
 }

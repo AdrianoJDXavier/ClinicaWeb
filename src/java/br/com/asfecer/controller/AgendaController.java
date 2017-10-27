@@ -4,6 +4,7 @@ import br.com.asfecer.dao.AgendaDAO;
 import br.com.asfecer.dao.HorarioDAO;
 import br.com.asfecer.dao.PacienteDAO;
 import br.com.asfecer.dao.UsuarioDAO;
+import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import br.com.asfecer.model.Agenda;
 import br.com.asfecer.model.Horario;
 import br.com.asfecer.model.Paciente;
@@ -28,47 +29,55 @@ import javax.transaction.UserTransaction;
 
 @WebServlet(name = "AgendaController", urlPatterns = {"/criaAgenda.html", "/listaAgendas.html", "/excluiAgenda.html", "/editaAgenda.html"})
 public class AgendaController extends HttpServlet {
-    
+
     @PersistenceUnit
     private EntityManagerFactory emf;
-    
+
     @Resource
     private UserTransaction utx;
-    
+
     SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
     SimpleDateFormat formatHour = new SimpleDateFormat("hh:mm:ss");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(request.getServletPath().contains("criaAgenda.html")){
+        if (request.getServletPath().contains("criaAgenda.html")) {
             criarGet(request, response);
-        }else if(request.getServletPath().contains("editaAgenda.html")){
+        } else if (request.getServletPath().contains("editaAgenda.html")) {
             editarGet(request, response);
-        }else if(request.getServletPath().contains("listaAgendas.html")){
+        } else if (request.getServletPath().contains("listaAgendas.html")) {
             listarGet(request, response);
-        }else if(request.getServletPath().contains("excluiAgenda.html")){
-            excluirGet(request, response);
+        } else if (request.getServletPath().contains("excluiAgenda.html")) {
+            try {
+                excluirGet(request, response);
+            } catch (Exception ex) {
+                Logger.getLogger(AgendaController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaAgendas.html");
-        } 
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        if(request.getServletPath().contains("/editaAgenda.html")){
+
+        if (request.getServletPath().contains("/editaAgenda.html")) {
             try {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(AgendaController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(AgendaController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        if(request.getServletPath().contains("/criaAgenda.html")){
+        if (request.getServletPath().contains("/criaAgenda.html")) {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(AgendaController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(AgendaController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -83,7 +92,7 @@ public class AgendaController extends HttpServlet {
         AgendaDAO dao = new AgendaDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idAgenda"));
         Agenda agenda = dao.findAgenda(id);
-        
+
         request.setAttribute("agenda", agenda);
         request.getRequestDispatcher("WEB-INF/views/editaAgenda.jsp").forward(request, response);
     }
@@ -92,67 +101,74 @@ public class AgendaController extends HttpServlet {
         List<Agenda> agendas = new ArrayList<>();
         AgendaDAO dao = new AgendaDAO(utx, emf);
         agendas = dao.findAgendaEntities();
-        
+
         request.setAttribute("agendas", agendas);
         request.getRequestDispatcher("WEB-INF/views/listaAgenda.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, RollbackFailureException, Exception {
         AgendaDAO dao = new AgendaDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idAgenda"));
         dao.destroy(id);
-        
+
         response.sendRedirect("listaAgendas.html");
     }
- 
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
-        
+
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, Exception {
+
         HorarioDAO hor = new HorarioDAO(utx, emf);
         PacienteDAO pac = new PacienteDAO(utx, emf);
         UsuarioDAO usu = new UsuarioDAO(utx, emf);
-        
-        Date data = formatDate.parse(request.getParameter("data"));
-        Date hora = formatHour.parse(request.getParameter("hora"));
-        boolean retorno = "on".equalsIgnoreCase(request.getParameter("retorno"));
-        boolean cancelado = "on".equalsIgnoreCase(request.getParameter("cancelado"));
-        String motivoCancelamento = request.getParameter("motivoCancelamento");
-        boolean status = "on".equalsIgnoreCase(request.getParameter("status"));
-        Horario medico = hor.findHorario(Integer.parseInt(request.getParameter("medico")));
-        Paciente paciente = pac.findPaciente(Integer.parseInt(request.getParameter("paciente")));
-        Usuario usuario = usu.findUsuario(Integer.parseInt(request.getParameter("usuario")));
+        Agenda agenda = new Agenda();
 
-        Agenda agenda = new Agenda(data, hora, retorno, cancelado, motivoCancelamento, status, medico, paciente, usuario);
+        agenda.setData(formatDate.parse(request.getParameter("data")));
+        agenda.setHora(formatHour.parse(request.getParameter("hora")));
+        agenda.setRetorno("on".equalsIgnoreCase(request.getParameter("retorno")));
+        agenda.setCancelado("on".equalsIgnoreCase(request.getParameter("cancelado")));
+        agenda.setMotivocancelamento(request.getParameter("motivoCancelamento"));
+        agenda.setStatus("on".equalsIgnoreCase(request.getParameter("status")));
+        Horario medico = hor.findHorario(Integer.parseInt(request.getParameter("medico")));
+        agenda.setMedico(medico);
+        Paciente paciente = pac.findPaciente(Integer.parseInt(request.getParameter("paciente")));
+        agenda.setPaciente(paciente);
+        Usuario usuario = usu.findUsuario(Integer.parseInt(request.getParameter("usuario")));
+        agenda.setUsuario(usuario);
+
         AgendaDAO dao = new AgendaDAO(utx, emf);
-        
+
         dao.create(agenda);
-        
+
         response.sendRedirect("listaAgendas.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
-        
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
+
         HorarioDAO hor = new HorarioDAO(utx, emf);
         PacienteDAO pac = new PacienteDAO(utx, emf);
         UsuarioDAO usu = new UsuarioDAO(utx, emf);
-        
-        int registroAgenda = Integer.parseInt(request.getParameter("registroAgenda"));
-        Date data = formatDate.parse(request.getParameter("data"));
-        Date hora = formatHour.parse(request.getParameter("hora"));
-        boolean retorno = "on".equalsIgnoreCase(request.getParameter("retorno"));
-        boolean cancelado = "on".equalsIgnoreCase(request.getParameter("cancelado"));
-        String motivoCancelamento = request.getParameter("motivoCancelamento");
-        boolean status = "on".equalsIgnoreCase(request.getParameter("status"));
-        Horario medico = hor.findHorario(Integer.parseInt(request.getParameter("medico")));
-        Paciente paciente = pac.findPaciente(Integer.parseInt(request.getParameter("paciente")));
-        Usuario usuario = usu.findUsuario(Integer.parseInt(request.getParameter("usuario")));
-
-        Agenda agenda = new Agenda(registroAgenda, data, hora, retorno, cancelado, motivoCancelamento, status, medico, paciente, usuario); 
         AgendaDAO dao = new AgendaDAO(utx, emf);
-        
+        Agenda agenda = new Agenda();
+
+        int registroAgenda = Integer.parseInt(request.getParameter("registroAgenda"));
+        dao.findAgenda(registroAgenda);
+        agenda.setData(formatDate.parse(request.getParameter("data")));
+        agenda.setHora(formatHour.parse(request.getParameter("hora")));
+        agenda.setRetorno("on".equalsIgnoreCase(request.getParameter("retorno")));
+        agenda.setCancelado("on".equalsIgnoreCase(request.getParameter("cancelado")));
+        agenda.setMotivocancelamento(request.getParameter("motivoCancelamento"));
+        agenda.setStatus("on".equalsIgnoreCase(request.getParameter("status")));
+        Horario medico = hor.findHorario(Integer.parseInt(request.getParameter("medico")));
+        agenda.setMedico(medico);
+        Paciente paciente = pac.findPaciente(Integer.parseInt(request.getParameter("paciente")));
+        agenda.setPaciente(paciente);
+        Usuario usuario = usu.findUsuario(Integer.parseInt(request.getParameter("usuario")));
+        agenda.setUsuario(usuario);
+
+
         dao.edit(agenda);
-        
+
         response.sendRedirect("listaAgendas.html");
-        
+
     }
 
 }

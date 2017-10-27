@@ -22,207 +22,86 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "funcionario")
 @NamedQueries({
-    @NamedQuery(name = "Funcionario.findAll", query = "SELECT f FROM Funcionario f")
-    , @NamedQuery(name = "Funcionario.findByIdFuncionario", query = "SELECT f FROM Funcionario f WHERE f.idFuncionario = :idFuncionario")
-    , @NamedQuery(name = "Funcionario.findByNomeFuncionario", query = "SELECT f FROM Funcionario f WHERE f.nomeFuncionario = :nomeFuncionario")
-    , @NamedQuery(name = "Funcionario.findByDataNascimento", query = "SELECT f FROM Funcionario f WHERE f.dataNascimento = :dataNascimento")
-    , @NamedQuery(name = "Funcionario.findByCpf", query = "SELECT f FROM Funcionario f WHERE f.cpf = :cpf")
-    , @NamedQuery(name = "Funcionario.findByRg", query = "SELECT f FROM Funcionario f WHERE f.rg = :rg")
-    , @NamedQuery(name = "Funcionario.findByOrgaoEmissor", query = "SELECT f FROM Funcionario f WHERE f.orgaoEmissor = :orgaoEmissor")
-    , @NamedQuery(name = "Funcionario.findByCtps", query = "SELECT f FROM Funcionario f WHERE f.ctps = :ctps")
-    , @NamedQuery(name = "Funcionario.findByPis", query = "SELECT f FROM Funcionario f WHERE f.pis = :pis")
-    , @NamedQuery(name = "Funcionario.findByEmail", query = "SELECT f FROM Funcionario f WHERE f.email = :email")
-    , @NamedQuery(name = "Funcionario.findByTelefone", query = "SELECT f FROM Funcionario f WHERE f.telefone = :telefone")
-    , @NamedQuery(name = "Funcionario.findByCelular", query = "SELECT f FROM Funcionario f WHERE f.celular = :celular")
-    , @NamedQuery(name = "Funcionario.findByObs", query = "SELECT f FROM Funcionario f WHERE f.obs = :obs")})
+    @NamedQuery(name = "Funcionario.findAll", query = "SELECT f FROM Funcionario f")})
 public class Funcionario implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idFuncionario;
+    @Column(name = "IDFUNCIONARIO")
+    private Integer idfuncionario;
+    @Size(max = 20)
+    @Column(name = "CELULAR")
+    private String celular;
+    @Size(max = 14)
+    @Column(name = "CPF")
+    private String cpf;
+    @Size(max = 20)
+    @Column(name = "CTPS")
+    private String ctps;
+    @Column(name = "DATANASCIMENTO")
+    @Temporal(TemporalType.DATE)
+    private Date datanascimento;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="E-mail inválido")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 100)
+    @Column(name = "EMAIL")
+    private String email;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(nullable = false, length = 100)
-    private String nomeFuncionario;
-    @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
-    @Size(max = 14)
-    @Column(length = 14)
-    private String cpf;
-    @Size(max = 15)
-    @Column(length = 15)
-    private String rg;
-    @Size(max = 10)
-    @Column(length = 10)
-    private String orgaoEmissor;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String ctps;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String pis;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="E-mail inválido")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 100)
-    @Column(length = 100)
-    private String email;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String telefone;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String celular;
+    @Column(name = "NOMEFUNCIONARIO")
+    private String nomefuncionario;
     @Size(max = 300)
-    @Column(length = 300)
+    @Column(name = "OBS")
     private String obs;
-    @JoinColumn(name = "Cargo", referencedColumnName = "idCargo", nullable = false)
+    @Size(max = 10)
+    @Column(name = "ORGAOEMISSOR")
+    private String orgaoemissor;
+    @Size(max = 20)
+    @Column(name = "PIS")
+    private String pis;
+    @Size(max = 15)
+    @Column(name = "RG")
+    private String rg;
+    @Size(max = 20)
+    @Column(name = "TELEFONE")
+    private String telefone;
+    @JoinColumn(name = "Cargo", referencedColumnName = "IDCARGO")
     @ManyToOne(optional = false)
     private Cargo cargo;
-    @JoinColumn(name = "Endereco", referencedColumnName = "idEndereco")
+    @JoinColumn(name = "Endereco", referencedColumnName = "IDENDERECO")
     @ManyToOne
     private Endereco endereco;
-    @JoinColumn(name = "UfEmissor", referencedColumnName = "sigla", nullable = false)
+    @JoinColumn(name = "UfEmissor", referencedColumnName = "SIGLA")
     @ManyToOne(optional = false)
     private Estados ufEmissor;
 
     public Funcionario() {
     }
 
-    public Funcionario(Integer idFuncionario) {
-        this.idFuncionario = idFuncionario;
+    public Funcionario(Integer idfuncionario) {
+        this.idfuncionario = idfuncionario;
     }
 
-    public Funcionario(Integer idFuncionario, String nomeFuncionario) {
-        this.idFuncionario = idFuncionario;
-        this.nomeFuncionario = nomeFuncionario;
+    public Funcionario(Integer idfuncionario, String nomefuncionario) {
+        this.idfuncionario = idfuncionario;
+        this.nomefuncionario = nomefuncionario;
     }
 
-    public Funcionario(String nomeFuncionario, Date dataNascimento, String cpf, String rg, String orgaoEmissor, String ctps, String pis, String email, String telefone, String celular, String obs, Cargo cargo, Endereco endereco, Estados ufEmissor) {
-        this.nomeFuncionario = nomeFuncionario;
-        this.dataNascimento = dataNascimento;
-        this.cpf = cpf;
-        this.rg = rg;
-        this.orgaoEmissor = orgaoEmissor;
-        this.ctps = ctps;
-        this.pis = pis;
-        this.email = email;
-        this.telefone = telefone;
-        this.celular = celular;
-        this.obs = obs;
-        this.cargo = cargo;
-        this.endereco = endereco;
-        this.ufEmissor = ufEmissor;
+    public Integer getIdfuncionario() {
+        return idfuncionario;
     }
 
-    public Funcionario(Integer idFuncionario, String nomeFuncionario, Date dataNascimento, String cpf, String rg, String orgaoEmissor, String ctps, String pis, String email, String telefone, String celular, String obs, Cargo cargo, Endereco endereco, Estados ufEmissor) {
-        this.idFuncionario = idFuncionario;
-        this.nomeFuncionario = nomeFuncionario;
-        this.dataNascimento = dataNascimento;
-        this.cpf = cpf;
-        this.rg = rg;
-        this.orgaoEmissor = orgaoEmissor;
-        this.ctps = ctps;
-        this.pis = pis;
-        this.email = email;
-        this.telefone = telefone;
-        this.celular = celular;
-        this.obs = obs;
-        this.cargo = cargo;
-        this.endereco = endereco;
-        this.ufEmissor = ufEmissor;
-    }
-    
-    public Integer getIdFuncionario() {
-        return idFuncionario;
-    }
-
-    public void setIdFuncionario(Integer idFuncionario) {
-        this.idFuncionario = idFuncionario;
-    }
-
-    public String getNomeFuncionario() {
-        return nomeFuncionario;
-    }
-
-    public void setNomeFuncionario(String nomeFuncionario) {
-        this.nomeFuncionario = nomeFuncionario;
-    }
-
-    public Date getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getRg() {
-        return rg;
-    }
-
-    public void setRg(String rg) {
-        this.rg = rg;
-    }
-
-    public String getOrgaoEmissor() {
-        return orgaoEmissor;
-    }
-
-    public void setOrgaoEmissor(String orgaoEmissor) {
-        this.orgaoEmissor = orgaoEmissor;
-    }
-
-    public String getCtps() {
-        return ctps;
-    }
-
-    public void setCtps(String ctps) {
-        this.ctps = ctps;
-    }
-
-    public String getPis() {
-        return pis;
-    }
-
-    public void setPis(String pis) {
-        this.pis = pis;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setIdfuncionario(Integer idfuncionario) {
+        this.idfuncionario = idfuncionario;
     }
 
     public String getCelular() {
@@ -233,12 +112,84 @@ public class Funcionario implements Serializable {
         this.celular = celular;
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getCtps() {
+        return ctps;
+    }
+
+    public void setCtps(String ctps) {
+        this.ctps = ctps;
+    }
+
+    public Date getDatanascimento() {
+        return datanascimento;
+    }
+
+    public void setDatanascimento(Date datanascimento) {
+        this.datanascimento = datanascimento;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNomefuncionario() {
+        return nomefuncionario;
+    }
+
+    public void setNomefuncionario(String nomefuncionario) {
+        this.nomefuncionario = nomefuncionario;
+    }
+
     public String getObs() {
         return obs;
     }
 
     public void setObs(String obs) {
         this.obs = obs;
+    }
+
+    public String getOrgaoemissor() {
+        return orgaoemissor;
+    }
+
+    public void setOrgaoemissor(String orgaoemissor) {
+        this.orgaoemissor = orgaoemissor;
+    }
+
+    public String getPis() {
+        return pis;
+    }
+
+    public void setPis(String pis) {
+        this.pis = pis;
+    }
+
+    public String getRg() {
+        return rg;
+    }
+
+    public void setRg(String rg) {
+        this.rg = rg;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
     public Cargo getCargo() {
@@ -268,7 +219,7 @@ public class Funcionario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idFuncionario != null ? idFuncionario.hashCode() : 0);
+        hash += (idfuncionario != null ? idfuncionario.hashCode() : 0);
         return hash;
     }
 
@@ -279,7 +230,7 @@ public class Funcionario implements Serializable {
             return false;
         }
         Funcionario other = (Funcionario) object;
-        if ((this.idFuncionario == null && other.idFuncionario != null) || (this.idFuncionario != null && !this.idFuncionario.equals(other.idFuncionario))) {
+        if ((this.idfuncionario == null && other.idfuncionario != null) || (this.idfuncionario != null && !this.idfuncionario.equals(other.idfuncionario))) {
             return false;
         }
         return true;
@@ -287,7 +238,7 @@ public class Funcionario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Funcionario[ idFuncionario=" + idFuncionario + " ]";
+        return "br.com.asfecer.model.Funcionario[ idfuncionario=" + idfuncionario + " ]";
     }
     
 }

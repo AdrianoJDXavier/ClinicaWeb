@@ -27,7 +27,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class MedicoDAO implements Serializable {
 
@@ -42,7 +42,7 @@ public class MedicoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Medico medico) throws RollbackFailureException, RuntimeException {
+    public void create(Medico medico) throws RollbackFailureException, Exception {
         if (medico.getHorarioCollection() == null) {
             medico.setHorarioCollection(new ArrayList<Horario>());
         }
@@ -55,7 +55,7 @@ public class MedicoDAO implements Serializable {
             em = getEntityManager();
             Especialidade especialidade = medico.getEspecialidade();
             if (especialidade != null) {
-                especialidade = em.getReference(especialidade.getClass(), especialidade.getIdEspecialidade());
+                especialidade = em.getReference(especialidade.getClass(), especialidade.getIdespecialidade());
                 medico.setEspecialidade(especialidade);
             }
             Estados ufCrm = medico.getUfCrm();
@@ -65,13 +65,13 @@ public class MedicoDAO implements Serializable {
             }
             Collection<Horario> attachedHorarioCollection = new ArrayList<Horario>();
             for (Horario horarioCollectionHorarioToAttach : medico.getHorarioCollection()) {
-                horarioCollectionHorarioToAttach = em.getReference(horarioCollectionHorarioToAttach.getClass(), horarioCollectionHorarioToAttach.getIdHorario());
+                horarioCollectionHorarioToAttach = em.getReference(horarioCollectionHorarioToAttach.getClass(), horarioCollectionHorarioToAttach.getIdhorario());
                 attachedHorarioCollection.add(horarioCollectionHorarioToAttach);
             }
             medico.setHorarioCollection(attachedHorarioCollection);
             Collection<Consulta> attachedConsultaCollection = new ArrayList<Consulta>();
             for (Consulta consultaCollectionConsultaToAttach : medico.getConsultaCollection()) {
-                consultaCollectionConsultaToAttach = em.getReference(consultaCollectionConsultaToAttach.getClass(), consultaCollectionConsultaToAttach.getIdConsulta());
+                consultaCollectionConsultaToAttach = em.getReference(consultaCollectionConsultaToAttach.getClass(), consultaCollectionConsultaToAttach.getIdconsulta());
                 attachedConsultaCollection.add(consultaCollectionConsultaToAttach);
             }
             medico.setConsultaCollection(attachedConsultaCollection);
@@ -109,7 +109,7 @@ public class MedicoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -117,12 +117,12 @@ public class MedicoDAO implements Serializable {
         }
     }
 
-    public void edit(Medico medico) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Medico medico) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Medico persistentMedico = em.find(Medico.class, medico.getIdMedico());
+            Medico persistentMedico = em.find(Medico.class, medico.getIdmedico());
             Especialidade especialidadeOld = persistentMedico.getEspecialidade();
             Especialidade especialidadeNew = medico.getEspecialidade();
             Estados ufCrmOld = persistentMedico.getUfCrm();
@@ -132,14 +132,6 @@ public class MedicoDAO implements Serializable {
             Collection<Consulta> consultaCollectionOld = persistentMedico.getConsultaCollection();
             Collection<Consulta> consultaCollectionNew = medico.getConsultaCollection();
             List<String> illegalOrphanMessages = null;
-            for (Horario horarioCollectionOldHorario : horarioCollectionOld) {
-                if (!horarioCollectionNew.contains(horarioCollectionOldHorario)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Horario " + horarioCollectionOldHorario + " since its medico field is not nullable.");
-                }
-            }
             for (Consulta consultaCollectionOldConsulta : consultaCollectionOld) {
                 if (!consultaCollectionNew.contains(consultaCollectionOldConsulta)) {
                     if (illegalOrphanMessages == null) {
@@ -152,7 +144,7 @@ public class MedicoDAO implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (especialidadeNew != null) {
-                especialidadeNew = em.getReference(especialidadeNew.getClass(), especialidadeNew.getIdEspecialidade());
+                especialidadeNew = em.getReference(especialidadeNew.getClass(), especialidadeNew.getIdespecialidade());
                 medico.setEspecialidade(especialidadeNew);
             }
             if (ufCrmNew != null) {
@@ -161,14 +153,14 @@ public class MedicoDAO implements Serializable {
             }
             Collection<Horario> attachedHorarioCollectionNew = new ArrayList<Horario>();
             for (Horario horarioCollectionNewHorarioToAttach : horarioCollectionNew) {
-                horarioCollectionNewHorarioToAttach = em.getReference(horarioCollectionNewHorarioToAttach.getClass(), horarioCollectionNewHorarioToAttach.getIdHorario());
+                horarioCollectionNewHorarioToAttach = em.getReference(horarioCollectionNewHorarioToAttach.getClass(), horarioCollectionNewHorarioToAttach.getIdhorario());
                 attachedHorarioCollectionNew.add(horarioCollectionNewHorarioToAttach);
             }
             horarioCollectionNew = attachedHorarioCollectionNew;
             medico.setHorarioCollection(horarioCollectionNew);
             Collection<Consulta> attachedConsultaCollectionNew = new ArrayList<Consulta>();
             for (Consulta consultaCollectionNewConsultaToAttach : consultaCollectionNew) {
-                consultaCollectionNewConsultaToAttach = em.getReference(consultaCollectionNewConsultaToAttach.getClass(), consultaCollectionNewConsultaToAttach.getIdConsulta());
+                consultaCollectionNewConsultaToAttach = em.getReference(consultaCollectionNewConsultaToAttach.getClass(), consultaCollectionNewConsultaToAttach.getIdconsulta());
                 attachedConsultaCollectionNew.add(consultaCollectionNewConsultaToAttach);
             }
             consultaCollectionNew = attachedConsultaCollectionNew;
@@ -189,6 +181,12 @@ public class MedicoDAO implements Serializable {
             if (ufCrmNew != null && !ufCrmNew.equals(ufCrmOld)) {
                 ufCrmNew.getMedicoCollection().add(medico);
                 ufCrmNew = em.merge(ufCrmNew);
+            }
+            for (Horario horarioCollectionOldHorario : horarioCollectionOld) {
+                if (!horarioCollectionNew.contains(horarioCollectionOldHorario)) {
+                    horarioCollectionOldHorario.setMedico(null);
+                    horarioCollectionOldHorario = em.merge(horarioCollectionOldHorario);
+                }
             }
             for (Horario horarioCollectionNewHorario : horarioCollectionNew) {
                 if (!horarioCollectionOld.contains(horarioCollectionNewHorario)) {
@@ -221,12 +219,12 @@ public class MedicoDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = medico.getIdMedico();
+                Integer id = medico.getIdmedico();
                 if (findMedico(id) == null) {
                     throw new NonexistentEntityException("The medico with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -234,7 +232,7 @@ public class MedicoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -242,18 +240,11 @@ public class MedicoDAO implements Serializable {
             Medico medico;
             try {
                 medico = em.getReference(Medico.class, id);
-                medico.getIdMedico();
+                medico.getIdmedico();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The medico with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Horario> horarioCollectionOrphanCheck = medico.getHorarioCollection();
-            for (Horario horarioCollectionOrphanCheckHorario : horarioCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Medico (" + medico + ") cannot be destroyed since the Horario " + horarioCollectionOrphanCheckHorario + " in its horarioCollection field has a non-nullable medico field.");
-            }
             Collection<Consulta> consultaCollectionOrphanCheck = medico.getConsultaCollection();
             for (Consulta consultaCollectionOrphanCheckConsulta : consultaCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
@@ -274,6 +265,11 @@ public class MedicoDAO implements Serializable {
                 ufCrm.getMedicoCollection().remove(medico);
                 ufCrm = em.merge(ufCrm);
             }
+            Collection<Horario> horarioCollection = medico.getHorarioCollection();
+            for (Horario horarioCollectionHorario : horarioCollection) {
+                horarioCollectionHorario.setMedico(null);
+                horarioCollectionHorario = em.merge(horarioCollectionHorario);
+            }
             em.remove(medico);
             utx.commit();
         } catch (Exception ex) {
@@ -282,7 +278,7 @@ public class MedicoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

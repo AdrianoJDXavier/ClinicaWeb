@@ -58,13 +58,13 @@
                                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color: #e3e3e3;">Usuários<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
                                         <li><a href="criaUsuario.html">Cadastrar Usuário</a></li>
-                                        <li><a href="listaUsuarios.html">Listar Usuários</a></li>
+                                        <li><a href="listaUsuarios.html">Listar Usuário</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color: #e3e3e3;">Convenios<span class="caret"></span></a>
+                                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="color: #e3e3e3;">Convênios<span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="criaConvenio.html">Cadastrar Convenio</a></li>
-                                        <li><a href="listaConvenio.html">Listar Convenios</a></li>
+                                        <li><a href="criaConvenio.html">Cadastrar Convênio</a></li>
+                                        <li><a href="listaConvenio.html">Listar Convênios</a></li>
                                     </ul>
                                 </li>
                             </ul>

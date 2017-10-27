@@ -24,7 +24,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class EspecialidadeDAO implements Serializable {
 
@@ -39,7 +39,7 @@ public class EspecialidadeDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Especialidade especialidade) throws RollbackFailureException, RuntimeException {
+    public void create(Especialidade especialidade) throws RollbackFailureException, Exception {
         if (especialidade.getMedicoCollection() == null) {
             especialidade.setMedicoCollection(new ArrayList<Medico>());
         }
@@ -49,7 +49,7 @@ public class EspecialidadeDAO implements Serializable {
             em = getEntityManager();
             Collection<Medico> attachedMedicoCollection = new ArrayList<Medico>();
             for (Medico medicoCollectionMedicoToAttach : especialidade.getMedicoCollection()) {
-                medicoCollectionMedicoToAttach = em.getReference(medicoCollectionMedicoToAttach.getClass(), medicoCollectionMedicoToAttach.getIdMedico());
+                medicoCollectionMedicoToAttach = em.getReference(medicoCollectionMedicoToAttach.getClass(), medicoCollectionMedicoToAttach.getIdmedico());
                 attachedMedicoCollection.add(medicoCollectionMedicoToAttach);
             }
             especialidade.setMedicoCollection(attachedMedicoCollection);
@@ -70,7 +70,7 @@ public class EspecialidadeDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -78,12 +78,12 @@ public class EspecialidadeDAO implements Serializable {
         }
     }
 
-    public void edit(Especialidade especialidade) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Especialidade especialidade) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Especialidade persistentEspecialidade = em.find(Especialidade.class, especialidade.getIdEspecialidade());
+            Especialidade persistentEspecialidade = em.find(Especialidade.class, especialidade.getIdespecialidade());
             Collection<Medico> medicoCollectionOld = persistentEspecialidade.getMedicoCollection();
             Collection<Medico> medicoCollectionNew = especialidade.getMedicoCollection();
             List<String> illegalOrphanMessages = null;
@@ -100,7 +100,7 @@ public class EspecialidadeDAO implements Serializable {
             }
             Collection<Medico> attachedMedicoCollectionNew = new ArrayList<Medico>();
             for (Medico medicoCollectionNewMedicoToAttach : medicoCollectionNew) {
-                medicoCollectionNewMedicoToAttach = em.getReference(medicoCollectionNewMedicoToAttach.getClass(), medicoCollectionNewMedicoToAttach.getIdMedico());
+                medicoCollectionNewMedicoToAttach = em.getReference(medicoCollectionNewMedicoToAttach.getClass(), medicoCollectionNewMedicoToAttach.getIdmedico());
                 attachedMedicoCollectionNew.add(medicoCollectionNewMedicoToAttach);
             }
             medicoCollectionNew = attachedMedicoCollectionNew;
@@ -126,12 +126,12 @@ public class EspecialidadeDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = especialidade.getIdEspecialidade();
+                Integer id = especialidade.getIdespecialidade();
                 if (findEspecialidade(id) == null) {
                     throw new NonexistentEntityException("The especialidade with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -139,7 +139,7 @@ public class EspecialidadeDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -147,7 +147,7 @@ public class EspecialidadeDAO implements Serializable {
             Especialidade especialidade;
             try {
                 especialidade = em.getReference(Especialidade.class, id);
-                especialidade.getIdEspecialidade();
+                especialidade.getIdespecialidade();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The especialidade with id " + id + " no longer exists.", enfe);
             }
@@ -170,7 +170,7 @@ public class EspecialidadeDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

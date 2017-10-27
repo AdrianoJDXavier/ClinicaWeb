@@ -27,7 +27,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class CidadeDAO implements Serializable {
 
@@ -42,7 +42,7 @@ public class CidadeDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cidade cidade) throws PreexistingEntityException, RollbackFailureException, RuntimeException {
+    public void create(Cidade cidade) throws PreexistingEntityException, RollbackFailureException, Exception {
         if (cidade.getEnderecoCollection() == null) {
             cidade.setEnderecoCollection(new ArrayList<Endereco>());
         }
@@ -60,13 +60,13 @@ public class CidadeDAO implements Serializable {
             }
             Collection<Endereco> attachedEnderecoCollection = new ArrayList<Endereco>();
             for (Endereco enderecoCollectionEnderecoToAttach : cidade.getEnderecoCollection()) {
-                enderecoCollectionEnderecoToAttach = em.getReference(enderecoCollectionEnderecoToAttach.getClass(), enderecoCollectionEnderecoToAttach.getIdEndereco());
+                enderecoCollectionEnderecoToAttach = em.getReference(enderecoCollectionEnderecoToAttach.getClass(), enderecoCollectionEnderecoToAttach.getIdendereco());
                 attachedEnderecoCollection.add(enderecoCollectionEnderecoToAttach);
             }
             cidade.setEnderecoCollection(attachedEnderecoCollection);
             Collection<Paciente> attachedPacienteCollection = new ArrayList<Paciente>();
             for (Paciente pacienteCollectionPacienteToAttach : cidade.getPacienteCollection()) {
-                pacienteCollectionPacienteToAttach = em.getReference(pacienteCollectionPacienteToAttach.getClass(), pacienteCollectionPacienteToAttach.getIdPaciente());
+                pacienteCollectionPacienteToAttach = em.getReference(pacienteCollectionPacienteToAttach.getClass(), pacienteCollectionPacienteToAttach.getIdpaciente());
                 attachedPacienteCollection.add(pacienteCollectionPacienteToAttach);
             }
             cidade.setPacienteCollection(attachedPacienteCollection);
@@ -100,10 +100,10 @@ public class CidadeDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            if (findCidade(cidade.getIdCidade()) != null) {
+            if (findCidade(cidade.getIdcidade()) != null) {
                 throw new PreexistingEntityException("Cidade " + cidade + " already exists.", ex);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -111,12 +111,12 @@ public class CidadeDAO implements Serializable {
         }
     }
 
-    public void edit(Cidade cidade) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Cidade cidade) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Cidade persistentCidade = em.find(Cidade.class, cidade.getIdCidade());
+            Cidade persistentCidade = em.find(Cidade.class, cidade.getIdcidade());
             Estados estadoOld = persistentCidade.getEstado();
             Estados estadoNew = cidade.getEstado();
             Collection<Endereco> enderecoCollectionOld = persistentCidade.getEnderecoCollection();
@@ -141,14 +141,14 @@ public class CidadeDAO implements Serializable {
             }
             Collection<Endereco> attachedEnderecoCollectionNew = new ArrayList<Endereco>();
             for (Endereco enderecoCollectionNewEnderecoToAttach : enderecoCollectionNew) {
-                enderecoCollectionNewEnderecoToAttach = em.getReference(enderecoCollectionNewEnderecoToAttach.getClass(), enderecoCollectionNewEnderecoToAttach.getIdEndereco());
+                enderecoCollectionNewEnderecoToAttach = em.getReference(enderecoCollectionNewEnderecoToAttach.getClass(), enderecoCollectionNewEnderecoToAttach.getIdendereco());
                 attachedEnderecoCollectionNew.add(enderecoCollectionNewEnderecoToAttach);
             }
             enderecoCollectionNew = attachedEnderecoCollectionNew;
             cidade.setEnderecoCollection(enderecoCollectionNew);
             Collection<Paciente> attachedPacienteCollectionNew = new ArrayList<Paciente>();
             for (Paciente pacienteCollectionNewPacienteToAttach : pacienteCollectionNew) {
-                pacienteCollectionNewPacienteToAttach = em.getReference(pacienteCollectionNewPacienteToAttach.getClass(), pacienteCollectionNewPacienteToAttach.getIdPaciente());
+                pacienteCollectionNewPacienteToAttach = em.getReference(pacienteCollectionNewPacienteToAttach.getClass(), pacienteCollectionNewPacienteToAttach.getIdpaciente());
                 attachedPacienteCollectionNew.add(pacienteCollectionNewPacienteToAttach);
             }
             pacienteCollectionNew = attachedPacienteCollectionNew;
@@ -199,12 +199,12 @@ public class CidadeDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = cidade.getIdCidade();
+                Integer id = cidade.getIdcidade();
                 if (findCidade(id) == null) {
                     throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -212,7 +212,7 @@ public class CidadeDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -220,7 +220,7 @@ public class CidadeDAO implements Serializable {
             Cidade cidade;
             try {
                 cidade = em.getReference(Cidade.class, id);
-                cidade.getIdCidade();
+                cidade.getIdcidade();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.", enfe);
             }
@@ -253,7 +253,7 @@ public class CidadeDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

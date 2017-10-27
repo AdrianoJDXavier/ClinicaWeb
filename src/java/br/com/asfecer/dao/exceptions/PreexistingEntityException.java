@@ -1,6 +1,6 @@
 package br.com.asfecer.dao.exceptions;
 
-public class PreexistingEntityException extends RuntimeException {
+public class PreexistingEntityException extends Exception {
     public PreexistingEntityException(String message, Throwable cause) {
         super(message, cause);
     }

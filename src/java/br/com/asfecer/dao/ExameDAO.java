@@ -14,8 +14,8 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import br.com.asfecer.model.TipoExame;
-import br.com.asfecer.model.PedidoExame;
+import br.com.asfecer.model.Tipoexame;
+import br.com.asfecer.model.Pedidoexame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +25,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class ExameDAO implements Serializable {
 
@@ -40,37 +40,37 @@ public class ExameDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Exame exame) throws RollbackFailureException, RuntimeException {
-        if (exame.getPedidoExameCollection() == null) {
-            exame.setPedidoExameCollection(new ArrayList<PedidoExame>());
+    public void create(Exame exame) throws RollbackFailureException, Exception {
+        if (exame.getPedidoexameCollection() == null) {
+            exame.setPedidoexameCollection(new ArrayList<Pedidoexame>());
         }
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            TipoExame tipoExame = exame.getTipoExame();
+            Tipoexame tipoExame = exame.getTipoExame();
             if (tipoExame != null) {
-                tipoExame = em.getReference(tipoExame.getClass(), tipoExame.getIdTipoExame());
+                tipoExame = em.getReference(tipoExame.getClass(), tipoExame.getIdtipoexame());
                 exame.setTipoExame(tipoExame);
             }
-            Collection<PedidoExame> attachedPedidoExameCollection = new ArrayList<PedidoExame>();
-            for (PedidoExame pedidoexameCollectionPedidoExameToAttach : exame.getPedidoExameCollection()) {
-                pedidoexameCollectionPedidoExameToAttach = em.getReference(pedidoexameCollectionPedidoExameToAttach.getClass(), pedidoexameCollectionPedidoExameToAttach.getIdPedidoExame());
-                attachedPedidoExameCollection.add(pedidoexameCollectionPedidoExameToAttach);
+            Collection<Pedidoexame> attachedPedidoexameCollection = new ArrayList<Pedidoexame>();
+            for (Pedidoexame pedidoexameCollectionPedidoexameToAttach : exame.getPedidoexameCollection()) {
+                pedidoexameCollectionPedidoexameToAttach = em.getReference(pedidoexameCollectionPedidoexameToAttach.getClass(), pedidoexameCollectionPedidoexameToAttach.getIdpedidoexame());
+                attachedPedidoexameCollection.add(pedidoexameCollectionPedidoexameToAttach);
             }
-            exame.setPedidoExameCollection(attachedPedidoExameCollection);
+            exame.setPedidoexameCollection(attachedPedidoexameCollection);
             em.persist(exame);
             if (tipoExame != null) {
                 tipoExame.getExameCollection().add(exame);
                 tipoExame = em.merge(tipoExame);
             }
-            for (PedidoExame pedidoexameCollectionPedidoExame : exame.getPedidoExameCollection()) {
-                Exame oldExameOfPedidoExameCollectionPedidoExame = pedidoexameCollectionPedidoExame.getExame();
-                pedidoexameCollectionPedidoExame.setExame(exame);
-                pedidoexameCollectionPedidoExame = em.merge(pedidoexameCollectionPedidoExame);
-                if (oldExameOfPedidoExameCollectionPedidoExame != null) {
-                    oldExameOfPedidoExameCollectionPedidoExame.getPedidoExameCollection().remove(pedidoexameCollectionPedidoExame);
-                    oldExameOfPedidoExameCollectionPedidoExame = em.merge(oldExameOfPedidoExameCollectionPedidoExame);
+            for (Pedidoexame pedidoexameCollectionPedidoexame : exame.getPedidoexameCollection()) {
+                Exame oldExameOfPedidoexameCollectionPedidoexame = pedidoexameCollectionPedidoexame.getExame();
+                pedidoexameCollectionPedidoexame.setExame(exame);
+                pedidoexameCollectionPedidoexame = em.merge(pedidoexameCollectionPedidoexame);
+                if (oldExameOfPedidoexameCollectionPedidoexame != null) {
+                    oldExameOfPedidoexameCollectionPedidoexame.getPedidoexameCollection().remove(pedidoexameCollectionPedidoexame);
+                    oldExameOfPedidoexameCollectionPedidoexame = em.merge(oldExameOfPedidoexameCollectionPedidoexame);
                 }
             }
             utx.commit();
@@ -80,7 +80,7 @@ public class ExameDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -88,39 +88,39 @@ public class ExameDAO implements Serializable {
         }
     }
 
-    public void edit(Exame exame) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Exame exame) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Exame persistentExame = em.find(Exame.class, exame.getIdExame());
-            TipoExame tipoExameOld = persistentExame.getTipoExame();
-            TipoExame tipoExameNew = exame.getTipoExame();
-            Collection<PedidoExame> pedidoexameCollectionOld = persistentExame.getPedidoExameCollection();
-            Collection<PedidoExame> pedidoexameCollectionNew = exame.getPedidoExameCollection();
+            Exame persistentExame = em.find(Exame.class, exame.getIdexame());
+            Tipoexame tipoExameOld = persistentExame.getTipoExame();
+            Tipoexame tipoExameNew = exame.getTipoExame();
+            Collection<Pedidoexame> pedidoexameCollectionOld = persistentExame.getPedidoexameCollection();
+            Collection<Pedidoexame> pedidoexameCollectionNew = exame.getPedidoexameCollection();
             List<String> illegalOrphanMessages = null;
-            for (PedidoExame pedidoexameCollectionOldPedidoExame : pedidoexameCollectionOld) {
-                if (!pedidoexameCollectionNew.contains(pedidoexameCollectionOldPedidoExame)) {
+            for (Pedidoexame pedidoexameCollectionOldPedidoexame : pedidoexameCollectionOld) {
+                if (!pedidoexameCollectionNew.contains(pedidoexameCollectionOldPedidoexame)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain PedidoExame " + pedidoexameCollectionOldPedidoExame + " since its exame field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Pedidoexame " + pedidoexameCollectionOldPedidoexame + " since its exame field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (tipoExameNew != null) {
-                tipoExameNew = em.getReference(tipoExameNew.getClass(), tipoExameNew.getIdTipoExame());
+                tipoExameNew = em.getReference(tipoExameNew.getClass(), tipoExameNew.getIdtipoexame());
                 exame.setTipoExame(tipoExameNew);
             }
-            Collection<PedidoExame> attachedPedidoExameCollectionNew = new ArrayList<PedidoExame>();
-            for (PedidoExame pedidoexameCollectionNewPedidoExameToAttach : pedidoexameCollectionNew) {
-                pedidoexameCollectionNewPedidoExameToAttach = em.getReference(pedidoexameCollectionNewPedidoExameToAttach.getClass(), pedidoexameCollectionNewPedidoExameToAttach.getIdPedidoExame());
-                attachedPedidoExameCollectionNew.add(pedidoexameCollectionNewPedidoExameToAttach);
+            Collection<Pedidoexame> attachedPedidoexameCollectionNew = new ArrayList<Pedidoexame>();
+            for (Pedidoexame pedidoexameCollectionNewPedidoexameToAttach : pedidoexameCollectionNew) {
+                pedidoexameCollectionNewPedidoexameToAttach = em.getReference(pedidoexameCollectionNewPedidoexameToAttach.getClass(), pedidoexameCollectionNewPedidoexameToAttach.getIdpedidoexame());
+                attachedPedidoexameCollectionNew.add(pedidoexameCollectionNewPedidoexameToAttach);
             }
-            pedidoexameCollectionNew = attachedPedidoExameCollectionNew;
-            exame.setPedidoExameCollection(pedidoexameCollectionNew);
+            pedidoexameCollectionNew = attachedPedidoexameCollectionNew;
+            exame.setPedidoexameCollection(pedidoexameCollectionNew);
             exame = em.merge(exame);
             if (tipoExameOld != null && !tipoExameOld.equals(tipoExameNew)) {
                 tipoExameOld.getExameCollection().remove(exame);
@@ -130,14 +130,14 @@ public class ExameDAO implements Serializable {
                 tipoExameNew.getExameCollection().add(exame);
                 tipoExameNew = em.merge(tipoExameNew);
             }
-            for (PedidoExame pedidoexameCollectionNewPedidoExame : pedidoexameCollectionNew) {
-                if (!pedidoexameCollectionOld.contains(pedidoexameCollectionNewPedidoExame)) {
-                    Exame oldExameOfPedidoExameCollectionNewPedidoExame = pedidoexameCollectionNewPedidoExame.getExame();
-                    pedidoexameCollectionNewPedidoExame.setExame(exame);
-                    pedidoexameCollectionNewPedidoExame = em.merge(pedidoexameCollectionNewPedidoExame);
-                    if (oldExameOfPedidoExameCollectionNewPedidoExame != null && !oldExameOfPedidoExameCollectionNewPedidoExame.equals(exame)) {
-                        oldExameOfPedidoExameCollectionNewPedidoExame.getPedidoExameCollection().remove(pedidoexameCollectionNewPedidoExame);
-                        oldExameOfPedidoExameCollectionNewPedidoExame = em.merge(oldExameOfPedidoExameCollectionNewPedidoExame);
+            for (Pedidoexame pedidoexameCollectionNewPedidoexame : pedidoexameCollectionNew) {
+                if (!pedidoexameCollectionOld.contains(pedidoexameCollectionNewPedidoexame)) {
+                    Exame oldExameOfPedidoexameCollectionNewPedidoexame = pedidoexameCollectionNewPedidoexame.getExame();
+                    pedidoexameCollectionNewPedidoexame.setExame(exame);
+                    pedidoexameCollectionNewPedidoexame = em.merge(pedidoexameCollectionNewPedidoexame);
+                    if (oldExameOfPedidoexameCollectionNewPedidoexame != null && !oldExameOfPedidoexameCollectionNewPedidoexame.equals(exame)) {
+                        oldExameOfPedidoexameCollectionNewPedidoexame.getPedidoexameCollection().remove(pedidoexameCollectionNewPedidoexame);
+                        oldExameOfPedidoexameCollectionNewPedidoexame = em.merge(oldExameOfPedidoexameCollectionNewPedidoexame);
                     }
                 }
             }
@@ -150,12 +150,12 @@ public class ExameDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = exame.getIdExame();
+                Integer id = exame.getIdexame();
                 if (findExame(id) == null) {
                     throw new NonexistentEntityException("The exame with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -163,7 +163,7 @@ public class ExameDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -171,22 +171,22 @@ public class ExameDAO implements Serializable {
             Exame exame;
             try {
                 exame = em.getReference(Exame.class, id);
-                exame.getIdExame();
+                exame.getIdexame();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The exame with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<PedidoExame> pedidoexameCollectionOrphanCheck = exame.getPedidoExameCollection();
-            for (PedidoExame pedidoexameCollectionOrphanCheckPedidoExame : pedidoexameCollectionOrphanCheck) {
+            Collection<Pedidoexame> pedidoexameCollectionOrphanCheck = exame.getPedidoexameCollection();
+            for (Pedidoexame pedidoexameCollectionOrphanCheckPedidoexame : pedidoexameCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Exame (" + exame + ") cannot be destroyed since the PedidoExame " + pedidoexameCollectionOrphanCheckPedidoExame + " in its pedidoexameCollection field has a non-nullable exame field.");
+                illegalOrphanMessages.add("This Exame (" + exame + ") cannot be destroyed since the Pedidoexame " + pedidoexameCollectionOrphanCheckPedidoexame + " in its pedidoexameCollection field has a non-nullable exame field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            TipoExame tipoExame = exame.getTipoExame();
+            Tipoexame tipoExame = exame.getTipoExame();
             if (tipoExame != null) {
                 tipoExame.getExameCollection().remove(exame);
                 tipoExame = em.merge(tipoExame);
@@ -199,7 +199,7 @@ public class ExameDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

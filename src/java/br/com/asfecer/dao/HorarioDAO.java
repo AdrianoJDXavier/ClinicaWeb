@@ -25,7 +25,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class HorarioDAO implements Serializable {
 
@@ -40,7 +40,7 @@ public class HorarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Horario horario) throws RollbackFailureException, RuntimeException {
+    public void create(Horario horario) throws RollbackFailureException, Exception {
         if (horario.getAgendaCollection() == null) {
             horario.setAgendaCollection(new ArrayList<Agenda>());
         }
@@ -50,12 +50,12 @@ public class HorarioDAO implements Serializable {
             em = getEntityManager();
             Medico medico = horario.getMedico();
             if (medico != null) {
-                medico = em.getReference(medico.getClass(), medico.getIdMedico());
+                medico = em.getReference(medico.getClass(), medico.getIdmedico());
                 horario.setMedico(medico);
             }
             Collection<Agenda> attachedAgendaCollection = new ArrayList<Agenda>();
             for (Agenda agendaCollectionAgendaToAttach : horario.getAgendaCollection()) {
-                agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroAgenda());
+                agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroagenda());
                 attachedAgendaCollection.add(agendaCollectionAgendaToAttach);
             }
             horario.setAgendaCollection(attachedAgendaCollection);
@@ -80,7 +80,7 @@ public class HorarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -88,12 +88,12 @@ public class HorarioDAO implements Serializable {
         }
     }
 
-    public void edit(Horario horario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Horario horario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Horario persistentHorario = em.find(Horario.class, horario.getIdHorario());
+            Horario persistentHorario = em.find(Horario.class, horario.getIdhorario());
             Medico medicoOld = persistentHorario.getMedico();
             Medico medicoNew = horario.getMedico();
             Collection<Agenda> agendaCollectionOld = persistentHorario.getAgendaCollection();
@@ -111,12 +111,12 @@ public class HorarioDAO implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (medicoNew != null) {
-                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdMedico());
+                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdmedico());
                 horario.setMedico(medicoNew);
             }
             Collection<Agenda> attachedAgendaCollectionNew = new ArrayList<Agenda>();
             for (Agenda agendaCollectionNewAgendaToAttach : agendaCollectionNew) {
-                agendaCollectionNewAgendaToAttach = em.getReference(agendaCollectionNewAgendaToAttach.getClass(), agendaCollectionNewAgendaToAttach.getRegistroAgenda());
+                agendaCollectionNewAgendaToAttach = em.getReference(agendaCollectionNewAgendaToAttach.getClass(), agendaCollectionNewAgendaToAttach.getRegistroagenda());
                 attachedAgendaCollectionNew.add(agendaCollectionNewAgendaToAttach);
             }
             agendaCollectionNew = attachedAgendaCollectionNew;
@@ -150,12 +150,12 @@ public class HorarioDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = horario.getIdHorario();
+                Integer id = horario.getIdhorario();
                 if (findHorario(id) == null) {
                     throw new NonexistentEntityException("The horario with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -163,7 +163,7 @@ public class HorarioDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -171,7 +171,7 @@ public class HorarioDAO implements Serializable {
             Horario horario;
             try {
                 horario = em.getReference(Horario.class, id);
-                horario.getIdHorario();
+                horario.getIdhorario();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The horario with id " + id + " no longer exists.", enfe);
             }
@@ -199,7 +199,7 @@ public class HorarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

@@ -5,6 +5,8 @@ import br.com.asfecer.model.Usuario;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -48,7 +50,11 @@ public class UsuarioController extends HttpServlet {
         }
 
         if (request.getServletPath().contains("/criaUsuario.html")) {
-            criarPost(request, response);
+            try {
+                criarPost(request, response);
+            } catch (Exception ex) {
+                Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
@@ -58,13 +64,13 @@ public class UsuarioController extends HttpServlet {
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UsuarioDAO dao = new UsuarioDAO(utx, emf);
-            int id = Integer.parseInt(request.getParameter("idUsuario"));
-            Usuario usuario = dao.findUsuario(id);
-
-            request.setAttribute("usuario", usuario);
-            request.getRequestDispatcher("WEB-INF/views/editaUsuario.jsp").forward(request, response);
+    try {
+        UsuarioDAO dao = new UsuarioDAO(utx, emf);
+        int id = Integer.parseInt(request.getParameter("idUsuario"));
+        Usuario usuario = dao.findUsuario(id);
+        
+        request.setAttribute("usuario", usuario);
+        request.getRequestDispatcher("WEB-INF/views/editaUsuario.jsp").forward(request, response);
         } catch (Exception e) {
             response.sendRedirect("listaUsuarios.html");
         }
@@ -89,8 +95,7 @@ public class UsuarioController extends HttpServlet {
         }
     }
 
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
         String tipoUsuario = request.getParameter("tipoUsuario");
         char status = request.getParameter("status").charAt(0);
         String login = request.getParameter("login");
@@ -114,15 +119,15 @@ public class UsuarioController extends HttpServlet {
             UsuarioDAO dao = new UsuarioDAO(utx, emf);
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
             Usuario usuario = dao.findUsuario(idUsuario);
-            usuario.setTipoUsuario(request.getParameter("tipoUsuario"));
+            usuario.setTipousuario(request.getParameter("tipoUsuario"));
             usuario.setStatus(request.getParameter("status").charAt(0));
             usuario.setLogin(request.getParameter("login"));
             usuario.setSenha(request.getParameter("senha"));
-            usuario.setModuloAdministrativo(request.getParameter("moduloAdministrativo").charAt(0));
-            usuario.setModuloAgendamento(request.getParameter("moduloAgendamento").charAt(0));
-            usuario.setModuloAgendamento(request.getParameter("moduloAtendimento").charAt(0));
-            usuario.setModuloAcesso(request.getParameter("moduloAcesso").charAt(0));
-            usuario.setModuloAdmBD(request.getParameter("moduloAdmBD").charAt(0));
+            usuario.setModuloadministrativo(request.getParameter("moduloAdministrativo").charAt(0));
+            usuario.setModuloagendamento(request.getParameter("moduloAgendamento").charAt(0));
+            usuario.setModuloagendamento(request.getParameter("moduloAtendimento").charAt(0));
+            usuario.setModuloacesso(request.getParameter("moduloAcesso").charAt(0));
+            usuario.setModuloadmbd(request.getParameter("moduloAdmBD").charAt(0));
 
             dao.edit(usuario);
 

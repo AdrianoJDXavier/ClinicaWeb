@@ -27,7 +27,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class EstadosDAO implements Serializable {
 
@@ -42,7 +42,7 @@ public class EstadosDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Estados estados) throws PreexistingEntityException, RollbackFailureException, RuntimeException {
+    public void create(Estados estados) throws PreexistingEntityException, RollbackFailureException, Exception {
         if (estados.getCidadeCollection() == null) {
             estados.setCidadeCollection(new ArrayList<Cidade>());
         }
@@ -58,19 +58,19 @@ public class EstadosDAO implements Serializable {
             em = getEntityManager();
             Collection<Cidade> attachedCidadeCollection = new ArrayList<Cidade>();
             for (Cidade cidadeCollectionCidadeToAttach : estados.getCidadeCollection()) {
-                cidadeCollectionCidadeToAttach = em.getReference(cidadeCollectionCidadeToAttach.getClass(), cidadeCollectionCidadeToAttach.getIdCidade());
+                cidadeCollectionCidadeToAttach = em.getReference(cidadeCollectionCidadeToAttach.getClass(), cidadeCollectionCidadeToAttach.getIdcidade());
                 attachedCidadeCollection.add(cidadeCollectionCidadeToAttach);
             }
             estados.setCidadeCollection(attachedCidadeCollection);
             Collection<Medico> attachedMedicoCollection = new ArrayList<Medico>();
             for (Medico medicoCollectionMedicoToAttach : estados.getMedicoCollection()) {
-                medicoCollectionMedicoToAttach = em.getReference(medicoCollectionMedicoToAttach.getClass(), medicoCollectionMedicoToAttach.getIdMedico());
+                medicoCollectionMedicoToAttach = em.getReference(medicoCollectionMedicoToAttach.getClass(), medicoCollectionMedicoToAttach.getIdmedico());
                 attachedMedicoCollection.add(medicoCollectionMedicoToAttach);
             }
             estados.setMedicoCollection(attachedMedicoCollection);
             Collection<Funcionario> attachedFuncionarioCollection = new ArrayList<Funcionario>();
             for (Funcionario funcionarioCollectionFuncionarioToAttach : estados.getFuncionarioCollection()) {
-                funcionarioCollectionFuncionarioToAttach = em.getReference(funcionarioCollectionFuncionarioToAttach.getClass(), funcionarioCollectionFuncionarioToAttach.getIdFuncionario());
+                funcionarioCollectionFuncionarioToAttach = em.getReference(funcionarioCollectionFuncionarioToAttach.getClass(), funcionarioCollectionFuncionarioToAttach.getIdfuncionario());
                 attachedFuncionarioCollection.add(funcionarioCollectionFuncionarioToAttach);
             }
             estados.setFuncionarioCollection(attachedFuncionarioCollection);
@@ -112,7 +112,7 @@ public class EstadosDAO implements Serializable {
             if (findEstados(estados.getSigla()) != null) {
                 throw new PreexistingEntityException("Estados " + estados + " already exists.", ex);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -120,7 +120,7 @@ public class EstadosDAO implements Serializable {
         }
     }
 
-    public void edit(Estados estados) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Estados estados) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -162,21 +162,21 @@ public class EstadosDAO implements Serializable {
             }
             Collection<Cidade> attachedCidadeCollectionNew = new ArrayList<Cidade>();
             for (Cidade cidadeCollectionNewCidadeToAttach : cidadeCollectionNew) {
-                cidadeCollectionNewCidadeToAttach = em.getReference(cidadeCollectionNewCidadeToAttach.getClass(), cidadeCollectionNewCidadeToAttach.getIdCidade());
+                cidadeCollectionNewCidadeToAttach = em.getReference(cidadeCollectionNewCidadeToAttach.getClass(), cidadeCollectionNewCidadeToAttach.getIdcidade());
                 attachedCidadeCollectionNew.add(cidadeCollectionNewCidadeToAttach);
             }
             cidadeCollectionNew = attachedCidadeCollectionNew;
             estados.setCidadeCollection(cidadeCollectionNew);
             Collection<Medico> attachedMedicoCollectionNew = new ArrayList<Medico>();
             for (Medico medicoCollectionNewMedicoToAttach : medicoCollectionNew) {
-                medicoCollectionNewMedicoToAttach = em.getReference(medicoCollectionNewMedicoToAttach.getClass(), medicoCollectionNewMedicoToAttach.getIdMedico());
+                medicoCollectionNewMedicoToAttach = em.getReference(medicoCollectionNewMedicoToAttach.getClass(), medicoCollectionNewMedicoToAttach.getIdmedico());
                 attachedMedicoCollectionNew.add(medicoCollectionNewMedicoToAttach);
             }
             medicoCollectionNew = attachedMedicoCollectionNew;
             estados.setMedicoCollection(medicoCollectionNew);
             Collection<Funcionario> attachedFuncionarioCollectionNew = new ArrayList<Funcionario>();
             for (Funcionario funcionarioCollectionNewFuncionarioToAttach : funcionarioCollectionNew) {
-                funcionarioCollectionNewFuncionarioToAttach = em.getReference(funcionarioCollectionNewFuncionarioToAttach.getClass(), funcionarioCollectionNewFuncionarioToAttach.getIdFuncionario());
+                funcionarioCollectionNewFuncionarioToAttach = em.getReference(funcionarioCollectionNewFuncionarioToAttach.getClass(), funcionarioCollectionNewFuncionarioToAttach.getIdfuncionario());
                 attachedFuncionarioCollectionNew.add(funcionarioCollectionNewFuncionarioToAttach);
             }
             funcionarioCollectionNew = attachedFuncionarioCollectionNew;
@@ -229,7 +229,7 @@ public class EstadosDAO implements Serializable {
                     throw new NonexistentEntityException("The estados with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -237,7 +237,7 @@ public class EstadosDAO implements Serializable {
         }
     }
 
-    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -282,7 +282,7 @@ public class EstadosDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

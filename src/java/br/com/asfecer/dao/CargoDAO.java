@@ -25,7 +25,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class CargoDAO implements Serializable {
 
@@ -40,7 +40,7 @@ public class CargoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cargo cargo) throws RollbackFailureException, RuntimeException {
+    public void create(Cargo cargo) throws RollbackFailureException, Exception {
         if (cargo.getFuncionarioCollection() == null) {
             cargo.setFuncionarioCollection(new ArrayList<Funcionario>());
         }
@@ -50,12 +50,12 @@ public class CargoDAO implements Serializable {
             em = getEntityManager();
             Departamento depto = cargo.getDepto();
             if (depto != null) {
-                depto = em.getReference(depto.getClass(), depto.getIdDepto());
+                depto = em.getReference(depto.getClass(), depto.getIddepto());
                 cargo.setDepto(depto);
             }
             Collection<Funcionario> attachedFuncionarioCollection = new ArrayList<Funcionario>();
             for (Funcionario funcionarioCollectionFuncionarioToAttach : cargo.getFuncionarioCollection()) {
-                funcionarioCollectionFuncionarioToAttach = em.getReference(funcionarioCollectionFuncionarioToAttach.getClass(), funcionarioCollectionFuncionarioToAttach.getIdFuncionario());
+                funcionarioCollectionFuncionarioToAttach = em.getReference(funcionarioCollectionFuncionarioToAttach.getClass(), funcionarioCollectionFuncionarioToAttach.getIdfuncionario());
                 attachedFuncionarioCollection.add(funcionarioCollectionFuncionarioToAttach);
             }
             cargo.setFuncionarioCollection(attachedFuncionarioCollection);
@@ -80,7 +80,7 @@ public class CargoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -88,12 +88,12 @@ public class CargoDAO implements Serializable {
         }
     }
 
-    public void edit(Cargo cargo) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Cargo cargo) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Cargo persistentCargo = em.find(Cargo.class, cargo.getIdCargo());
+            Cargo persistentCargo = em.find(Cargo.class, cargo.getIdcargo());
             Departamento deptoOld = persistentCargo.getDepto();
             Departamento deptoNew = cargo.getDepto();
             Collection<Funcionario> funcionarioCollectionOld = persistentCargo.getFuncionarioCollection();
@@ -111,12 +111,12 @@ public class CargoDAO implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (deptoNew != null) {
-                deptoNew = em.getReference(deptoNew.getClass(), deptoNew.getIdDepto());
+                deptoNew = em.getReference(deptoNew.getClass(), deptoNew.getIddepto());
                 cargo.setDepto(deptoNew);
             }
             Collection<Funcionario> attachedFuncionarioCollectionNew = new ArrayList<Funcionario>();
             for (Funcionario funcionarioCollectionNewFuncionarioToAttach : funcionarioCollectionNew) {
-                funcionarioCollectionNewFuncionarioToAttach = em.getReference(funcionarioCollectionNewFuncionarioToAttach.getClass(), funcionarioCollectionNewFuncionarioToAttach.getIdFuncionario());
+                funcionarioCollectionNewFuncionarioToAttach = em.getReference(funcionarioCollectionNewFuncionarioToAttach.getClass(), funcionarioCollectionNewFuncionarioToAttach.getIdfuncionario());
                 attachedFuncionarioCollectionNew.add(funcionarioCollectionNewFuncionarioToAttach);
             }
             funcionarioCollectionNew = attachedFuncionarioCollectionNew;
@@ -150,12 +150,12 @@ public class CargoDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = cargo.getIdCargo();
+                Integer id = cargo.getIdcargo();
                 if (findCargo(id) == null) {
                     throw new NonexistentEntityException("The cargo with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -163,7 +163,7 @@ public class CargoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -171,7 +171,7 @@ public class CargoDAO implements Serializable {
             Cargo cargo;
             try {
                 cargo = em.getReference(Cargo.class, id);
-                cargo.getIdCargo();
+                cargo.getIdcargo();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The cargo with id " + id + " no longer exists.", enfe);
             }
@@ -199,7 +199,7 @@ public class CargoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

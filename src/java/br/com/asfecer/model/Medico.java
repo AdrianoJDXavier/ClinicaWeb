@@ -22,44 +22,37 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "medico")
 @NamedQueries({
-    @NamedQuery(name = "Medico.findAll", query = "SELECT m FROM Medico m")
-    , @NamedQuery(name = "Medico.findByIdMedico", query = "SELECT m FROM Medico m WHERE m.idMedico = :idMedico")
-    , @NamedQuery(name = "Medico.findByNomeMedico", query = "SELECT m FROM Medico m WHERE m.nomeMedico = :nomeMedico")
-    , @NamedQuery(name = "Medico.findByCrm", query = "SELECT m FROM Medico m WHERE m.crm = :crm")})
+    @NamedQuery(name = "Medico.findAll", query = "SELECT m FROM Medico m")})
 public class Medico implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idMedico;
+    @Column(name = "IDMEDICO")
+    private Integer idmedico;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CRM")
+    private int crm;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(nullable = false, length = 100)
-    private String nomeMedico;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private int crm;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "medico")
+    @Column(name = "NOMEMEDICO")
+    private String nomemedico;
+    @OneToMany(mappedBy = "medico")
     private Collection<Horario> horarioCollection;
-    @JoinColumn(name = "Especialidade", referencedColumnName = "idEspecialidade", nullable = false)
+    @JoinColumn(name = "Especialidade", referencedColumnName = "IDESPECIALIDADE")
     @ManyToOne(optional = false)
     private Especialidade especialidade;
-    @JoinColumn(name = "UfCrm", referencedColumnName = "sigla", nullable = false)
+    @JoinColumn(name = "UfCrm", referencedColumnName = "SIGLA")
     @ManyToOne(optional = false)
     private Estados ufCrm;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medico")
@@ -68,45 +61,22 @@ public class Medico implements Serializable {
     public Medico() {
     }
 
-    public Medico(Integer idMedico) {
-        this.idMedico = idMedico;
+    public Medico(Integer idmedico) {
+        this.idmedico = idmedico;
     }
 
-    public Medico(Integer idMedico, String nomeMedico, int crm) {
-        this.idMedico = idMedico;
-        this.nomeMedico = nomeMedico;
+    public Medico(Integer idmedico, int crm, String nomemedico) {
+        this.idmedico = idmedico;
         this.crm = crm;
+        this.nomemedico = nomemedico;
     }
 
-    public Medico(String nomeMedico, int crm, Especialidade especialidade, Estados ufCrm) {
-        this.nomeMedico = nomeMedico;
-        this.crm = crm;
-        this.especialidade = especialidade;
-        this.ufCrm = ufCrm;
+    public Integer getIdmedico() {
+        return idmedico;
     }
 
-    public Medico(Integer idMedico, String nomeMedico, int crm, Especialidade especialidade, Estados ufCrm) {
-        this.idMedico = idMedico;
-        this.nomeMedico = nomeMedico;
-        this.crm = crm;
-        this.especialidade = especialidade;
-        this.ufCrm = ufCrm;
-    }
-
-    public Integer getIdMedico() {
-        return idMedico;
-    }
-
-    public void setIdMedico(Integer idMedico) {
-        this.idMedico = idMedico;
-    }
-
-    public String getNomeMedico() {
-        return nomeMedico;
-    }
-
-    public void setNomeMedico(String nomeMedico) {
-        this.nomeMedico = nomeMedico;
+    public void setIdmedico(Integer idmedico) {
+        this.idmedico = idmedico;
     }
 
     public int getCrm() {
@@ -117,7 +87,14 @@ public class Medico implements Serializable {
         this.crm = crm;
     }
 
-    @XmlTransient
+    public String getNomemedico() {
+        return nomemedico;
+    }
+
+    public void setNomemedico(String nomemedico) {
+        this.nomemedico = nomemedico;
+    }
+
     public Collection<Horario> getHorarioCollection() {
         return horarioCollection;
     }
@@ -142,7 +119,6 @@ public class Medico implements Serializable {
         this.ufCrm = ufCrm;
     }
 
-    @XmlTransient
     public Collection<Consulta> getConsultaCollection() {
         return consultaCollection;
     }
@@ -154,7 +130,7 @@ public class Medico implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idMedico != null ? idMedico.hashCode() : 0);
+        hash += (idmedico != null ? idmedico.hashCode() : 0);
         return hash;
     }
 
@@ -165,7 +141,7 @@ public class Medico implements Serializable {
             return false;
         }
         Medico other = (Medico) object;
-        if ((this.idMedico == null && other.idMedico != null) || (this.idMedico != null && !this.idMedico.equals(other.idMedico))) {
+        if ((this.idmedico == null && other.idmedico != null) || (this.idmedico != null && !this.idmedico.equals(other.idmedico))) {
             return false;
         }
         return true;
@@ -173,7 +149,7 @@ public class Medico implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Medico[ idMedico=" + idMedico + " ]";
+        return "br.com.asfecer.model.Medico[ idmedico=" + idmedico + " ]";
     }
     
 }

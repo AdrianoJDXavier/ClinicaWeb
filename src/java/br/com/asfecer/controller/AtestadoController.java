@@ -2,12 +2,12 @@ package br.com.asfecer.controller;
 
 import br.com.asfecer.dao.AtestadoDAO;
 import br.com.asfecer.dao.ConsultaDAO;
-import br.com.asfecer.dao.TipoAtestadoDAO;
+import br.com.asfecer.dao.TipoatestadoDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import br.com.asfecer.model.Atestado;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.TipoAtestado;
+import br.com.asfecer.model.Tipoatestado;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,7 +47,17 @@ public class AtestadoController extends HttpServlet {
         }else if(request.getServletPath().contains("listaAtestados.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiAtestado.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (NonexistentEntityException ex) {
+                Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaAtestados.html");
         } 
     }
@@ -61,6 +71,8 @@ public class AtestadoController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -68,6 +80,8 @@ public class AtestadoController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(AtestadoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -96,7 +110,7 @@ public class AtestadoController extends HttpServlet {
         request.getRequestDispatcher("WEB-INF/views/listaAtestado.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         AtestadoDAO dao = new AtestadoDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idAtestado"));
         dao.destroy(id);
@@ -104,16 +118,18 @@ public class AtestadoController extends HttpServlet {
         response.sendRedirect("listaAtestados.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         
         ConsultaDAO cons = new ConsultaDAO(utx, emf);
-        TipoAtestadoDAO tpAtestado = new TipoAtestadoDAO(utx, emf);
+        TipoatestadoDAO tpAtestado = new TipoatestadoDAO(utx, emf);
+        Atestado atestado = new Atestado();
         
-        Date dataAtestado = formatDate.parse(request.getParameter("dataAtestado"));
+        atestado.setDataatestado(formatDate.parse(request.getParameter("dataAtestado")));
         Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
-        TipoAtestado tipoAtestado = tpAtestado.findTipoAtestado(Integer.parseInt(request.getParameter("tipoAtestado")));
+        atestado.setConsulta(consulta);
+        Tipoatestado tipoAtestado = tpAtestado.findTipoatestado(Integer.parseInt(request.getParameter("tipoAtestado")));
+        atestado.setTipoAtestado(tipoAtestado);
         
-        Atestado atestado = new Atestado(dataAtestado, consulta, tipoAtestado);
         AtestadoDAO dao = new AtestadoDAO(utx, emf);
         
         dao.create(atestado);
@@ -121,18 +137,19 @@ public class AtestadoController extends HttpServlet {
         response.sendRedirect("listaAtestados.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
         
         ConsultaDAO cons = new ConsultaDAO(utx, emf);
-        TipoAtestadoDAO tpAtestado = new TipoAtestadoDAO(utx, emf);
+        TipoatestadoDAO tpAtestado = new TipoatestadoDAO(utx, emf);
+        AtestadoDAO dao = new AtestadoDAO(utx, emf);
         
         int idAtestado = Integer.parseInt(request.getParameter("idAtestado"));
-        Date dataAtestado = formatDate.parse(request.getParameter("dataAtestado"));
+        Atestado atestado = dao.findAtestado(idAtestado);
+        atestado.setDataatestado(formatDate.parse(request.getParameter("dataAtestado")));
         Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
-        TipoAtestado tipoAtestado = tpAtestado.findTipoAtestado(Integer.parseInt(request.getParameter("tipoAtestado")));
-        
-        Atestado atestado = new Atestado(idAtestado, dataAtestado, consulta, tipoAtestado);
-        AtestadoDAO dao = new AtestadoDAO(utx, emf);
+        atestado.setConsulta(consulta);
+        Tipoatestado tipoAtestado = tpAtestado.findTipoatestado(Integer.parseInt(request.getParameter("tipoAtestado")));
+        atestado.setTipoAtestado(tipoAtestado);
         
         dao.edit(atestado);
         

@@ -23,87 +23,70 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"cpf"})
-    , @UniqueConstraint(columnNames = {"cartaoConvenio"})})
-@XmlRootElement
+@Table(name = "paciente")
 @NamedQueries({
-    @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p")
-    , @NamedQuery(name = "Paciente.findByIdPaciente", query = "SELECT p FROM Paciente p WHERE p.idPaciente = :idPaciente")
-    , @NamedQuery(name = "Paciente.findByNomePaciente", query = "SELECT p FROM Paciente p WHERE p.nomePaciente = :nomePaciente")
-    , @NamedQuery(name = "Paciente.findByDataNascimento", query = "SELECT p FROM Paciente p WHERE p.dataNascimento = :dataNascimento")
-    , @NamedQuery(name = "Paciente.findByNomeMae", query = "SELECT p FROM Paciente p WHERE p.nomeMae = :nomeMae")
-    , @NamedQuery(name = "Paciente.findByCpf", query = "SELECT p FROM Paciente p WHERE p.cpf = :cpf")
-    , @NamedQuery(name = "Paciente.findByCartaoConvenio", query = "SELECT p FROM Paciente p WHERE p.cartaoConvenio = :cartaoConvenio")
-    , @NamedQuery(name = "Paciente.findByTipoSanguineo", query = "SELECT p FROM Paciente p WHERE p.tipoSanguineo = :tipoSanguineo")
-    , @NamedQuery(name = "Paciente.findByFatorRH", query = "SELECT p FROM Paciente p WHERE p.fatorRH = :fatorRH")
-    , @NamedQuery(name = "Paciente.findBySexo", query = "SELECT p FROM Paciente p WHERE p.sexo = :sexo")
-    , @NamedQuery(name = "Paciente.findByEmail", query = "SELECT p FROM Paciente p WHERE p.email = :email")
-    , @NamedQuery(name = "Paciente.findByTelefone", query = "SELECT p FROM Paciente p WHERE p.telefone = :telefone")
-    , @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular")
-    , @NamedQuery(name = "Paciente.findByObs", query = "SELECT p FROM Paciente p WHERE p.obs = :obs")})
+    @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p")})
 public class Paciente implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idPaciente;
+    @Column(name = "IDPACIENTE")
+    private Integer idpaciente;
+    @Size(max = 30)
+    @Column(name = "CARTAOCONVENIO")
+    private String cartaoconvenio;
+    @Size(max = 20)
+    @Column(name = "CELULAR")
+    private String celular;
+    @Size(max = 14)
+    @Column(name = "CPF")
+    private String cpf;
+    @Column(name = "DATANASCIMENTO")
+    @Temporal(TemporalType.DATE)
+    private Date datanascimento;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="E-mail inválido")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 100)
+    @Column(name = "EMAIL")
+    private String email;
+    @Column(name = "FATORRH")
+    private Character fatorrh;
+    @Size(max = 100)
+    @Column(name = "NOMEMAE")
+    private String nomemae;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(nullable = false, length = 100)
-    private String nomePaciente;
-    @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
-    @Size(max = 100)
-    @Column(length = 100)
-    private String nomeMae;
-    @Size(max = 14)
-    @Column(length = 14)
-    private String cpf;
-    @Size(max = 30)
-    @Column(length = 30)
-    private String cartaoConvenio;
-    @Size(max = 2)
-    @Column(length = 2)
-    private String tipoSanguineo;
-    private Character fatorRH;
-    private Character sexo;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="E-mail inválido")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 100)
-    @Column(length = 100)
-    private String email;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String telefone;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String celular;
+    @Column(name = "NOMEPACIENTE")
+    private String nomepaciente;
     @Size(max = 300)
-    @Column(length = 300)
+    @Column(name = "OBS")
     private String obs;
+    @Column(name = "SEXO")
+    private Character sexo;
+    @Size(max = 20)
+    @Column(name = "TELEFONE")
+    private String telefone;
+    @Size(max = 2)
+    @Column(name = "TIPOSANGUINEO")
+    private String tiposanguineo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente")
     private Collection<Agenda> agendaCollection;
-    @JoinColumn(name = "Convenio", referencedColumnName = "idConvenio", nullable = false)
+    @JoinColumn(name = "Convenio", referencedColumnName = "IDCONVENIO")
     @ManyToOne(optional = false)
     private Convenio convenio;
-    @JoinColumn(name = "Endereco", referencedColumnName = "idEndereco")
+    @JoinColumn(name = "Endereco", referencedColumnName = "IDENDERECO")
     @ManyToOne
     private Endereco endereco;
-    @JoinColumn(name = "NaturalidadeCidade", referencedColumnName = "idCidade")
+    @JoinColumn(name = "NaturalidadeCidade", referencedColumnName = "IDCIDADE")
     @ManyToOne
     private Cidade naturalidadeCidade;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente")
@@ -112,140 +95,29 @@ public class Paciente implements Serializable {
     public Paciente() {
     }
 
-    public Paciente(Integer idPaciente) {
-        this.idPaciente = idPaciente;
+    public Paciente(Integer idpaciente) {
+        this.idpaciente = idpaciente;
     }
 
-    public Paciente(Integer idPaciente, String nomePaciente) {
-        this.idPaciente = idPaciente;
-        this.nomePaciente = nomePaciente;
+    public Paciente(Integer idpaciente, String nomepaciente) {
+        this.idpaciente = idpaciente;
+        this.nomepaciente = nomepaciente;
     }
 
-    public Paciente(String nomePaciente, Date dataNascimento, String nomeMae, String cpf, String cartaoConvenio, String tipoSanguineo, Character fatorRH, Character sexo, String email, String telefone, String celular, String obs, Convenio convenio, Endereco endereco, Cidade naturalidadeCidade) {
-        this.nomePaciente = nomePaciente;
-        this.dataNascimento = dataNascimento;
-        this.nomeMae = nomeMae;
-        this.cpf = cpf;
-        this.cartaoConvenio = cartaoConvenio;
-        this.tipoSanguineo = tipoSanguineo;
-        this.fatorRH = fatorRH;
-        this.sexo = sexo;
-        this.email = email;
-        this.telefone = telefone;
-        this.celular = celular;
-        this.obs = obs;
-        this.convenio = convenio;
-        this.endereco = endereco;
-        this.naturalidadeCidade = naturalidadeCidade;
+    public Integer getIdpaciente() {
+        return idpaciente;
     }
 
-    public Paciente(Integer idPaciente, String nomePaciente, Date dataNascimento, String nomeMae, String cpf, String cartaoConvenio, String tipoSanguineo, Character fatorRH, Character sexo, String email, String telefone, String celular, String obs, Convenio convenio, Endereco endereco, Cidade naturalidadeCidade) {
-        this.idPaciente = idPaciente;
-        this.nomePaciente = nomePaciente;
-        this.dataNascimento = dataNascimento;
-        this.nomeMae = nomeMae;
-        this.cpf = cpf;
-        this.cartaoConvenio = cartaoConvenio;
-        this.tipoSanguineo = tipoSanguineo;
-        this.fatorRH = fatorRH;
-        this.sexo = sexo;
-        this.email = email;
-        this.telefone = telefone;
-        this.celular = celular;
-        this.obs = obs;
-        this.convenio = convenio;
-        this.endereco = endereco;
-        this.naturalidadeCidade = naturalidadeCidade;
-    }
-    
-    
-    
-    public Integer getIdPaciente() {
-        return idPaciente;
+    public void setIdpaciente(Integer idpaciente) {
+        this.idpaciente = idpaciente;
     }
 
-    public void setIdPaciente(Integer idPaciente) {
-        this.idPaciente = idPaciente;
+    public String getCartaoconvenio() {
+        return cartaoconvenio;
     }
 
-    public String getNomePaciente() {
-        return nomePaciente;
-    }
-
-    public void setNomePaciente(String nomePaciente) {
-        this.nomePaciente = nomePaciente;
-    }
-
-    public Date getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public String getNomeMae() {
-        return nomeMae;
-    }
-
-    public void setNomeMae(String nomeMae) {
-        this.nomeMae = nomeMae;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getCartaoConvenio() {
-        return cartaoConvenio;
-    }
-
-    public void setCartaoConvenio(String cartaoConvenio) {
-        this.cartaoConvenio = cartaoConvenio;
-    }
-
-    public String getTipoSanguineo() {
-        return tipoSanguineo;
-    }
-
-    public void setTipoSanguineo(String tipoSanguineo) {
-        this.tipoSanguineo = tipoSanguineo;
-    }
-
-    public Character getFatorRH() {
-        return fatorRH;
-    }
-
-    public void setFatorRH(Character fatorRH) {
-        this.fatorRH = fatorRH;
-    }
-
-    public Character getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(Character sexo) {
-        this.sexo = sexo;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setCartaoconvenio(String cartaoconvenio) {
+        this.cartaoconvenio = cartaoconvenio;
     }
 
     public String getCelular() {
@@ -256,6 +128,54 @@ public class Paciente implements Serializable {
         this.celular = celular;
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public Date getDatanascimento() {
+        return datanascimento;
+    }
+
+    public void setDatanascimento(Date datanascimento) {
+        this.datanascimento = datanascimento;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Character getFatorrh() {
+        return fatorrh;
+    }
+
+    public void setFatorrh(Character fatorrh) {
+        this.fatorrh = fatorrh;
+    }
+
+    public String getNomemae() {
+        return nomemae;
+    }
+
+    public void setNomemae(String nomemae) {
+        this.nomemae = nomemae;
+    }
+
+    public String getNomepaciente() {
+        return nomepaciente;
+    }
+
+    public void setNomepaciente(String nomepaciente) {
+        this.nomepaciente = nomepaciente;
+    }
+
     public String getObs() {
         return obs;
     }
@@ -264,7 +184,30 @@ public class Paciente implements Serializable {
         this.obs = obs;
     }
 
-    @XmlTransient
+    public Character getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(Character sexo) {
+        this.sexo = sexo;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getTiposanguineo() {
+        return tiposanguineo;
+    }
+
+    public void setTiposanguineo(String tiposanguineo) {
+        this.tiposanguineo = tiposanguineo;
+    }
+
     public Collection<Agenda> getAgendaCollection() {
         return agendaCollection;
     }
@@ -297,7 +240,6 @@ public class Paciente implements Serializable {
         this.naturalidadeCidade = naturalidadeCidade;
     }
 
-    @XmlTransient
     public Collection<Consulta> getConsultaCollection() {
         return consultaCollection;
     }
@@ -309,7 +251,7 @@ public class Paciente implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idPaciente != null ? idPaciente.hashCode() : 0);
+        hash += (idpaciente != null ? idpaciente.hashCode() : 0);
         return hash;
     }
 
@@ -320,7 +262,7 @@ public class Paciente implements Serializable {
             return false;
         }
         Paciente other = (Paciente) object;
-        if ((this.idPaciente == null && other.idPaciente != null) || (this.idPaciente != null && !this.idPaciente.equals(other.idPaciente))) {
+        if ((this.idpaciente == null && other.idpaciente != null) || (this.idpaciente != null && !this.idpaciente.equals(other.idpaciente))) {
             return false;
         }
         return true;
@@ -328,7 +270,7 @@ public class Paciente implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Paciente[ idPaciente=" + idPaciente + " ]";
+        return "br.com.asfecer.model.Paciente[ idpaciente=" + idpaciente + " ]";
     }
     
 }

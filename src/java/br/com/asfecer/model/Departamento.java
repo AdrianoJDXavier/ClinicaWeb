@@ -20,32 +20,26 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "departamento")
 @NamedQueries({
-    @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d")
-    , @NamedQuery(name = "Departamento.findByIdDepto", query = "SELECT d FROM Departamento d WHERE d.idDepto = :idDepto")
-    , @NamedQuery(name = "Departamento.findByDepto", query = "SELECT d FROM Departamento d WHERE d.depto = :depto")})
+    @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d")})
 public class Departamento implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idDepto;
+    @Column(name = "IDDEPTO")
+    private Integer iddepto;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Column(name = "DEPTO")
     private String depto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "depto")
     private Collection<Cargo> cargoCollection;
@@ -53,25 +47,21 @@ public class Departamento implements Serializable {
     public Departamento() {
     }
 
-    public Departamento(Integer idDepto) {
-        this.idDepto = idDepto;
+    public Departamento(Integer iddepto) {
+        this.iddepto = iddepto;
     }
 
-    public Departamento(String depto) {
-        this.depto = depto;
-    }
-    
-    public Departamento(Integer idDepto, String depto) {
-        this.idDepto = idDepto;
+    public Departamento(Integer iddepto, String depto) {
+        this.iddepto = iddepto;
         this.depto = depto;
     }
 
-    public Integer getIdDepto() {
-        return idDepto;
+    public Integer getIddepto() {
+        return iddepto;
     }
 
-    public void setIdDepto(Integer idDepto) {
-        this.idDepto = idDepto;
+    public void setIddepto(Integer iddepto) {
+        this.iddepto = iddepto;
     }
 
     public String getDepto() {
@@ -82,7 +72,6 @@ public class Departamento implements Serializable {
         this.depto = depto;
     }
 
-    @XmlTransient
     public Collection<Cargo> getCargoCollection() {
         return cargoCollection;
     }
@@ -94,7 +83,7 @@ public class Departamento implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idDepto != null ? idDepto.hashCode() : 0);
+        hash += (iddepto != null ? iddepto.hashCode() : 0);
         return hash;
     }
 
@@ -105,7 +94,7 @@ public class Departamento implements Serializable {
             return false;
         }
         Departamento other = (Departamento) object;
-        if ((this.idDepto == null && other.idDepto != null) || (this.idDepto != null && !this.idDepto.equals(other.idDepto))) {
+        if ((this.iddepto == null && other.iddepto != null) || (this.iddepto != null && !this.iddepto.equals(other.iddepto))) {
             return false;
         }
         return true;
@@ -113,7 +102,7 @@ public class Departamento implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Departamento[ idDepto=" + idDepto + " ]";
+        return "br.com.asfecer.model.Departamento[ iddepto=" + iddepto + " ]";
     }
     
 }

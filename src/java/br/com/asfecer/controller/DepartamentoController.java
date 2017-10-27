@@ -39,7 +39,15 @@ public class DepartamentoController extends HttpServlet {
         }else if(request.getServletPath().contains("listaDepartamentos.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiDepartamento.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaDepartamentos.html");
         } 
     }
@@ -53,6 +61,10 @@ public class DepartamentoController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -60,6 +72,8 @@ public class DepartamentoController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(DepartamentoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -88,7 +102,7 @@ public class DepartamentoController extends HttpServlet {
         request.getRequestDispatcher("WEB-INF/views/listaDepartamento.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         DepartamentoDAO dao = new DepartamentoDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idDepartamento"));
         dao.destroy(id);
@@ -96,11 +110,11 @@ public class DepartamentoController extends HttpServlet {
         response.sendRedirect("listaDepartamentos.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         
-        String depto = request.getParameter("depto");
+        Departamento departamento = new Departamento();
+        departamento.setDepto(request.getParameter("depto"));
         
-        Departamento departamento = new Departamento(depto);
         DepartamentoDAO dao = new DepartamentoDAO(utx, emf);
         
         dao.create(departamento);
@@ -108,7 +122,7 @@ public class DepartamentoController extends HttpServlet {
         response.sendRedirect("listaDepartamentos.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, NonexistentEntityException, RollbackFailureException, Exception {
         
         int idDepto = Integer.parseInt(request.getParameter("idDepto"));
         String depto = request.getParameter("depto");

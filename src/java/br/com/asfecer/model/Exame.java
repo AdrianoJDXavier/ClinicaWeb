@@ -22,61 +22,51 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "exame")
 @NamedQueries({
-    @NamedQuery(name = "Exame.findAll", query = "SELECT e FROM Exame e")
-    , @NamedQuery(name = "Exame.findByIdExame", query = "SELECT e FROM Exame e WHERE e.idExame = :idExame")
-    , @NamedQuery(name = "Exame.findByExame", query = "SELECT e FROM Exame e WHERE e.exame = :exame")})
+    @NamedQuery(name = "Exame.findAll", query = "SELECT e FROM Exame e")})
 public class Exame implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idExame;
+    @Column(name = "IDEXAME")
+    private Integer idexame;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Column(name = "EXAME")
     private String exame;
-    @JoinColumn(name = "TipoExame", referencedColumnName = "idTipoExame", nullable = false)
+    @JoinColumn(name = "TipoExame", referencedColumnName = "IDTIPOEXAME")
     @ManyToOne(optional = false)
-    private TipoExame tipoExame;
+    private Tipoexame tipoExame;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exame")
-    private Collection<PedidoExame> pedidoexameCollection;
+    private Collection<Pedidoexame> pedidoexameCollection;
 
     public Exame() {
     }
 
-    public Exame(Integer idExame) {
-        this.idExame = idExame;
+    public Exame(Integer idexame) {
+        this.idexame = idexame;
     }
 
-    public Exame(String exame) {
-        this.exame = exame;
-    }
-    
-    public Exame(Integer idExame, String exame) {
-        this.idExame = idExame;
+    public Exame(Integer idexame, String exame) {
+        this.idexame = idexame;
         this.exame = exame;
     }
 
-    public Integer getIdExame() {
-        return idExame;
+    public Integer getIdexame() {
+        return idexame;
     }
 
-    public void setIdExame(Integer idExame) {
-        this.idExame = idExame;
+    public void setIdexame(Integer idexame) {
+        this.idexame = idexame;
     }
 
     public String getExame() {
@@ -87,27 +77,26 @@ public class Exame implements Serializable {
         this.exame = exame;
     }
 
-    public TipoExame getTipoExame() {
+    public Tipoexame getTipoExame() {
         return tipoExame;
     }
 
-    public void setTipoExame(TipoExame tipoExame) {
+    public void setTipoExame(Tipoexame tipoExame) {
         this.tipoExame = tipoExame;
     }
 
-    @XmlTransient
-    public Collection<PedidoExame> getPedidoExameCollection() {
+    public Collection<Pedidoexame> getPedidoexameCollection() {
         return pedidoexameCollection;
     }
 
-    public void setPedidoExameCollection(Collection<PedidoExame> pedidoexameCollection) {
+    public void setPedidoexameCollection(Collection<Pedidoexame> pedidoexameCollection) {
         this.pedidoexameCollection = pedidoexameCollection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idExame != null ? idExame.hashCode() : 0);
+        hash += (idexame != null ? idexame.hashCode() : 0);
         return hash;
     }
 
@@ -118,7 +107,7 @@ public class Exame implements Serializable {
             return false;
         }
         Exame other = (Exame) object;
-        if ((this.idExame == null && other.idExame != null) || (this.idExame != null && !this.idExame.equals(other.idExame))) {
+        if ((this.idexame == null && other.idexame != null) || (this.idexame != null && !this.idexame.equals(other.idexame))) {
             return false;
         }
         return true;
@@ -126,7 +115,7 @@ public class Exame implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Exame[ idExame=" + idExame + " ]";
+        return "br.com.asfecer.model.Exame[ idexame=" + idexame + " ]";
     }
     
 }

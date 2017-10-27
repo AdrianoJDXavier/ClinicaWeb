@@ -24,65 +24,54 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "agenda")
 @NamedQueries({
-    @NamedQuery(name = "Agenda.findAll", query = "SELECT a FROM Agenda a")
-    , @NamedQuery(name = "Agenda.findByRegistroAgenda", query = "SELECT a FROM Agenda a WHERE a.registroAgenda = :registroAgenda")
-    , @NamedQuery(name = "Agenda.findByData", query = "SELECT a FROM Agenda a WHERE a.data = :data")
-    , @NamedQuery(name = "Agenda.findByHora", query = "SELECT a FROM Agenda a WHERE a.hora = :hora")
-    , @NamedQuery(name = "Agenda.findByRetorno", query = "SELECT a FROM Agenda a WHERE a.retorno = :retorno")
-    , @NamedQuery(name = "Agenda.findByCancelado", query = "SELECT a FROM Agenda a WHERE a.cancelado = :cancelado")
-    , @NamedQuery(name = "Agenda.findByMotivoCancelamento", query = "SELECT a FROM Agenda a WHERE a.motivoCancelamento = :motivoCancelamento")
-    , @NamedQuery(name = "Agenda.findByStatus", query = "SELECT a FROM Agenda a WHERE a.status = :status")})
+    @NamedQuery(name = "Agenda.findAll", query = "SELECT a FROM Agenda a")})
 public class Agenda implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer registroAgenda;
+    @Column(name = "REGISTROAGENDA")
+    private Integer registroagenda;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "CANCELADO")
+    private boolean cancelado;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DATA")
     @Temporal(TemporalType.DATE)
     private Date data;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "HORA")
     @Temporal(TemporalType.TIME)
     private Date hora;
+    @Size(max = 150)
+    @Column(name = "MOTIVOCANCELAMENTO")
+    private String motivocancelamento;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "RETORNO")
     private boolean retorno;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
-    private boolean cancelado;
-    @Size(max = 150)
-    @Column(length = 150)
-    private String motivoCancelamento;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
+    @Column(name = "STATUS")
     private boolean status;
-    @JoinColumn(name = "Medico", referencedColumnName = "Medico", nullable = false)
+    @JoinColumn(name = "Medico", referencedColumnName = "Medico")
     @ManyToOne(optional = false)
     private Horario medico;
-    @JoinColumn(name = "Paciente", referencedColumnName = "idPaciente", nullable = false)
+    @JoinColumn(name = "Paciente", referencedColumnName = "IDPACIENTE")
     @ManyToOne(optional = false)
     private Paciente paciente;
-    @JoinColumn(name = "Usuario", referencedColumnName = "idUsuario", nullable = false)
+    @JoinColumn(name = "Usuario", referencedColumnName = "IDUSUARIO")
     @ManyToOne(optional = false)
     private Usuario usuario;
     @OneToMany(mappedBy = "agenda")
@@ -91,41 +80,33 @@ public class Agenda implements Serializable {
     public Agenda() {
     }
 
-    public Agenda(Integer registroAgenda) {
-        this.registroAgenda = registroAgenda;
+    public Agenda(Integer registroagenda) {
+        this.registroagenda = registroagenda;
     }
 
-    public Agenda(Date data, Date hora, boolean retorno, boolean cancelado, String motivoCancelamento, boolean status, Horario medico, Paciente paciente, Usuario usuario) {
+    public Agenda(Integer registroagenda, boolean cancelado, Date data, Date hora, boolean retorno, boolean status) {
+        this.registroagenda = registroagenda;
+        this.cancelado = cancelado;
         this.data = data;
         this.hora = hora;
         this.retorno = retorno;
-        this.cancelado = cancelado;
-        this.motivoCancelamento = motivoCancelamento;
         this.status = status;
-        this.medico = medico;
-        this.paciente = paciente;
-        this.usuario = usuario;
     }
 
-    public Agenda(Integer registroAgenda, Date data, Date hora, boolean retorno, boolean cancelado, String motivoCancelamento, boolean status, Horario medico, Paciente paciente, Usuario usuario) {
-        this.registroAgenda = registroAgenda;
-        this.data = data;
-        this.hora = hora;
-        this.retorno = retorno;
-        this.cancelado = cancelado;
-        this.motivoCancelamento = motivoCancelamento;
-        this.status = status;
-        this.medico = medico;
-        this.paciente = paciente;
-        this.usuario = usuario;
-    }
-    
-    public Integer getRegistroAgenda() {
-        return registroAgenda;
+    public Integer getRegistroagenda() {
+        return registroagenda;
     }
 
-    public void setRegistroAgenda(Integer registroAgenda) {
-        this.registroAgenda = registroAgenda;
+    public void setRegistroagenda(Integer registroagenda) {
+        this.registroagenda = registroagenda;
+    }
+
+    public boolean getCancelado() {
+        return cancelado;
+    }
+
+    public void setCancelado(boolean cancelado) {
+        this.cancelado = cancelado;
     }
 
     public Date getData() {
@@ -144,28 +125,20 @@ public class Agenda implements Serializable {
         this.hora = hora;
     }
 
+    public String getMotivocancelamento() {
+        return motivocancelamento;
+    }
+
+    public void setMotivocancelamento(String motivocancelamento) {
+        this.motivocancelamento = motivocancelamento;
+    }
+
     public boolean getRetorno() {
         return retorno;
     }
 
     public void setRetorno(boolean retorno) {
         this.retorno = retorno;
-    }
-
-    public boolean getCancelado() {
-        return cancelado;
-    }
-
-    public void setCancelado(boolean cancelado) {
-        this.cancelado = cancelado;
-    }
-
-    public String getMotivoCancelamento() {
-        return motivoCancelamento;
-    }
-
-    public void setMotivoCancelamento(String motivoCancelamento) {
-        this.motivoCancelamento = motivoCancelamento;
     }
 
     public boolean getStatus() {
@@ -200,7 +173,6 @@ public class Agenda implements Serializable {
         this.usuario = usuario;
     }
 
-    @XmlTransient
     public Collection<Consulta> getConsultaCollection() {
         return consultaCollection;
     }
@@ -212,7 +184,7 @@ public class Agenda implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (registroAgenda != null ? registroAgenda.hashCode() : 0);
+        hash += (registroagenda != null ? registroagenda.hashCode() : 0);
         return hash;
     }
 
@@ -223,7 +195,7 @@ public class Agenda implements Serializable {
             return false;
         }
         Agenda other = (Agenda) object;
-        if ((this.registroAgenda == null && other.registroAgenda != null) || (this.registroAgenda != null && !this.registroAgenda.equals(other.registroAgenda))) {
+        if ((this.registroagenda == null && other.registroagenda != null) || (this.registroagenda != null && !this.registroagenda.equals(other.registroagenda))) {
             return false;
         }
         return true;
@@ -231,7 +203,7 @@ public class Agenda implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Agenda[ registroAgenda=" + registroAgenda + " ]";
+        return "br.com.asfecer.model.Agenda[ registroagenda=" + registroagenda + " ]";
     }
     
 }

@@ -25,7 +25,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class EnderecoDAO implements Serializable {
 
@@ -40,7 +40,7 @@ public class EnderecoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Endereco endereco) throws RollbackFailureException, RuntimeException {
+    public void create(Endereco endereco) throws RollbackFailureException, Exception {
         if (endereco.getPacienteCollection() == null) {
             endereco.setPacienteCollection(new ArrayList<Paciente>());
         }
@@ -53,18 +53,18 @@ public class EnderecoDAO implements Serializable {
             em = getEntityManager();
             Cidade cidade = endereco.getCidade();
             if (cidade != null) {
-                cidade = em.getReference(cidade.getClass(), cidade.getIdCidade());
+                cidade = em.getReference(cidade.getClass(), cidade.getIdcidade());
                 endereco.setCidade(cidade);
             }
             Collection<Paciente> attachedPacienteCollection = new ArrayList<Paciente>();
             for (Paciente pacienteCollectionPacienteToAttach : endereco.getPacienteCollection()) {
-                pacienteCollectionPacienteToAttach = em.getReference(pacienteCollectionPacienteToAttach.getClass(), pacienteCollectionPacienteToAttach.getIdPaciente());
+                pacienteCollectionPacienteToAttach = em.getReference(pacienteCollectionPacienteToAttach.getClass(), pacienteCollectionPacienteToAttach.getIdpaciente());
                 attachedPacienteCollection.add(pacienteCollectionPacienteToAttach);
             }
             endereco.setPacienteCollection(attachedPacienteCollection);
             Collection<Funcionario> attachedFuncionarioCollection = new ArrayList<Funcionario>();
             for (Funcionario funcionarioCollectionFuncionarioToAttach : endereco.getFuncionarioCollection()) {
-                funcionarioCollectionFuncionarioToAttach = em.getReference(funcionarioCollectionFuncionarioToAttach.getClass(), funcionarioCollectionFuncionarioToAttach.getIdFuncionario());
+                funcionarioCollectionFuncionarioToAttach = em.getReference(funcionarioCollectionFuncionarioToAttach.getClass(), funcionarioCollectionFuncionarioToAttach.getIdfuncionario());
                 attachedFuncionarioCollection.add(funcionarioCollectionFuncionarioToAttach);
             }
             endereco.setFuncionarioCollection(attachedFuncionarioCollection);
@@ -98,7 +98,7 @@ public class EnderecoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -106,12 +106,12 @@ public class EnderecoDAO implements Serializable {
         }
     }
 
-    public void edit(Endereco endereco) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Endereco endereco) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Endereco persistentEndereco = em.find(Endereco.class, endereco.getIdEndereco());
+            Endereco persistentEndereco = em.find(Endereco.class, endereco.getIdendereco());
             Cidade cidadeOld = persistentEndereco.getCidade();
             Cidade cidadeNew = endereco.getCidade();
             Collection<Paciente> pacienteCollectionOld = persistentEndereco.getPacienteCollection();
@@ -119,19 +119,19 @@ public class EnderecoDAO implements Serializable {
             Collection<Funcionario> funcionarioCollectionOld = persistentEndereco.getFuncionarioCollection();
             Collection<Funcionario> funcionarioCollectionNew = endereco.getFuncionarioCollection();
             if (cidadeNew != null) {
-                cidadeNew = em.getReference(cidadeNew.getClass(), cidadeNew.getIdCidade());
+                cidadeNew = em.getReference(cidadeNew.getClass(), cidadeNew.getIdcidade());
                 endereco.setCidade(cidadeNew);
             }
             Collection<Paciente> attachedPacienteCollectionNew = new ArrayList<Paciente>();
             for (Paciente pacienteCollectionNewPacienteToAttach : pacienteCollectionNew) {
-                pacienteCollectionNewPacienteToAttach = em.getReference(pacienteCollectionNewPacienteToAttach.getClass(), pacienteCollectionNewPacienteToAttach.getIdPaciente());
+                pacienteCollectionNewPacienteToAttach = em.getReference(pacienteCollectionNewPacienteToAttach.getClass(), pacienteCollectionNewPacienteToAttach.getIdpaciente());
                 attachedPacienteCollectionNew.add(pacienteCollectionNewPacienteToAttach);
             }
             pacienteCollectionNew = attachedPacienteCollectionNew;
             endereco.setPacienteCollection(pacienteCollectionNew);
             Collection<Funcionario> attachedFuncionarioCollectionNew = new ArrayList<Funcionario>();
             for (Funcionario funcionarioCollectionNewFuncionarioToAttach : funcionarioCollectionNew) {
-                funcionarioCollectionNewFuncionarioToAttach = em.getReference(funcionarioCollectionNewFuncionarioToAttach.getClass(), funcionarioCollectionNewFuncionarioToAttach.getIdFuncionario());
+                funcionarioCollectionNewFuncionarioToAttach = em.getReference(funcionarioCollectionNewFuncionarioToAttach.getClass(), funcionarioCollectionNewFuncionarioToAttach.getIdfuncionario());
                 attachedFuncionarioCollectionNew.add(funcionarioCollectionNewFuncionarioToAttach);
             }
             funcionarioCollectionNew = attachedFuncionarioCollectionNew;
@@ -188,12 +188,12 @@ public class EnderecoDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = endereco.getIdEndereco();
+                Integer id = endereco.getIdendereco();
                 if (findEndereco(id) == null) {
                     throw new NonexistentEntityException("The endereco with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -201,7 +201,7 @@ public class EnderecoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -209,7 +209,7 @@ public class EnderecoDAO implements Serializable {
             Endereco endereco;
             try {
                 endereco = em.getReference(Endereco.class, id);
-                endereco.getIdEndereco();
+                endereco.getIdendereco();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The endereco with id " + id + " no longer exists.", enfe);
             }
@@ -236,7 +236,7 @@ public class EnderecoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

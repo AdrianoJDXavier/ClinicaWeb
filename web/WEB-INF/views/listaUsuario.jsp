@@ -28,12 +28,12 @@
                             <tbody style="text-align: left">
                             <c:forEach var="usuario" items="${usuarios}">
                             <tr>
-                                <td>${usuario.idUsuario}</td>
+                                <td>${usuario.idusuario}</td>
                                 <td>${usuario.login}</td>
-                                <td>${usuario.tipoUsuario}</td>
+                                <td>${usuario.tipousuario}</td>
                                 <td>
-                                    <a href="excluiUsuario.html?idUsuario=${usuario.idUsuario}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
-                                    <a href="editaUsuario.html?idUsuario=${usuario.idUsuario}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
+                                    <a href="excluiUsuario.html?idUsuario=${usuario.idusuario}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
+                                    <a href="editaUsuario.html?idUsuario=${usuario.idusuario}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
                                 </td>
                             </tr>
                         </c:forEach>

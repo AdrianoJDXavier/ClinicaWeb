@@ -21,69 +21,52 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "receituario")
 @NamedQueries({
-    @NamedQuery(name = "Receituario.findAll", query = "SELECT r FROM Receituario r")
-    , @NamedQuery(name = "Receituario.findByIdReceituario", query = "SELECT r FROM Receituario r WHERE r.idReceituario = :idReceituario")
-    , @NamedQuery(name = "Receituario.findByData", query = "SELECT r FROM Receituario r WHERE r.data = :data")})
+    @NamedQuery(name = "Receituario.findAll", query = "SELECT r FROM Receituario r")})
 public class Receituario implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idReceituario;
+    @Column(name = "IDRECEITUARIO")
+    private Integer idreceituario;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "DATA")
     @Temporal(TemporalType.DATE)
     private Date data;
-    @JoinColumn(name = "Consulta", referencedColumnName = "idConsulta", nullable = false)
+    @JoinColumn(name = "Consulta", referencedColumnName = "IDCONSULTA")
     @ManyToOne(optional = false)
     private Consulta consulta;
-    @Column(nullable = false, length = 50)
-    private String tipoReceituario;
+    @JoinColumn(name = "TipoReceituario", referencedColumnName = "IDITENSRECEITUARIO")
+    @ManyToOne(optional = false)
+    private Itensreceituario tipoReceituario;
 
     public Receituario() {
     }
 
-    public Receituario(Integer idReceituario) {
-        this.idReceituario = idReceituario;
+    public Receituario(Integer idreceituario) {
+        this.idreceituario = idreceituario;
     }
 
-    public Receituario(Integer idReceituario, Date data) {
-        this.idReceituario = idReceituario;
+    public Receituario(Integer idreceituario, Date data) {
+        this.idreceituario = idreceituario;
         this.data = data;
     }
 
-    public Receituario(Date data, Consulta consulta, String tipoReceituario) {
-        this.data = data;
-        this.consulta = consulta;
-        this.tipoReceituario = tipoReceituario;
+    public Integer getIdreceituario() {
+        return idreceituario;
     }
 
-    public Receituario(Integer idReceituario, Date data, Consulta consulta, String tipoReceituario) {
-        this.idReceituario = idReceituario;
-        this.data = data;
-        this.consulta = consulta;
-        this.tipoReceituario = tipoReceituario;
-    }
-
-    public Integer getIdReceituario() {
-        return idReceituario;
-    }
-
-    public void setIdReceituario(Integer idReceituario) {
-        this.idReceituario = idReceituario;
+    public void setIdreceituario(Integer idreceituario) {
+        this.idreceituario = idreceituario;
     }
 
     public Date getData() {
@@ -102,18 +85,18 @@ public class Receituario implements Serializable {
         this.consulta = consulta;
     }
 
-    public String getTipoReceituario() {
+    public Itensreceituario getTipoReceituario() {
         return tipoReceituario;
     }
 
-    public void setTipoReceituario(String tipoReceituario) {
+    public void setTipoReceituario(Itensreceituario tipoReceituario) {
         this.tipoReceituario = tipoReceituario;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idReceituario != null ? idReceituario.hashCode() : 0);
+        hash += (idreceituario != null ? idreceituario.hashCode() : 0);
         return hash;
     }
 
@@ -124,7 +107,7 @@ public class Receituario implements Serializable {
             return false;
         }
         Receituario other = (Receituario) object;
-        if ((this.idReceituario == null && other.idReceituario != null) || (this.idReceituario != null && !this.idReceituario.equals(other.idReceituario))) {
+        if ((this.idreceituario == null && other.idreceituario != null) || (this.idreceituario != null && !this.idreceituario.equals(other.idreceituario))) {
             return false;
         }
         return true;
@@ -132,7 +115,7 @@ public class Receituario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Receituario[ idReceituario=" + idReceituario + " ]";
+        return "br.com.asfecer.model.Receituario[ idreceituario=" + idreceituario + " ]";
     }
     
 }

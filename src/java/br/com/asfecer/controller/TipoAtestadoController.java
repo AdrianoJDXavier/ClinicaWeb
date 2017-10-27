@@ -2,12 +2,12 @@ package br.com.asfecer.controller;
 
 import br.com.asfecer.dao.MedicamentoDAO;
 import br.com.asfecer.dao.PatologiaDAO;
-import br.com.asfecer.dao.TipoAtestadoDAO;
+import br.com.asfecer.dao.TipoatestadoDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import br.com.asfecer.model.Medicamento;
 import br.com.asfecer.model.Patologia;
-import br.com.asfecer.model.TipoAtestado;
+import br.com.asfecer.model.Tipoatestado;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,7 +43,15 @@ public class TipoAtestadoController extends HttpServlet {
         }else if(request.getServletPath().contains("listaTipoAtestados.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiTipoAtestado.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaTipoAtestados.html");
         } 
     }
@@ -57,6 +65,10 @@ public class TipoAtestadoController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -64,6 +76,8 @@ public class TipoAtestadoController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(TipoAtestadoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -75,67 +89,70 @@ public class TipoAtestadoController extends HttpServlet {
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        TipoAtestadoDAO dao = new TipoAtestadoDAO(utx, emf);
+        TipoatestadoDAO dao = new TipoatestadoDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idTipoAtestado"));
-        TipoAtestado tipoAtestado = dao.findTipoAtestado(id);
+        Tipoatestado tipoAtestado = dao.findTipoatestado(id);
         
         request.setAttribute("tipoAtestado", tipoAtestado);
         request.getRequestDispatcher("WEB-INF/views/editaTipoAtestado.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<TipoAtestado> tipoAtestados = new ArrayList<>();
-        TipoAtestadoDAO dao = new TipoAtestadoDAO(utx, emf);
-        tipoAtestados = dao.findTipoAtestadoEntities();
+        List<Tipoatestado> tipoAtestados = new ArrayList<>();
+        TipoatestadoDAO dao = new TipoatestadoDAO(utx, emf);
+        tipoAtestados = dao.findTipoatestadoEntities();
         
         request.setAttribute("tipoAtestados", tipoAtestados);
         request.getRequestDispatcher("WEB-INF/views/listaTipoAtestado.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
-        TipoAtestadoDAO dao = new TipoAtestadoDAO(utx, emf);
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
+        TipoatestadoDAO dao = new TipoatestadoDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idTipoAtestado"));
         dao.destroy(id);
         
         response.sendRedirect("listaTipoAtestados.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, RollbackFailureException, Exception {
         
         MedicamentoDAO mednto = new MedicamentoDAO(utx, emf);
         PatologiaDAO pat = new PatologiaDAO(utx, emf);
+        TipoatestadoDAO dao = new TipoatestadoDAO(utx, emf);
+        Tipoatestado tipoAtestado = new Tipoatestado();
                
-        String descricao = request.getParameter("descricao");
-        String localAfastamento = request.getParameter("localAfastamento");
-        int dias = Integer.parseInt(request.getParameter("dias"));
-        String atividade = request.getParameter("atividade");
+        tipoAtestado.setDescricao(request.getParameter("descricao"));
+        tipoAtestado.setLocalafastamento(request.getParameter("localAfastamento"));
+        tipoAtestado.setDias(Integer.parseInt(request.getParameter("dias")));
+        tipoAtestado.setAtividade(request.getParameter("atividade"));
         Medicamento medicamento = mednto.findMedicamento(Integer.parseInt(request.getParameter("medicamento")));
+        tipoAtestado.setMedicamento(medicamento);
         Patologia patologia = pat.findPatologia(Integer.parseInt(request.getParameter("patologia")));
+        tipoAtestado.setPatologia(patologia);
         
-        TipoAtestado tipoAtestado = new TipoAtestado(descricao, localAfastamento, dias, atividade, medicamento, patologia);
-        TipoAtestadoDAO dao = new TipoAtestadoDAO(utx, emf);
         
         dao.create(tipoAtestado);
         
         response.sendRedirect("listaTipoAtestados.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, NonexistentEntityException, RollbackFailureException, Exception {
         
         
         MedicamentoDAO mednto = new MedicamentoDAO(utx, emf);
         PatologiaDAO pat = new PatologiaDAO(utx, emf);
+        TipoatestadoDAO dao = new TipoatestadoDAO(utx, emf);
                
         int idTipoAtestado = Integer.parseInt(request.getParameter("idTipoAtestado"));
-        String descricao = request.getParameter("descricao");
-        String localAfastamento = request.getParameter("localAfastamento");
-        int dias = Integer.parseInt(request.getParameter("dias"));
-        String atividade = request.getParameter("atividade");
+        Tipoatestado tipoAtestado = dao.findTipoatestado(idTipoAtestado);
+        tipoAtestado.setDescricao(request.getParameter("descricao"));
+        tipoAtestado.setLocalafastamento(request.getParameter("localAfastamento"));
+        tipoAtestado.setDias(Integer.parseInt(request.getParameter("dias")));
+        tipoAtestado.setAtividade(request.getParameter("atividade"));
         Medicamento medicamento = mednto.findMedicamento(Integer.parseInt(request.getParameter("medicamento")));
+        tipoAtestado.setMedicamento(medicamento);
         Patologia patologia = pat.findPatologia(Integer.parseInt(request.getParameter("patologia")));
-        
-        TipoAtestado tipoAtestado = new TipoAtestado(idTipoAtestado, descricao, localAfastamento, dias, atividade, medicamento, patologia);
-        TipoAtestadoDAO dao = new TipoAtestadoDAO(utx, emf);
+        tipoAtestado.setPatologia(patologia);
         
         dao.edit(tipoAtestado);
         

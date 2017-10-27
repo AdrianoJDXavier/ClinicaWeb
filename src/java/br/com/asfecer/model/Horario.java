@@ -25,47 +25,39 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "horario")
 @NamedQueries({
-    @NamedQuery(name = "Horario.findAll", query = "SELECT h FROM Horario h")
-    , @NamedQuery(name = "Horario.findByIdHorario", query = "SELECT h FROM Horario h WHERE h.idHorario = :idHorario")
-    , @NamedQuery(name = "Horario.findByDiaSemana", query = "SELECT h FROM Horario h WHERE h.diaSemana = :diaSemana")
-    , @NamedQuery(name = "Horario.findByInicio", query = "SELECT h FROM Horario h WHERE h.inicio = :inicio")
-    , @NamedQuery(name = "Horario.findByFim", query = "SELECT h FROM Horario h WHERE h.fim = :fim")})
+    @NamedQuery(name = "Horario.findAll", query = "SELECT h FROM Horario h")})
 public class Horario implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idHorario;
+    @Column(name = "IDHORARIO")
+    private Integer idhorario;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(nullable = false, length = 20)
-    private String diaSemana;
+    @Column(name = "DIASEMANA")
+    private String diasemana;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIME)
-    private Date inicio;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
+    @Column(name = "FIM")
     @Temporal(TemporalType.TIME)
     private Date fim;
-    @JoinColumn(name = "Medico", referencedColumnName = "idMedico", nullable = false)
-    @ManyToOne(optional = false)
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "INICIO")
+    @Temporal(TemporalType.TIME)
+    private Date inicio;
+    @JoinColumn(name = "Medico", referencedColumnName = "IDMEDICO")
+    @ManyToOne
     private Medico medico;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medico")
     private Collection<Agenda> agendaCollection;
@@ -73,54 +65,31 @@ public class Horario implements Serializable {
     public Horario() {
     }
 
-    public Horario(Integer idHorario) {
-        this.idHorario = idHorario;
+    public Horario(Integer idhorario) {
+        this.idhorario = idhorario;
     }
 
-    public Horario(Integer idHorario, String diaSemana, Date inicio, Date fim) {
-        this.idHorario = idHorario;
-        this.diaSemana = diaSemana;
-        this.inicio = inicio;
+    public Horario(Integer idhorario, String diasemana, Date fim, Date inicio) {
+        this.idhorario = idhorario;
+        this.diasemana = diasemana;
         this.fim = fim;
-    }
-
-    public Horario(String diaSemana, Date inicio, Date fim, Medico medico) {
-        this.diaSemana = diaSemana;
         this.inicio = inicio;
-        this.fim = fim;
-        this.medico = medico;
     }
 
-    public Horario(Integer idHorario, String diaSemana, Date inicio, Date fim, Medico medico) {
-        this.idHorario = idHorario;
-        this.diaSemana = diaSemana;
-        this.inicio = inicio;
-        this.fim = fim;
-        this.medico = medico;
+    public Integer getIdhorario() {
+        return idhorario;
     }
 
-    public Integer getIdHorario() {
-        return idHorario;
+    public void setIdhorario(Integer idhorario) {
+        this.idhorario = idhorario;
     }
 
-    public void setIdHorario(Integer idHorario) {
-        this.idHorario = idHorario;
+    public String getDiasemana() {
+        return diasemana;
     }
 
-    public String getDiaSemana() {
-        return diaSemana;
-    }
-
-    public void setDiaSemana(String diaSemana) {
-        this.diaSemana = diaSemana;
-    }
-
-    public Date getInicio() {
-        return inicio;
-    }
-
-    public void setInicio(Date inicio) {
-        this.inicio = inicio;
+    public void setDiasemana(String diasemana) {
+        this.diasemana = diasemana;
     }
 
     public Date getFim() {
@@ -131,6 +100,14 @@ public class Horario implements Serializable {
         this.fim = fim;
     }
 
+    public Date getInicio() {
+        return inicio;
+    }
+
+    public void setInicio(Date inicio) {
+        this.inicio = inicio;
+    }
+
     public Medico getMedico() {
         return medico;
     }
@@ -139,7 +116,6 @@ public class Horario implements Serializable {
         this.medico = medico;
     }
 
-    @XmlTransient
     public Collection<Agenda> getAgendaCollection() {
         return agendaCollection;
     }
@@ -151,7 +127,7 @@ public class Horario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idHorario != null ? idHorario.hashCode() : 0);
+        hash += (idhorario != null ? idhorario.hashCode() : 0);
         return hash;
     }
 
@@ -162,7 +138,7 @@ public class Horario implements Serializable {
             return false;
         }
         Horario other = (Horario) object;
-        if ((this.idHorario == null && other.idHorario != null) || (this.idHorario != null && !this.idHorario.equals(other.idHorario))) {
+        if ((this.idhorario == null && other.idhorario != null) || (this.idhorario != null && !this.idhorario.equals(other.idhorario))) {
             return false;
         }
         return true;
@@ -170,7 +146,7 @@ public class Horario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Horario[ idHorario=" + idHorario + " ]";
+        return "br.com.asfecer.model.Horario[ idhorario=" + idhorario + " ]";
     }
     
 }

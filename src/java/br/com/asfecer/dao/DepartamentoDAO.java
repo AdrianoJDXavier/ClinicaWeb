@@ -24,7 +24,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class DepartamentoDAO implements Serializable {
 
@@ -39,7 +39,7 @@ public class DepartamentoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Departamento departamento) throws RollbackFailureException, RuntimeException {
+    public void create(Departamento departamento) throws RollbackFailureException, Exception {
         if (departamento.getCargoCollection() == null) {
             departamento.setCargoCollection(new ArrayList<Cargo>());
         }
@@ -49,7 +49,7 @@ public class DepartamentoDAO implements Serializable {
             em = getEntityManager();
             Collection<Cargo> attachedCargoCollection = new ArrayList<Cargo>();
             for (Cargo cargoCollectionCargoToAttach : departamento.getCargoCollection()) {
-                cargoCollectionCargoToAttach = em.getReference(cargoCollectionCargoToAttach.getClass(), cargoCollectionCargoToAttach.getIdCargo());
+                cargoCollectionCargoToAttach = em.getReference(cargoCollectionCargoToAttach.getClass(), cargoCollectionCargoToAttach.getIdcargo());
                 attachedCargoCollection.add(cargoCollectionCargoToAttach);
             }
             departamento.setCargoCollection(attachedCargoCollection);
@@ -70,7 +70,7 @@ public class DepartamentoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -78,12 +78,12 @@ public class DepartamentoDAO implements Serializable {
         }
     }
 
-    public void edit(Departamento departamento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Departamento departamento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Departamento persistentDepartamento = em.find(Departamento.class, departamento.getIdDepto());
+            Departamento persistentDepartamento = em.find(Departamento.class, departamento.getIddepto());
             Collection<Cargo> cargoCollectionOld = persistentDepartamento.getCargoCollection();
             Collection<Cargo> cargoCollectionNew = departamento.getCargoCollection();
             List<String> illegalOrphanMessages = null;
@@ -100,7 +100,7 @@ public class DepartamentoDAO implements Serializable {
             }
             Collection<Cargo> attachedCargoCollectionNew = new ArrayList<Cargo>();
             for (Cargo cargoCollectionNewCargoToAttach : cargoCollectionNew) {
-                cargoCollectionNewCargoToAttach = em.getReference(cargoCollectionNewCargoToAttach.getClass(), cargoCollectionNewCargoToAttach.getIdCargo());
+                cargoCollectionNewCargoToAttach = em.getReference(cargoCollectionNewCargoToAttach.getClass(), cargoCollectionNewCargoToAttach.getIdcargo());
                 attachedCargoCollectionNew.add(cargoCollectionNewCargoToAttach);
             }
             cargoCollectionNew = attachedCargoCollectionNew;
@@ -126,12 +126,12 @@ public class DepartamentoDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = departamento.getIdDepto();
+                Integer id = departamento.getIddepto();
                 if (findDepartamento(id) == null) {
                     throw new NonexistentEntityException("The departamento with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -139,7 +139,7 @@ public class DepartamentoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -147,7 +147,7 @@ public class DepartamentoDAO implements Serializable {
             Departamento departamento;
             try {
                 departamento = em.getReference(Departamento.class, id);
-                departamento.getIdDepto();
+                departamento.getIddepto();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The departamento with id " + id + " no longer exists.", enfe);
             }
@@ -170,7 +170,7 @@ public class DepartamentoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

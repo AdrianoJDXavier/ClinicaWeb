@@ -24,7 +24,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class ConvenioDAO implements Serializable {
 
@@ -39,7 +39,7 @@ public class ConvenioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Convenio convenio) throws RollbackFailureException, RuntimeException {
+    public void create(Convenio convenio) throws RollbackFailureException, Exception {
         if (convenio.getPacienteCollection() == null) {
             convenio.setPacienteCollection(new ArrayList<Paciente>());
         }
@@ -49,7 +49,7 @@ public class ConvenioDAO implements Serializable {
             em = getEntityManager();
             Collection<Paciente> attachedPacienteCollection = new ArrayList<Paciente>();
             for (Paciente pacienteCollectionPacienteToAttach : convenio.getPacienteCollection()) {
-                pacienteCollectionPacienteToAttach = em.getReference(pacienteCollectionPacienteToAttach.getClass(), pacienteCollectionPacienteToAttach.getIdPaciente());
+                pacienteCollectionPacienteToAttach = em.getReference(pacienteCollectionPacienteToAttach.getClass(), pacienteCollectionPacienteToAttach.getIdpaciente());
                 attachedPacienteCollection.add(pacienteCollectionPacienteToAttach);
             }
             convenio.setPacienteCollection(attachedPacienteCollection);
@@ -70,7 +70,7 @@ public class ConvenioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -78,12 +78,12 @@ public class ConvenioDAO implements Serializable {
         }
     }
 
-    public void edit(Convenio convenio) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Convenio convenio) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Convenio persistentConvenio = em.find(Convenio.class, convenio.getIdConvenio());
+            Convenio persistentConvenio = em.find(Convenio.class, convenio.getIdconvenio());
             Collection<Paciente> pacienteCollectionOld = persistentConvenio.getPacienteCollection();
             Collection<Paciente> pacienteCollectionNew = convenio.getPacienteCollection();
             List<String> illegalOrphanMessages = null;
@@ -100,7 +100,7 @@ public class ConvenioDAO implements Serializable {
             }
             Collection<Paciente> attachedPacienteCollectionNew = new ArrayList<Paciente>();
             for (Paciente pacienteCollectionNewPacienteToAttach : pacienteCollectionNew) {
-                pacienteCollectionNewPacienteToAttach = em.getReference(pacienteCollectionNewPacienteToAttach.getClass(), pacienteCollectionNewPacienteToAttach.getIdPaciente());
+                pacienteCollectionNewPacienteToAttach = em.getReference(pacienteCollectionNewPacienteToAttach.getClass(), pacienteCollectionNewPacienteToAttach.getIdpaciente());
                 attachedPacienteCollectionNew.add(pacienteCollectionNewPacienteToAttach);
             }
             pacienteCollectionNew = attachedPacienteCollectionNew;
@@ -126,12 +126,12 @@ public class ConvenioDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = convenio.getIdConvenio();
+                Integer id = convenio.getIdconvenio();
                 if (findConvenio(id) == null) {
                     throw new NonexistentEntityException("The convenio with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -139,7 +139,7 @@ public class ConvenioDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -147,7 +147,7 @@ public class ConvenioDAO implements Serializable {
             Convenio convenio;
             try {
                 convenio = em.getReference(Convenio.class, id);
-                convenio.getIdConvenio();
+                convenio.getIdconvenio();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The convenio with id " + id + " no longer exists.", enfe);
             }
@@ -170,7 +170,7 @@ public class ConvenioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

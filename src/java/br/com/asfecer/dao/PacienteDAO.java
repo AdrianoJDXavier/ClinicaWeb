@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import br.com.asfecer.model.Consulta;
 import br.com.asfecer.model.Paciente;
-import java.text.ParseException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -29,7 +28,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class PacienteDAO implements Serializable {
 
@@ -44,7 +43,7 @@ public class PacienteDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Paciente paciente) throws RollbackFailureException, RuntimeException {
+    public void create(Paciente paciente) throws RollbackFailureException, Exception {
         if (paciente.getAgendaCollection() == null) {
             paciente.setAgendaCollection(new ArrayList<Agenda>());
         }
@@ -57,28 +56,28 @@ public class PacienteDAO implements Serializable {
             em = getEntityManager();
             Convenio convenio = paciente.getConvenio();
             if (convenio != null) {
-                convenio = em.getReference(convenio.getClass(), convenio.getIdConvenio());
+                convenio = em.getReference(convenio.getClass(), convenio.getIdconvenio());
                 paciente.setConvenio(convenio);
             }
             Endereco endereco = paciente.getEndereco();
             if (endereco != null) {
-                endereco = em.getReference(endereco.getClass(), endereco.getIdEndereco());
+                endereco = em.getReference(endereco.getClass(), endereco.getIdendereco());
                 paciente.setEndereco(endereco);
             }
             Cidade naturalidadeCidade = paciente.getNaturalidadeCidade();
             if (naturalidadeCidade != null) {
-                naturalidadeCidade = em.getReference(naturalidadeCidade.getClass(), naturalidadeCidade.getIdCidade());
+                naturalidadeCidade = em.getReference(naturalidadeCidade.getClass(), naturalidadeCidade.getIdcidade());
                 paciente.setNaturalidadeCidade(naturalidadeCidade);
             }
             Collection<Agenda> attachedAgendaCollection = new ArrayList<Agenda>();
             for (Agenda agendaCollectionAgendaToAttach : paciente.getAgendaCollection()) {
-                agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroAgenda());
+                agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroagenda());
                 attachedAgendaCollection.add(agendaCollectionAgendaToAttach);
             }
             paciente.setAgendaCollection(attachedAgendaCollection);
             Collection<Consulta> attachedConsultaCollection = new ArrayList<Consulta>();
             for (Consulta consultaCollectionConsultaToAttach : paciente.getConsultaCollection()) {
-                consultaCollectionConsultaToAttach = em.getReference(consultaCollectionConsultaToAttach.getClass(), consultaCollectionConsultaToAttach.getIdConsulta());
+                consultaCollectionConsultaToAttach = em.getReference(consultaCollectionConsultaToAttach.getClass(), consultaCollectionConsultaToAttach.getIdconsulta());
                 attachedConsultaCollection.add(consultaCollectionConsultaToAttach);
             }
             paciente.setConsultaCollection(attachedConsultaCollection);
@@ -120,7 +119,7 @@ public class PacienteDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -128,12 +127,12 @@ public class PacienteDAO implements Serializable {
         }
     }
 
-    public void edit(Paciente paciente) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Paciente paciente) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Paciente persistentPaciente = em.find(Paciente.class, paciente.getIdPaciente());
+            Paciente persistentPaciente = em.find(Paciente.class, paciente.getIdpaciente());
             Convenio convenioOld = persistentPaciente.getConvenio();
             Convenio convenioNew = paciente.getConvenio();
             Endereco enderecoOld = persistentPaciente.getEndereco();
@@ -165,27 +164,27 @@ public class PacienteDAO implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (convenioNew != null) {
-                convenioNew = em.getReference(convenioNew.getClass(), convenioNew.getIdConvenio());
+                convenioNew = em.getReference(convenioNew.getClass(), convenioNew.getIdconvenio());
                 paciente.setConvenio(convenioNew);
             }
             if (enderecoNew != null) {
-                enderecoNew = em.getReference(enderecoNew.getClass(), enderecoNew.getIdEndereco());
+                enderecoNew = em.getReference(enderecoNew.getClass(), enderecoNew.getIdendereco());
                 paciente.setEndereco(enderecoNew);
             }
             if (naturalidadeCidadeNew != null) {
-                naturalidadeCidadeNew = em.getReference(naturalidadeCidadeNew.getClass(), naturalidadeCidadeNew.getIdCidade());
+                naturalidadeCidadeNew = em.getReference(naturalidadeCidadeNew.getClass(), naturalidadeCidadeNew.getIdcidade());
                 paciente.setNaturalidadeCidade(naturalidadeCidadeNew);
             }
             Collection<Agenda> attachedAgendaCollectionNew = new ArrayList<Agenda>();
             for (Agenda agendaCollectionNewAgendaToAttach : agendaCollectionNew) {
-                agendaCollectionNewAgendaToAttach = em.getReference(agendaCollectionNewAgendaToAttach.getClass(), agendaCollectionNewAgendaToAttach.getRegistroAgenda());
+                agendaCollectionNewAgendaToAttach = em.getReference(agendaCollectionNewAgendaToAttach.getClass(), agendaCollectionNewAgendaToAttach.getRegistroagenda());
                 attachedAgendaCollectionNew.add(agendaCollectionNewAgendaToAttach);
             }
             agendaCollectionNew = attachedAgendaCollectionNew;
             paciente.setAgendaCollection(agendaCollectionNew);
             Collection<Consulta> attachedConsultaCollectionNew = new ArrayList<Consulta>();
             for (Consulta consultaCollectionNewConsultaToAttach : consultaCollectionNew) {
-                consultaCollectionNewConsultaToAttach = em.getReference(consultaCollectionNewConsultaToAttach.getClass(), consultaCollectionNewConsultaToAttach.getIdConsulta());
+                consultaCollectionNewConsultaToAttach = em.getReference(consultaCollectionNewConsultaToAttach.getClass(), consultaCollectionNewConsultaToAttach.getIdconsulta());
                 attachedConsultaCollectionNew.add(consultaCollectionNewConsultaToAttach);
             }
             consultaCollectionNew = attachedConsultaCollectionNew;
@@ -246,12 +245,12 @@ public class PacienteDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = paciente.getIdPaciente();
+                Integer id = paciente.getIdpaciente();
                 if (findPaciente(id) == null) {
                     throw new NonexistentEntityException("The paciente with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -259,7 +258,7 @@ public class PacienteDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -267,7 +266,7 @@ public class PacienteDAO implements Serializable {
             Paciente paciente;
             try {
                 paciente = em.getReference(Paciente.class, id);
-                paciente.getIdPaciente();
+                paciente.getIdpaciente();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The paciente with id " + id + " no longer exists.", enfe);
             }
@@ -312,7 +311,7 @@ public class PacienteDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

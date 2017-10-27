@@ -24,112 +24,87 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "consulta")
 @NamedQueries({
-    @NamedQuery(name = "Consulta.findAll", query = "SELECT c FROM Consulta c")
-    , @NamedQuery(name = "Consulta.findByIdConsulta", query = "SELECT c FROM Consulta c WHERE c.idConsulta = :idConsulta")
-    , @NamedQuery(name = "Consulta.findByDataConsulta", query = "SELECT c FROM Consulta c WHERE c.dataConsulta = :dataConsulta")
-    , @NamedQuery(name = "Consulta.findByHoraConsulta", query = "SELECT c FROM Consulta c WHERE c.horaConsulta = :horaConsulta")})
+    @NamedQuery(name = "Consulta.findAll", query = "SELECT c FROM Consulta c")})
 public class Consulta implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idConsulta;
+    @Column(name = "IDCONSULTA")
+    private Integer idconsulta;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "DATACONSULTA")
     @Temporal(TemporalType.DATE)
-    private Date dataConsulta;
+    private Date dataconsulta;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "HORACONSULTA")
     @Temporal(TemporalType.TIME)
-    private Date horaConsulta;
+    private Date horaconsulta;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "consulta")
     private Collection<Prontuario> prontuarioCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "consulta")
     private Collection<Atestado> atestadoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "consulta")
     private Collection<Receituario> receituarioCollection;
-    @JoinColumn(name = "Agenda", referencedColumnName = "registroAgenda")
+    @JoinColumn(name = "Agenda", referencedColumnName = "REGISTROAGENDA")
     @ManyToOne
     private Agenda agenda;
-    @JoinColumn(name = "Medico", referencedColumnName = "idMedico", nullable = false)
+    @JoinColumn(name = "Medico", referencedColumnName = "IDMEDICO")
     @ManyToOne(optional = false)
     private Medico medico;
-    @JoinColumn(name = "Paciente", referencedColumnName = "idPaciente", nullable = false)
+    @JoinColumn(name = "Paciente", referencedColumnName = "IDPACIENTE")
     @ManyToOne(optional = false)
     private Paciente paciente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "consulta")
-    private Collection<PedidoExame> pedidoexameCollection;
+    private Collection<Pedidoexame> pedidoexameCollection;
 
     public Consulta() {
     }
 
-    public Consulta(Integer idConsulta) {
-        this.idConsulta = idConsulta;
+    public Consulta(Integer idconsulta) {
+        this.idconsulta = idconsulta;
     }
 
-    public Consulta(Integer idConsulta, Date dataConsulta, Date horaConsulta) {
-        this.idConsulta = idConsulta;
-        this.dataConsulta = dataConsulta;
-        this.horaConsulta = horaConsulta;
+    public Consulta(Integer idconsulta, Date dataconsulta, Date horaconsulta) {
+        this.idconsulta = idconsulta;
+        this.dataconsulta = dataconsulta;
+        this.horaconsulta = horaconsulta;
     }
 
-    public Consulta(Integer idConsulta, Date dataConsulta, Date horaConsulta, Agenda agenda, Medico medico, Paciente paciente) {
-        this.idConsulta = idConsulta;
-        this.dataConsulta = dataConsulta;
-        this.horaConsulta = horaConsulta;
-        this.agenda = agenda;
-        this.medico = medico;
-        this.paciente = paciente;
+    public Integer getIdconsulta() {
+        return idconsulta;
     }
 
-    public Consulta(Date dataConsulta, Date horaConsulta, Agenda agenda, Medico medico, Paciente paciente) {
-        this.dataConsulta = dataConsulta;
-        this.horaConsulta = horaConsulta;
-        this.agenda = agenda;
-        this.medico = medico;
-        this.paciente = paciente;
+    public void setIdconsulta(Integer idconsulta) {
+        this.idconsulta = idconsulta;
     }
 
-    public Integer getIdConsulta() {
-        return idConsulta;
+    public Date getDataconsulta() {
+        return dataconsulta;
     }
 
-    public void setIdConsulta(Integer idConsulta) {
-        this.idConsulta = idConsulta;
+    public void setDataconsulta(Date dataconsulta) {
+        this.dataconsulta = dataconsulta;
     }
 
-    public Date getDataConsulta() {
-        return dataConsulta;
+    public Date getHoraconsulta() {
+        return horaconsulta;
     }
 
-    public void setDataConsulta(Date dataConsulta) {
-        this.dataConsulta = dataConsulta;
+    public void setHoraconsulta(Date horaconsulta) {
+        this.horaconsulta = horaconsulta;
     }
 
-    public Date getHoraConsulta() {
-        return horaConsulta;
-    }
-
-    public void setHoraConsulta(Date horaConsulta) {
-        this.horaConsulta = horaConsulta;
-    }
-
-    @XmlTransient
     public Collection<Prontuario> getProntuarioCollection() {
         return prontuarioCollection;
     }
@@ -138,7 +113,6 @@ public class Consulta implements Serializable {
         this.prontuarioCollection = prontuarioCollection;
     }
 
-    @XmlTransient
     public Collection<Atestado> getAtestadoCollection() {
         return atestadoCollection;
     }
@@ -147,7 +121,6 @@ public class Consulta implements Serializable {
         this.atestadoCollection = atestadoCollection;
     }
 
-    @XmlTransient
     public Collection<Receituario> getReceituarioCollection() {
         return receituarioCollection;
     }
@@ -180,19 +153,18 @@ public class Consulta implements Serializable {
         this.paciente = paciente;
     }
 
-    @XmlTransient
-    public Collection<PedidoExame> getPedidoExameCollection() {
+    public Collection<Pedidoexame> getPedidoexameCollection() {
         return pedidoexameCollection;
     }
 
-    public void setPedidoExameCollection(Collection<PedidoExame> pedidoexameCollection) {
+    public void setPedidoexameCollection(Collection<Pedidoexame> pedidoexameCollection) {
         this.pedidoexameCollection = pedidoexameCollection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idConsulta != null ? idConsulta.hashCode() : 0);
+        hash += (idconsulta != null ? idconsulta.hashCode() : 0);
         return hash;
     }
 
@@ -203,7 +175,7 @@ public class Consulta implements Serializable {
             return false;
         }
         Consulta other = (Consulta) object;
-        if ((this.idConsulta == null && other.idConsulta != null) || (this.idConsulta != null && !this.idConsulta.equals(other.idConsulta))) {
+        if ((this.idconsulta == null && other.idconsulta != null) || (this.idconsulta != null && !this.idconsulta.equals(other.idconsulta))) {
             return false;
         }
         return true;
@@ -211,7 +183,7 @@ public class Consulta implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Consulta[ idConsulta=" + idConsulta + " ]";
+        return "br.com.asfecer.model.Consulta[ idconsulta=" + idconsulta + " ]";
     }
     
 }

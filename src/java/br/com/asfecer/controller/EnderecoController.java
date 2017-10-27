@@ -41,7 +41,15 @@ public class EnderecoController extends HttpServlet {
         }else if(request.getServletPath().contains("listaEnderecos.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiEndereco.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaEnderecos.html");
         } 
     }
@@ -55,6 +63,8 @@ public class EnderecoController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -62,6 +72,8 @@ public class EnderecoController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(EnderecoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -90,7 +102,7 @@ public class EnderecoController extends HttpServlet {
         request.getRequestDispatcher("WEB-INF/views/listaEndereco.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         EnderecoDAO dao = new EnderecoDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idEndereco"));
         dao.destroy(id);
@@ -98,19 +110,18 @@ public class EnderecoController extends HttpServlet {
         response.sendRedirect("listaEnderecos.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
-        
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         CidadeDAO cdd = new CidadeDAO(utx, emf);
+        Endereco endereco = new Endereco();
                 
-        String tipoLogradouro = request.getParameter("tipoLogradouro");
-        String nomeLogradouro = request.getParameter("nomeLogradouro");
-        int numero = Integer.parseInt(request.getParameter("numero"));
-        String complemento = request.getParameter("complemento");
-        String bairro = request.getParameter("bairro");
-        String cep = request.getParameter("cep");
+        endereco.setTipoLogradouro(request.getParameter("tipoLogradouro"));
+        endereco.setNomeNogradouro(request.getParameter("nomeLogradouro"));
+        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
+        endereco.setComplemento(request.getParameter("complemento"));
+        endereco.setBairro(request.getParameter("bairro"));
+        endereco.setCep(request.getParameter("cep"));
         Cidade cidade = cdd.findCidade(Integer.parseInt(request.getParameter("cidade")));
-        
-        Endereco endereco = new Endereco(tipoLogradouro, nomeLogradouro, numero, complemento, bairro, cep, cidade);
+        endereco.setCidade(cidade);
         EnderecoDAO dao = new EnderecoDAO(utx, emf);
         
         dao.create(endereco);
@@ -118,21 +129,21 @@ public class EnderecoController extends HttpServlet {
         response.sendRedirect("listaEnderecos.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
         
         CidadeDAO cdd = new CidadeDAO(utx, emf);
+        EnderecoDAO dao = new EnderecoDAO(utx, emf);
                 
         int idEndereco = Integer.parseInt(request.getParameter("idEndereco"));
-        String tipoLogradouro = request.getParameter("tipoLogradouro");
-        String nomeLogradouro = request.getParameter("nomeLogradouro");
-        int numero = Integer.parseInt(request.getParameter("numero"));
-        String complemento = request.getParameter("complemento");
-        String bairro = request.getParameter("bairro");
-        String cep = request.getParameter("cep");
+        Endereco endereco = dao.findEndereco(idEndereco);
+        endereco.setTipoLogradouro(request.getParameter("tipoLogradouro"));
+        endereco.setNomeNogradouro(request.getParameter("nomeLogradouro"));
+        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
+        endereco.setComplemento(request.getParameter("complemento"));
+        endereco.setBairro(request.getParameter("bairro"));
+        endereco.setCep(request.getParameter("cep"));
         Cidade cidade = cdd.findCidade(Integer.parseInt(request.getParameter("cidade")));
-        
-        Endereco endereco = new Endereco(idEndereco, tipoLogradouro, nomeLogradouro, numero, complemento, bairro, cep, cidade);
-        EnderecoDAO dao = new EnderecoDAO(utx, emf);
+        endereco.setCidade(cidade);
         
         dao.edit(endereco);
         

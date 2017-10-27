@@ -22,68 +22,51 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "cargo")
 @NamedQueries({
-    @NamedQuery(name = "Cargo.findAll", query = "SELECT c FROM Cargo c")
-    , @NamedQuery(name = "Cargo.findByIdCargo", query = "SELECT c FROM Cargo c WHERE c.idCargo = :idCargo")
-    , @NamedQuery(name = "Cargo.findByCargo", query = "SELECT c FROM Cargo c WHERE c.cargo = :cargo")})
+    @NamedQuery(name = "Cargo.findAll", query = "SELECT c FROM Cargo c")})
 public class Cargo implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idCargo;
+    @Column(name = "IDCARGO")
+    private Integer idcargo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Column(name = "CARGO")
     private String cargo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cargo")
     private Collection<Funcionario> funcionarioCollection;
-    @JoinColumn(name = "Depto", referencedColumnName = "idDepto", nullable = false)
+    @JoinColumn(name = "Depto", referencedColumnName = "IDDEPTO")
     @ManyToOne(optional = false)
     private Departamento depto;
 
     public Cargo() {
     }
 
-    public Cargo(Integer idCargo) {
-        this.idCargo = idCargo;
+    public Cargo(Integer idcargo) {
+        this.idcargo = idcargo;
     }
 
-    public Cargo(Integer idCargo, String cargo) {
-        this.idCargo = idCargo;
+    public Cargo(Integer idcargo, String cargo) {
+        this.idcargo = idcargo;
         this.cargo = cargo;
     }
 
-    public Cargo(Integer idCargo, String cargo, Departamento depto) {
-        this.idCargo = idCargo;
-        this.cargo = cargo;
-        this.depto = depto;
+    public Integer getIdcargo() {
+        return idcargo;
     }
 
-    public Cargo(String cargo, Departamento depto) {
-        this.cargo = cargo;
-        this.depto = depto;
-    }
-    
-    public Integer getIdCargo() {
-        return idCargo;
-    }
-
-    public void setIdCargo(Integer idCargo) {
-        this.idCargo = idCargo;
+    public void setIdcargo(Integer idcargo) {
+        this.idcargo = idcargo;
     }
 
     public String getCargo() {
@@ -94,7 +77,6 @@ public class Cargo implements Serializable {
         this.cargo = cargo;
     }
 
-    @XmlTransient
     public Collection<Funcionario> getFuncionarioCollection() {
         return funcionarioCollection;
     }
@@ -110,11 +92,11 @@ public class Cargo implements Serializable {
     public void setDepto(Departamento depto) {
         this.depto = depto;
     }
-  
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idCargo != null ? idCargo.hashCode() : 0);
+        hash += (idcargo != null ? idcargo.hashCode() : 0);
         return hash;
     }
 
@@ -125,7 +107,7 @@ public class Cargo implements Serializable {
             return false;
         }
         Cargo other = (Cargo) object;
-        if ((this.idCargo == null && other.idCargo != null) || (this.idCargo != null && !this.idCargo.equals(other.idCargo))) {
+        if ((this.idcargo == null && other.idcargo != null) || (this.idcargo != null && !this.idcargo.equals(other.idcargo))) {
             return false;
         }
         return true;
@@ -133,7 +115,7 @@ public class Cargo implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Cargo[ idCargo=" + idCargo + " ]";
+        return "br.com.asfecer.model.Cargo[ idcargo=" + idcargo + " ]";
     }
     
 }

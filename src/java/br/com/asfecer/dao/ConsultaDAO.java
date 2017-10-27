@@ -22,7 +22,7 @@ import java.util.Collection;
 import br.com.asfecer.model.Atestado;
 import br.com.asfecer.model.Consulta;
 import br.com.asfecer.model.Receituario;
-import br.com.asfecer.model.PedidoExame;
+import br.com.asfecer.model.Pedidoexame;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,7 +30,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class ConsultaDAO implements Serializable {
 
@@ -45,7 +45,7 @@ public class ConsultaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Consulta consulta) throws RollbackFailureException, RuntimeException {
+    public void create(Consulta consulta) throws RollbackFailureException, Exception {
         if (consulta.getProntuarioCollection() == null) {
             consulta.setProntuarioCollection(new ArrayList<Prontuario>());
         }
@@ -55,8 +55,8 @@ public class ConsultaDAO implements Serializable {
         if (consulta.getReceituarioCollection() == null) {
             consulta.setReceituarioCollection(new ArrayList<Receituario>());
         }
-        if (consulta.getPedidoExameCollection() == null) {
-            consulta.setPedidoExameCollection(new ArrayList<PedidoExame>());
+        if (consulta.getPedidoexameCollection() == null) {
+            consulta.setPedidoexameCollection(new ArrayList<Pedidoexame>());
         }
         EntityManager em = null;
         try {
@@ -64,43 +64,43 @@ public class ConsultaDAO implements Serializable {
             em = getEntityManager();
             Agenda agenda = consulta.getAgenda();
             if (agenda != null) {
-                agenda = em.getReference(agenda.getClass(), agenda.getRegistroAgenda());
+                agenda = em.getReference(agenda.getClass(), agenda.getRegistroagenda());
                 consulta.setAgenda(agenda);
             }
             Medico medico = consulta.getMedico();
             if (medico != null) {
-                medico = em.getReference(medico.getClass(), medico.getIdMedico());
+                medico = em.getReference(medico.getClass(), medico.getIdmedico());
                 consulta.setMedico(medico);
             }
             Paciente paciente = consulta.getPaciente();
             if (paciente != null) {
-                paciente = em.getReference(paciente.getClass(), paciente.getIdPaciente());
+                paciente = em.getReference(paciente.getClass(), paciente.getIdpaciente());
                 consulta.setPaciente(paciente);
             }
             Collection<Prontuario> attachedProntuarioCollection = new ArrayList<Prontuario>();
             for (Prontuario prontuarioCollectionProntuarioToAttach : consulta.getProntuarioCollection()) {
-                prontuarioCollectionProntuarioToAttach = em.getReference(prontuarioCollectionProntuarioToAttach.getClass(), prontuarioCollectionProntuarioToAttach.getIdProntuario());
+                prontuarioCollectionProntuarioToAttach = em.getReference(prontuarioCollectionProntuarioToAttach.getClass(), prontuarioCollectionProntuarioToAttach.getIdprontuario());
                 attachedProntuarioCollection.add(prontuarioCollectionProntuarioToAttach);
             }
             consulta.setProntuarioCollection(attachedProntuarioCollection);
             Collection<Atestado> attachedAtestadoCollection = new ArrayList<Atestado>();
             for (Atestado atestadoCollectionAtestadoToAttach : consulta.getAtestadoCollection()) {
-                atestadoCollectionAtestadoToAttach = em.getReference(atestadoCollectionAtestadoToAttach.getClass(), atestadoCollectionAtestadoToAttach.getIdAtestado());
+                atestadoCollectionAtestadoToAttach = em.getReference(atestadoCollectionAtestadoToAttach.getClass(), atestadoCollectionAtestadoToAttach.getIdatestado());
                 attachedAtestadoCollection.add(atestadoCollectionAtestadoToAttach);
             }
             consulta.setAtestadoCollection(attachedAtestadoCollection);
             Collection<Receituario> attachedReceituarioCollection = new ArrayList<Receituario>();
             for (Receituario receituarioCollectionReceituarioToAttach : consulta.getReceituarioCollection()) {
-                receituarioCollectionReceituarioToAttach = em.getReference(receituarioCollectionReceituarioToAttach.getClass(), receituarioCollectionReceituarioToAttach.getIdReceituario());
+                receituarioCollectionReceituarioToAttach = em.getReference(receituarioCollectionReceituarioToAttach.getClass(), receituarioCollectionReceituarioToAttach.getIdreceituario());
                 attachedReceituarioCollection.add(receituarioCollectionReceituarioToAttach);
             }
             consulta.setReceituarioCollection(attachedReceituarioCollection);
-            Collection<PedidoExame> attachedPedidoExameCollection = new ArrayList<PedidoExame>();
-            for (PedidoExame pedidoexameCollectionPedidoExameToAttach : consulta.getPedidoExameCollection()) {
-                pedidoexameCollectionPedidoExameToAttach = em.getReference(pedidoexameCollectionPedidoExameToAttach.getClass(), pedidoexameCollectionPedidoExameToAttach.getIdPedidoExame());
-                attachedPedidoExameCollection.add(pedidoexameCollectionPedidoExameToAttach);
+            Collection<Pedidoexame> attachedPedidoexameCollection = new ArrayList<Pedidoexame>();
+            for (Pedidoexame pedidoexameCollectionPedidoexameToAttach : consulta.getPedidoexameCollection()) {
+                pedidoexameCollectionPedidoexameToAttach = em.getReference(pedidoexameCollectionPedidoexameToAttach.getClass(), pedidoexameCollectionPedidoexameToAttach.getIdpedidoexame());
+                attachedPedidoexameCollection.add(pedidoexameCollectionPedidoexameToAttach);
             }
-            consulta.setPedidoExameCollection(attachedPedidoExameCollection);
+            consulta.setPedidoexameCollection(attachedPedidoexameCollection);
             em.persist(consulta);
             if (agenda != null) {
                 agenda.getConsultaCollection().add(consulta);
@@ -141,13 +141,13 @@ public class ConsultaDAO implements Serializable {
                     oldConsultaOfReceituarioCollectionReceituario = em.merge(oldConsultaOfReceituarioCollectionReceituario);
                 }
             }
-            for (PedidoExame pedidoexameCollectionPedidoExame : consulta.getPedidoExameCollection()) {
-                Consulta oldConsultaOfPedidoExameCollectionPedidoExame = pedidoexameCollectionPedidoExame.getConsulta();
-                pedidoexameCollectionPedidoExame.setConsulta(consulta);
-                pedidoexameCollectionPedidoExame = em.merge(pedidoexameCollectionPedidoExame);
-                if (oldConsultaOfPedidoExameCollectionPedidoExame != null) {
-                    oldConsultaOfPedidoExameCollectionPedidoExame.getPedidoExameCollection().remove(pedidoexameCollectionPedidoExame);
-                    oldConsultaOfPedidoExameCollectionPedidoExame = em.merge(oldConsultaOfPedidoExameCollectionPedidoExame);
+            for (Pedidoexame pedidoexameCollectionPedidoexame : consulta.getPedidoexameCollection()) {
+                Consulta oldConsultaOfPedidoexameCollectionPedidoexame = pedidoexameCollectionPedidoexame.getConsulta();
+                pedidoexameCollectionPedidoexame.setConsulta(consulta);
+                pedidoexameCollectionPedidoexame = em.merge(pedidoexameCollectionPedidoexame);
+                if (oldConsultaOfPedidoexameCollectionPedidoexame != null) {
+                    oldConsultaOfPedidoexameCollectionPedidoexame.getPedidoexameCollection().remove(pedidoexameCollectionPedidoexame);
+                    oldConsultaOfPedidoexameCollectionPedidoexame = em.merge(oldConsultaOfPedidoexameCollectionPedidoexame);
                 }
             }
             utx.commit();
@@ -157,7 +157,7 @@ public class ConsultaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -165,12 +165,12 @@ public class ConsultaDAO implements Serializable {
         }
     }
 
-    public void edit(Consulta consulta) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Consulta consulta) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Consulta persistentConsulta = em.find(Consulta.class, consulta.getIdConsulta());
+            Consulta persistentConsulta = em.find(Consulta.class, consulta.getIdconsulta());
             Agenda agendaOld = persistentConsulta.getAgenda();
             Agenda agendaNew = consulta.getAgenda();
             Medico medicoOld = persistentConsulta.getMedico();
@@ -183,8 +183,8 @@ public class ConsultaDAO implements Serializable {
             Collection<Atestado> atestadoCollectionNew = consulta.getAtestadoCollection();
             Collection<Receituario> receituarioCollectionOld = persistentConsulta.getReceituarioCollection();
             Collection<Receituario> receituarioCollectionNew = consulta.getReceituarioCollection();
-            Collection<PedidoExame> pedidoexameCollectionOld = persistentConsulta.getPedidoExameCollection();
-            Collection<PedidoExame> pedidoexameCollectionNew = consulta.getPedidoExameCollection();
+            Collection<Pedidoexame> pedidoexameCollectionOld = persistentConsulta.getPedidoexameCollection();
+            Collection<Pedidoexame> pedidoexameCollectionNew = consulta.getPedidoexameCollection();
             List<String> illegalOrphanMessages = null;
             for (Prontuario prontuarioCollectionOldProntuario : prontuarioCollectionOld) {
                 if (!prontuarioCollectionNew.contains(prontuarioCollectionOldProntuario)) {
@@ -210,57 +210,57 @@ public class ConsultaDAO implements Serializable {
                     illegalOrphanMessages.add("You must retain Receituario " + receituarioCollectionOldReceituario + " since its consulta field is not nullable.");
                 }
             }
-            for (PedidoExame pedidoexameCollectionOldPedidoExame : pedidoexameCollectionOld) {
-                if (!pedidoexameCollectionNew.contains(pedidoexameCollectionOldPedidoExame)) {
+            for (Pedidoexame pedidoexameCollectionOldPedidoexame : pedidoexameCollectionOld) {
+                if (!pedidoexameCollectionNew.contains(pedidoexameCollectionOldPedidoexame)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain PedidoExame " + pedidoexameCollectionOldPedidoExame + " since its consulta field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Pedidoexame " + pedidoexameCollectionOldPedidoexame + " since its consulta field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (agendaNew != null) {
-                agendaNew = em.getReference(agendaNew.getClass(), agendaNew.getRegistroAgenda());
+                agendaNew = em.getReference(agendaNew.getClass(), agendaNew.getRegistroagenda());
                 consulta.setAgenda(agendaNew);
             }
             if (medicoNew != null) {
-                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdMedico());
+                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdmedico());
                 consulta.setMedico(medicoNew);
             }
             if (pacienteNew != null) {
-                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getIdPaciente());
+                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getIdpaciente());
                 consulta.setPaciente(pacienteNew);
             }
             Collection<Prontuario> attachedProntuarioCollectionNew = new ArrayList<Prontuario>();
             for (Prontuario prontuarioCollectionNewProntuarioToAttach : prontuarioCollectionNew) {
-                prontuarioCollectionNewProntuarioToAttach = em.getReference(prontuarioCollectionNewProntuarioToAttach.getClass(), prontuarioCollectionNewProntuarioToAttach.getIdProntuario());
+                prontuarioCollectionNewProntuarioToAttach = em.getReference(prontuarioCollectionNewProntuarioToAttach.getClass(), prontuarioCollectionNewProntuarioToAttach.getIdprontuario());
                 attachedProntuarioCollectionNew.add(prontuarioCollectionNewProntuarioToAttach);
             }
             prontuarioCollectionNew = attachedProntuarioCollectionNew;
             consulta.setProntuarioCollection(prontuarioCollectionNew);
             Collection<Atestado> attachedAtestadoCollectionNew = new ArrayList<Atestado>();
             for (Atestado atestadoCollectionNewAtestadoToAttach : atestadoCollectionNew) {
-                atestadoCollectionNewAtestadoToAttach = em.getReference(atestadoCollectionNewAtestadoToAttach.getClass(), atestadoCollectionNewAtestadoToAttach.getIdAtestado());
+                atestadoCollectionNewAtestadoToAttach = em.getReference(atestadoCollectionNewAtestadoToAttach.getClass(), atestadoCollectionNewAtestadoToAttach.getIdatestado());
                 attachedAtestadoCollectionNew.add(atestadoCollectionNewAtestadoToAttach);
             }
             atestadoCollectionNew = attachedAtestadoCollectionNew;
             consulta.setAtestadoCollection(atestadoCollectionNew);
             Collection<Receituario> attachedReceituarioCollectionNew = new ArrayList<Receituario>();
             for (Receituario receituarioCollectionNewReceituarioToAttach : receituarioCollectionNew) {
-                receituarioCollectionNewReceituarioToAttach = em.getReference(receituarioCollectionNewReceituarioToAttach.getClass(), receituarioCollectionNewReceituarioToAttach.getIdReceituario());
+                receituarioCollectionNewReceituarioToAttach = em.getReference(receituarioCollectionNewReceituarioToAttach.getClass(), receituarioCollectionNewReceituarioToAttach.getIdreceituario());
                 attachedReceituarioCollectionNew.add(receituarioCollectionNewReceituarioToAttach);
             }
             receituarioCollectionNew = attachedReceituarioCollectionNew;
             consulta.setReceituarioCollection(receituarioCollectionNew);
-            Collection<PedidoExame> attachedPedidoExameCollectionNew = new ArrayList<PedidoExame>();
-            for (PedidoExame pedidoexameCollectionNewPedidoExameToAttach : pedidoexameCollectionNew) {
-                pedidoexameCollectionNewPedidoExameToAttach = em.getReference(pedidoexameCollectionNewPedidoExameToAttach.getClass(), pedidoexameCollectionNewPedidoExameToAttach.getIdPedidoExame());
-                attachedPedidoExameCollectionNew.add(pedidoexameCollectionNewPedidoExameToAttach);
+            Collection<Pedidoexame> attachedPedidoexameCollectionNew = new ArrayList<Pedidoexame>();
+            for (Pedidoexame pedidoexameCollectionNewPedidoexameToAttach : pedidoexameCollectionNew) {
+                pedidoexameCollectionNewPedidoexameToAttach = em.getReference(pedidoexameCollectionNewPedidoexameToAttach.getClass(), pedidoexameCollectionNewPedidoexameToAttach.getIdpedidoexame());
+                attachedPedidoexameCollectionNew.add(pedidoexameCollectionNewPedidoexameToAttach);
             }
-            pedidoexameCollectionNew = attachedPedidoExameCollectionNew;
-            consulta.setPedidoExameCollection(pedidoexameCollectionNew);
+            pedidoexameCollectionNew = attachedPedidoexameCollectionNew;
+            consulta.setPedidoexameCollection(pedidoexameCollectionNew);
             consulta = em.merge(consulta);
             if (agendaOld != null && !agendaOld.equals(agendaNew)) {
                 agendaOld.getConsultaCollection().remove(consulta);
@@ -319,14 +319,14 @@ public class ConsultaDAO implements Serializable {
                     }
                 }
             }
-            for (PedidoExame pedidoexameCollectionNewPedidoExame : pedidoexameCollectionNew) {
-                if (!pedidoexameCollectionOld.contains(pedidoexameCollectionNewPedidoExame)) {
-                    Consulta oldConsultaOfPedidoExameCollectionNewPedidoExame = pedidoexameCollectionNewPedidoExame.getConsulta();
-                    pedidoexameCollectionNewPedidoExame.setConsulta(consulta);
-                    pedidoexameCollectionNewPedidoExame = em.merge(pedidoexameCollectionNewPedidoExame);
-                    if (oldConsultaOfPedidoExameCollectionNewPedidoExame != null && !oldConsultaOfPedidoExameCollectionNewPedidoExame.equals(consulta)) {
-                        oldConsultaOfPedidoExameCollectionNewPedidoExame.getPedidoExameCollection().remove(pedidoexameCollectionNewPedidoExame);
-                        oldConsultaOfPedidoExameCollectionNewPedidoExame = em.merge(oldConsultaOfPedidoExameCollectionNewPedidoExame);
+            for (Pedidoexame pedidoexameCollectionNewPedidoexame : pedidoexameCollectionNew) {
+                if (!pedidoexameCollectionOld.contains(pedidoexameCollectionNewPedidoexame)) {
+                    Consulta oldConsultaOfPedidoexameCollectionNewPedidoexame = pedidoexameCollectionNewPedidoexame.getConsulta();
+                    pedidoexameCollectionNewPedidoexame.setConsulta(consulta);
+                    pedidoexameCollectionNewPedidoexame = em.merge(pedidoexameCollectionNewPedidoexame);
+                    if (oldConsultaOfPedidoexameCollectionNewPedidoexame != null && !oldConsultaOfPedidoexameCollectionNewPedidoexame.equals(consulta)) {
+                        oldConsultaOfPedidoexameCollectionNewPedidoexame.getPedidoexameCollection().remove(pedidoexameCollectionNewPedidoexame);
+                        oldConsultaOfPedidoexameCollectionNewPedidoexame = em.merge(oldConsultaOfPedidoexameCollectionNewPedidoexame);
                     }
                 }
             }
@@ -339,12 +339,12 @@ public class ConsultaDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = consulta.getIdConsulta();
+                Integer id = consulta.getIdconsulta();
                 if (findConsulta(id) == null) {
                     throw new NonexistentEntityException("The consulta with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -352,7 +352,7 @@ public class ConsultaDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -360,7 +360,7 @@ public class ConsultaDAO implements Serializable {
             Consulta consulta;
             try {
                 consulta = em.getReference(Consulta.class, id);
-                consulta.getIdConsulta();
+                consulta.getIdconsulta();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The consulta with id " + id + " no longer exists.", enfe);
             }
@@ -386,12 +386,12 @@ public class ConsultaDAO implements Serializable {
                 }
                 illegalOrphanMessages.add("This Consulta (" + consulta + ") cannot be destroyed since the Receituario " + receituarioCollectionOrphanCheckReceituario + " in its receituarioCollection field has a non-nullable consulta field.");
             }
-            Collection<PedidoExame> pedidoexameCollectionOrphanCheck = consulta.getPedidoExameCollection();
-            for (PedidoExame pedidoexameCollectionOrphanCheckPedidoExame : pedidoexameCollectionOrphanCheck) {
+            Collection<Pedidoexame> pedidoexameCollectionOrphanCheck = consulta.getPedidoexameCollection();
+            for (Pedidoexame pedidoexameCollectionOrphanCheckPedidoexame : pedidoexameCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Consulta (" + consulta + ") cannot be destroyed since the PedidoExame " + pedidoexameCollectionOrphanCheckPedidoExame + " in its pedidoexameCollection field has a non-nullable consulta field.");
+                illegalOrphanMessages.add("This Consulta (" + consulta + ") cannot be destroyed since the Pedidoexame " + pedidoexameCollectionOrphanCheckPedidoexame + " in its pedidoexameCollection field has a non-nullable consulta field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -419,7 +419,7 @@ public class ConsultaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

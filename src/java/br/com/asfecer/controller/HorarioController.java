@@ -45,7 +45,15 @@ public class HorarioController extends HttpServlet {
         }else if(request.getServletPath().contains("listaHorarios.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiHorario.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaHorarios.html");
         } 
     }
@@ -59,6 +67,10 @@ public class HorarioController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -66,6 +78,8 @@ public class HorarioController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -94,7 +108,7 @@ public class HorarioController extends HttpServlet {
         request.getRequestDispatcher("WEB-INF/views/listaHorario.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         HorarioDAO dao = new HorarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idHorario"));
         dao.destroy(id);
@@ -102,16 +116,17 @@ public class HorarioController extends HttpServlet {
         response.sendRedirect("listaHorarios.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         
         MedicoDAO med = new MedicoDAO(utx, emf);
+        Horario horario = new Horario();
         
-        String diaSemana = request.getParameter("diaSemana");
-        Date inicio = formatDate.parse(request.getParameter("inicio"));
-        Date fim = formatDate.parse(request.getParameter("fim"));
+        horario.setDiasemana(request.getParameter("diaSemana"));
+        horario.setInicio(formatDate.parse(request.getParameter("inicio")));
+        horario.setFim(formatDate.parse(request.getParameter("fim")));
         Medico medico = med.findMedico(Integer.parseInt(request.getParameter("medico")));
-
-        Horario horario = new Horario(diaSemana, inicio, fim, medico);
+        horario.setMedico(medico);
+        
         HorarioDAO dao = new HorarioDAO(utx, emf);
         
         dao.create(horario);
@@ -119,18 +134,18 @@ public class HorarioController extends HttpServlet {
         response.sendRedirect("listaHorarios.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, NonexistentEntityException, RollbackFailureException, Exception {
 
         MedicoDAO med = new MedicoDAO(utx, emf);
+        HorarioDAO dao = new HorarioDAO(utx, emf);
         
         int idHorario = Integer.parseInt(request.getParameter("idHorario"));
-        String diaSemana = request.getParameter("diaSemana");
-        Date inicio = formatDate.parse(request.getParameter("inicio"));
-        Date fim = formatDate.parse(request.getParameter("fim"));
+        Horario horario = dao.findHorario(idHorario);
+        horario.setDiasemana(request.getParameter("diaSemana"));
+        horario.setInicio(formatDate.parse(request.getParameter("inicio")));
+        horario.setFim(formatDate.parse(request.getParameter("fim")));
         Medico medico = med.findMedico(Integer.parseInt(request.getParameter("medico")));
-
-        Horario horario = new Horario(idHorario, diaSemana, inicio, fim, medico);
-        HorarioDAO dao = new HorarioDAO(utx, emf);
+        horario.setMedico(medico);
         
         dao.edit(horario);
         

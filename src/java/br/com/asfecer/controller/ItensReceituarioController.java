@@ -1,10 +1,10 @@
 package br.com.asfecer.controller;
 
-import br.com.asfecer.dao.ItensReceituarioDAO;
+import br.com.asfecer.dao.ItensreceituarioDAO;
 import br.com.asfecer.dao.MedicamentoDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
-import br.com.asfecer.model.ItensReceituario;
+import br.com.asfecer.model.Itensreceituario;
 import br.com.asfecer.model.Medicamento;
 import java.io.IOException;
 import java.text.ParseException;
@@ -45,7 +45,15 @@ public class ItensReceituarioController extends HttpServlet {
         }else if(request.getServletPath().contains("listaItensReceituarios.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiItensReceituario.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaItensReceituarios.html");
         } 
     }
@@ -59,6 +67,10 @@ public class ItensReceituarioController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -66,6 +78,8 @@ public class ItensReceituarioController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(ItensReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -77,64 +91,64 @@ public class ItensReceituarioController extends HttpServlet {
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ItensReceituarioDAO dao = new ItensReceituarioDAO(utx, emf);
+        ItensreceituarioDAO dao = new ItensreceituarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idItensReceituario"));
-        ItensReceituario itensReceituario = dao.findItensReceituario(id);
+        Itensreceituario itensReceituario = dao.findItensreceituario(id);
         
         request.setAttribute("itensReceituario", itensReceituario);
         request.getRequestDispatcher("WEB-INF/views/editaItensReceituario.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<ItensReceituario> itensReceituarios = new ArrayList<>();
-        ItensReceituarioDAO dao = new ItensReceituarioDAO(utx, emf);
-        itensReceituarios = dao.findItensReceituarioEntities();
+        List<Itensreceituario> itensReceituarios = new ArrayList<>();
+        ItensreceituarioDAO dao = new ItensreceituarioDAO(utx, emf);
+        itensReceituarios = dao.findItensreceituarioEntities();
         
         request.setAttribute("itensReceituarios", itensReceituarios);
         request.getRequestDispatcher("WEB-INF/views/listaItensReceituario.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
-        ItensReceituarioDAO dao = new ItensReceituarioDAO(utx, emf);
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
+        ItensreceituarioDAO dao = new ItensreceituarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idItensReceituario"));
         dao.destroy(id);
         
         response.sendRedirect("listaItensReceituarios.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         
         MedicamentoDAO mednto = new MedicamentoDAO(utx, emf);
+        Itensreceituario itensReceituario = new Itensreceituario();
         
-        int ordem = Integer.parseInt(request.getParameter("ordem"));
-        int quantidade = Integer.parseInt(request.getParameter("quantidade"));
-        String posologia = request.getParameter("posologia");
-        String dose = request.getParameter("dose");
-        boolean tipoUso = "on".equalsIgnoreCase(request.getParameter("tipoUso"));
+        itensReceituario.setOrdem(Integer.parseInt(request.getParameter("ordem")));
+        itensReceituario.setQuantidade(Integer.parseInt(request.getParameter("quantidade")));
+        itensReceituario.setPosologia(request.getParameter("posologia"));
+        itensReceituario.setDose(request.getParameter("dose"));
+        itensReceituario.setTipouso("on".equalsIgnoreCase(request.getParameter("tipoUso")));
         Medicamento medicamento = mednto.findMedicamento(Integer.parseInt(request.getParameter("medicamento")));
-        
-        ItensReceituario itensReceituario = new ItensReceituario(ordem, quantidade, posologia, dose, tipoUso, medicamento);
-        ItensReceituarioDAO dao = new ItensReceituarioDAO(utx, emf);
+        itensReceituario.setMedicamento(medicamento);
+        ItensreceituarioDAO dao = new ItensreceituarioDAO(utx, emf);
         
         dao.create(itensReceituario);
         
         response.sendRedirect("listaItensReceituarios.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, NonexistentEntityException, RollbackFailureException, Exception {
         
         MedicamentoDAO mednto = new MedicamentoDAO(utx, emf);
+        ItensreceituarioDAO dao = new ItensreceituarioDAO(utx, emf);
         
         int idItensReceituario = Integer.parseInt(request.getParameter("idItensReceituario"));
-        int ordem = Integer.parseInt(request.getParameter("ordem"));
-        int quantidade = Integer.parseInt(request.getParameter("quantidade"));
-        String posologia = request.getParameter("posologia");
-        String dose = request.getParameter("dose");
-        boolean tipoUso = "on".equalsIgnoreCase(request.getParameter("tipoUso"));
+        Itensreceituario itensReceituario = dao.findItensreceituario(idItensReceituario);
+        itensReceituario.setOrdem(Integer.parseInt(request.getParameter("ordem")));
+        itensReceituario.setQuantidade(Integer.parseInt(request.getParameter("quantidade")));
+        itensReceituario.setPosologia(request.getParameter("posologia"));
+        itensReceituario.setDose(request.getParameter("dose"));
+        itensReceituario.setTipouso("on".equalsIgnoreCase(request.getParameter("tipoUso")));
         Medicamento medicamento = mednto.findMedicamento(Integer.parseInt(request.getParameter("medicamento")));
-        
-        ItensReceituario itensReceituario = new ItensReceituario(idItensReceituario, ordem, quantidade, posologia, dose, tipoUso, medicamento);
-        ItensReceituarioDAO dao = new ItensReceituarioDAO(utx, emf);
+        itensReceituario.setMedicamento(medicamento);
         
         dao.edit(itensReceituario);
         

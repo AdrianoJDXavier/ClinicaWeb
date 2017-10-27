@@ -1,11 +1,12 @@
 package br.com.asfecer.controller;
 
 import br.com.asfecer.dao.ConsultaDAO;
+import br.com.asfecer.dao.ItensreceituarioDAO;
 import br.com.asfecer.dao.ReceituarioDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.ItensReceituario;
+import br.com.asfecer.model.Itensreceituario;
 import br.com.asfecer.model.Receituario;
 import java.io.IOException;
 import java.text.ParseException;
@@ -27,46 +28,58 @@ import javax.transaction.UserTransaction;
 
 @WebServlet(name = "ReceituarioController", urlPatterns = {"/criaReceituario.html", "/listaReceituarios.html", "/excluiReceituario.html", "/editaReceituario.html"})
 public class ReceituarioController extends HttpServlet {
-    
+
     @PersistenceUnit
     private EntityManagerFactory emf;
-    
+
     @Resource
     private UserTransaction utx;
-    
+
     public SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(request.getServletPath().contains("criaReceituario.html")){
+        if (request.getServletPath().contains("criaReceituario.html")) {
             criarGet(request, response);
-        }else if(request.getServletPath().contains("editaReceituario.html")){
+        } else if (request.getServletPath().contains("editaReceituario.html")) {
             editarGet(request, response);
-        }else if(request.getServletPath().contains("listaReceituarios.html")){
+        } else if (request.getServletPath().contains("listaReceituarios.html")) {
             listarGet(request, response);
-        }else if(request.getServletPath().contains("excluiReceituario.html")){
-            excluirGet(request, response);
+        } else if (request.getServletPath().contains("excluiReceituario.html")) {
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaReceituarios.html");
-        } 
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        if(request.getServletPath().contains("/editaReceituario.html")){
+
+        if (request.getServletPath().contains("/editaReceituario.html")) {
             try {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        if(request.getServletPath().contains("/criaReceituario.html")){
+        if (request.getServletPath().contains("/criaReceituario.html")) {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(ReceituarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -81,7 +94,7 @@ public class ReceituarioController extends HttpServlet {
         ReceituarioDAO dao = new ReceituarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idReceituario"));
         Receituario receituario = dao.findReceituario(id);
-        
+
         request.setAttribute("receituario", receituario);
         request.getRequestDispatcher("WEB-INF/views/editaReceituario.jsp").forward(request, response);
     }
@@ -90,49 +103,53 @@ public class ReceituarioController extends HttpServlet {
         List<Receituario> receituarios = new ArrayList<>();
         ReceituarioDAO dao = new ReceituarioDAO(utx, emf);
         receituarios = dao.findReceituarioEntities();
-        
+
         request.setAttribute("receituarios", receituarios);
         request.getRequestDispatcher("WEB-INF/views/listaReceituario.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         ReceituarioDAO dao = new ReceituarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idReceituario"));
         dao.destroy(id);
-        
-        response.sendRedirect("listaReceituarios.html");
-    }
- 
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
-        
-        ConsultaDAO cons = new ConsultaDAO(utx, emf);
-               
-        Date data = formatDate.parse(request.getParameter("data"));
-        Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
-        String tipoReceituario = request.getParameter("tipoReceituario");
-                
-        Receituario receituario = new Receituario(data, consulta, tipoReceituario);
-        ReceituarioDAO dao = new ReceituarioDAO(utx, emf);
-        
-        dao.create(receituario);
-        
+
         response.sendRedirect("listaReceituarios.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
-        
-        ConsultaDAO cons = new ConsultaDAO(utx, emf);
-               
-        int idReceituario = Integer.parseInt(request.getParameter("idReceituario"));
-        Date data = formatDate.parse(request.getParameter("data"));
-        Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
-        String tipoReceituario = request.getParameter("tipoReceituario");
-                
-        Receituario receituario = new Receituario(idReceituario, data, consulta, tipoReceituario);
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
+
         ReceituarioDAO dao = new ReceituarioDAO(utx, emf);
-        
+        ConsultaDAO cons = new ConsultaDAO(utx, emf);
+        ItensreceituarioDAO itensReceituario = new ItensreceituarioDAO(utx, emf);
+        Receituario receituario = new Receituario();
+
+        receituario.setData(formatDate.parse(request.getParameter("data")));
+        Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
+        receituario.setConsulta(consulta);
+        Itensreceituario ItensReceituario = itensReceituario.findItensreceituario(Integer.parseInt(request.getParameter("tipoReceituario")));
+        receituario.setTipoReceituario(ItensReceituario);
+
+        dao.create(receituario);
+
+        response.sendRedirect("listaReceituarios.html");
+    }
+
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
+
+        ReceituarioDAO dao = new ReceituarioDAO(utx, emf);
+        ConsultaDAO cons = new ConsultaDAO(utx, emf);
+        ItensreceituarioDAO itensReceituario = new ItensreceituarioDAO(utx, emf);
+
+        int idReceituario = Integer.parseInt(request.getParameter("idReceituario"));
+        Receituario receituario = dao.findReceituario(idReceituario);
+        receituario.setData(formatDate.parse(request.getParameter("data")));
+        Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
+        receituario.setConsulta(consulta);
+        Itensreceituario ItensReceituario = itensReceituario.findItensreceituario(Integer.parseInt(request.getParameter("tipoReceituario")));
+        receituario.setTipoReceituario(ItensReceituario);
+
         dao.edit(receituario);
-        
-        response.sendRedirect("listaReceituarios.html");   
+
+        response.sendRedirect("listaReceituarios.html");
     }
 }

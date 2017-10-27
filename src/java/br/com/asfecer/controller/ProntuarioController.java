@@ -42,7 +42,15 @@ public class ProntuarioController extends HttpServlet {
         }else if(request.getServletPath().contains("listaProntuarios.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiProntuario.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaProntuarios.html");
         } 
     }
@@ -56,6 +64,8 @@ public class ProntuarioController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -63,6 +73,8 @@ public class ProntuarioController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(ProntuarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -91,7 +103,7 @@ public class ProntuarioController extends HttpServlet {
         request.getRequestDispatcher("WEB-INF/views/listaProntuario.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         ProntuarioDAO dao = new ProntuarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idProntuario"));
         dao.destroy(id);
@@ -99,21 +111,22 @@ public class ProntuarioController extends HttpServlet {
         response.sendRedirect("listaProntuarios.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, RollbackFailureException, Exception {
         
+        Prontuario prontuario = new Prontuario();
         ConsultaDAO cons = new ConsultaDAO(utx, emf);
                
-        String queixaPrincipal = request.getParameter("queixaPrincipal");
-        String anamnese = request.getParameter("anamnese");
-        String examesFisicos = request.getParameter("examesFisicos");
-        String examesComplementares = request.getParameter("examesComplementares");
-        String hipotesesDiagnosticas = request.getParameter("hipotesesDiagnosticas");
-        String diagnosticoDefinitivo = request.getParameter("diagnosticoDefinitivo");
-        String tratamento = request.getParameter("tratamento");
-        String evolucao = request.getParameter("evolucao");
+        prontuario.setQueixaprincipal(request.getParameter("queixaPrincipal"));
+        prontuario.setAnamnese(request.getParameter("anamnese"));
+        prontuario.setExamesfisicos(request.getParameter("examesFisicos"));
+        prontuario.setExamescomplementares(request.getParameter("examesComplementares"));
+        prontuario.setHipotesesdiagnosticas(request.getParameter("hipotesesDiagnosticas"));
+        prontuario.setDiagnosticodefinitivo(request.getParameter("diagnosticoDefinitivo"));
+        prontuario.setTratamento(request.getParameter("tratamento"));
+        prontuario.setEvolucao(request.getParameter("evolucao"));
         Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
+        prontuario.setConsulta(consulta);
         
-        Prontuario prontuario = new Prontuario(queixaPrincipal, anamnese, examesFisicos, examesComplementares, hipotesesDiagnosticas, diagnosticoDefinitivo, tratamento, evolucao, consulta);
         ProntuarioDAO dao = new ProntuarioDAO(utx, emf);
         
         dao.create(prontuario);
@@ -121,23 +134,23 @@ public class ProntuarioController extends HttpServlet {
         response.sendRedirect("listaProntuarios.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
         
         ConsultaDAO cons = new ConsultaDAO(utx, emf);
+        ProntuarioDAO dao = new ProntuarioDAO(utx, emf);
                
         int idProntuario = Integer.parseInt(request.getParameter("idProntuario"));
-        String queixaPrincipal = request.getParameter("queixaPrincipal");
-        String anamnese = request.getParameter("anamnese");
-        String examesFisicos = request.getParameter("examesFisicos");
-        String examesComplementares = request.getParameter("examesComplementares");
-        String hipotesesDiagnosticas = request.getParameter("hipotesesDiagnosticas");
-        String diagnosticoDefinitivo = request.getParameter("diagnosticoDefinitivo");
-        String tratamento = request.getParameter("tratamento");
-        String evolucao = request.getParameter("evolucao");
+        Prontuario prontuario = dao.findProntuario(idProntuario);
+        prontuario.setQueixaprincipal(request.getParameter("queixaPrincipal"));
+        prontuario.setAnamnese(request.getParameter("anamnese"));
+        prontuario.setExamesfisicos(request.getParameter("examesFisicos"));
+        prontuario.setExamescomplementares(request.getParameter("examesComplementares"));
+        prontuario.setHipotesesdiagnosticas(request.getParameter("hipotesesDiagnosticas"));
+        prontuario.setDiagnosticodefinitivo(request.getParameter("diagnosticoDefinitivo"));
+        prontuario.setTratamento(request.getParameter("tratamento"));
+        prontuario.setEvolucao(request.getParameter("evolucao"));
         Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
-        
-        Prontuario prontuario = new Prontuario(idProntuario, queixaPrincipal, anamnese, examesFisicos, examesComplementares, hipotesesDiagnosticas, diagnosticoDefinitivo, tratamento, evolucao, consulta);
-        ProntuarioDAO dao = new ProntuarioDAO(utx, emf);
+        prontuario.setConsulta(consulta);
         
         dao.edit(prontuario);
         

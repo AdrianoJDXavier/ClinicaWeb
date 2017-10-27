@@ -16,37 +16,29 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"sigla"})})
-@XmlRootElement
+@Table(name = "estados")
 @NamedQueries({
-    @NamedQuery(name = "Estados.findAll", query = "SELECT e FROM Estados e")
-    , @NamedQuery(name = "Estados.findBySigla", query = "SELECT e FROM Estados e WHERE e.sigla = :sigla")
-    , @NamedQuery(name = "Estados.findByEstado", query = "SELECT e FROM Estados e WHERE e.estado = :estado")})
+    @NamedQuery(name = "Estados.findAll", query = "SELECT e FROM Estados e")})
 public class Estados implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
-    @Column(nullable = false, length = 2)
+    @Column(name = "SIGLA")
     private String sigla;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Column(name = "ESTADO")
     private String estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado")
     private Collection<Cidade> cidadeCollection;
@@ -83,7 +75,6 @@ public class Estados implements Serializable {
         this.estado = estado;
     }
 
-    @XmlTransient
     public Collection<Cidade> getCidadeCollection() {
         return cidadeCollection;
     }
@@ -92,7 +83,6 @@ public class Estados implements Serializable {
         this.cidadeCollection = cidadeCollection;
     }
 
-    @XmlTransient
     public Collection<Medico> getMedicoCollection() {
         return medicoCollection;
     }
@@ -101,7 +91,6 @@ public class Estados implements Serializable {
         this.medicoCollection = medicoCollection;
     }
 
-    @XmlTransient
     public Collection<Funcionario> getFuncionarioCollection() {
         return funcionarioCollection;
     }

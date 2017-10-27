@@ -24,7 +24,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class UsuarioDAO implements Serializable {
 
@@ -39,7 +39,7 @@ public class UsuarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Usuario usuario) throws RollbackFailureException, RuntimeException {
+    public void create(Usuario usuario) throws RollbackFailureException, Exception {
         if (usuario.getAgendaCollection() == null) {
             usuario.setAgendaCollection(new ArrayList<Agenda>());
         }
@@ -49,7 +49,7 @@ public class UsuarioDAO implements Serializable {
             em = getEntityManager();
             Collection<Agenda> attachedAgendaCollection = new ArrayList<Agenda>();
             for (Agenda agendaCollectionAgendaToAttach : usuario.getAgendaCollection()) {
-                agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroAgenda());
+                agendaCollectionAgendaToAttach = em.getReference(agendaCollectionAgendaToAttach.getClass(), agendaCollectionAgendaToAttach.getRegistroagenda());
                 attachedAgendaCollection.add(agendaCollectionAgendaToAttach);
             }
             usuario.setAgendaCollection(attachedAgendaCollection);
@@ -70,7 +70,7 @@ public class UsuarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -78,12 +78,12 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Usuario persistentUsuario = em.find(Usuario.class, usuario.getIdUsuario());
+            Usuario persistentUsuario = em.find(Usuario.class, usuario.getIdusuario());
             Collection<Agenda> agendaCollectionOld = persistentUsuario.getAgendaCollection();
             Collection<Agenda> agendaCollectionNew = usuario.getAgendaCollection();
             List<String> illegalOrphanMessages = null;
@@ -100,7 +100,7 @@ public class UsuarioDAO implements Serializable {
             }
             Collection<Agenda> attachedAgendaCollectionNew = new ArrayList<Agenda>();
             for (Agenda agendaCollectionNewAgendaToAttach : agendaCollectionNew) {
-                agendaCollectionNewAgendaToAttach = em.getReference(agendaCollectionNewAgendaToAttach.getClass(), agendaCollectionNewAgendaToAttach.getRegistroAgenda());
+                agendaCollectionNewAgendaToAttach = em.getReference(agendaCollectionNewAgendaToAttach.getClass(), agendaCollectionNewAgendaToAttach.getRegistroagenda());
                 attachedAgendaCollectionNew.add(agendaCollectionNewAgendaToAttach);
             }
             agendaCollectionNew = attachedAgendaCollectionNew;
@@ -126,12 +126,12 @@ public class UsuarioDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = usuario.getIdUsuario();
+                Integer id = usuario.getIdusuario();
                 if (findUsuario(id) == null) {
                     throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -139,7 +139,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -147,7 +147,7 @@ public class UsuarioDAO implements Serializable {
             Usuario usuario;
             try {
                 usuario = em.getReference(Usuario.class, id);
-                usuario.getIdUsuario();
+                usuario.getIdusuario();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.", enfe);
             }
@@ -170,7 +170,7 @@ public class UsuarioDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

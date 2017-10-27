@@ -20,32 +20,26 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "especialidade")
 @NamedQueries({
-    @NamedQuery(name = "Especialidade.findAll", query = "SELECT e FROM Especialidade e")
-    , @NamedQuery(name = "Especialidade.findByIdEspecialidade", query = "SELECT e FROM Especialidade e WHERE e.idEspecialidade = :idEspecialidade")
-    , @NamedQuery(name = "Especialidade.findByDescricao", query = "SELECT e FROM Especialidade e WHERE e.descricao = :descricao")})
+    @NamedQuery(name = "Especialidade.findAll", query = "SELECT e FROM Especialidade e")})
 public class Especialidade implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idEspecialidade;
+    @Column(name = "IDESPECIALIDADE")
+    private Integer idespecialidade;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Column(name = "DESCRICAO")
     private String descricao;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "especialidade")
     private Collection<Medico> medicoCollection;
@@ -53,25 +47,21 @@ public class Especialidade implements Serializable {
     public Especialidade() {
     }
 
-    public Especialidade(Integer idEspecialidade) {
-        this.idEspecialidade = idEspecialidade;
+    public Especialidade(Integer idespecialidade) {
+        this.idespecialidade = idespecialidade;
     }
 
-    public Especialidade(String descricao) {
+    public Especialidade(Integer idespecialidade, String descricao) {
+        this.idespecialidade = idespecialidade;
         this.descricao = descricao;
     }
 
-    public Especialidade(Integer idEspecialidade, String descricao) {
-        this.idEspecialidade = idEspecialidade;
-        this.descricao = descricao;
+    public Integer getIdespecialidade() {
+        return idespecialidade;
     }
 
-    public Integer getIdEspecialidade() {
-        return idEspecialidade;
-    }
-
-    public void setIdEspecialidade(Integer idEspecialidade) {
-        this.idEspecialidade = idEspecialidade;
+    public void setIdespecialidade(Integer idespecialidade) {
+        this.idespecialidade = idespecialidade;
     }
 
     public String getDescricao() {
@@ -82,7 +72,6 @@ public class Especialidade implements Serializable {
         this.descricao = descricao;
     }
 
-    @XmlTransient
     public Collection<Medico> getMedicoCollection() {
         return medicoCollection;
     }
@@ -94,7 +83,7 @@ public class Especialidade implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idEspecialidade != null ? idEspecialidade.hashCode() : 0);
+        hash += (idespecialidade != null ? idespecialidade.hashCode() : 0);
         return hash;
     }
 
@@ -105,7 +94,7 @@ public class Especialidade implements Serializable {
             return false;
         }
         Especialidade other = (Especialidade) object;
-        if ((this.idEspecialidade == null && other.idEspecialidade != null) || (this.idEspecialidade != null && !this.idEspecialidade.equals(other.idEspecialidade))) {
+        if ((this.idespecialidade == null && other.idespecialidade != null) || (this.idespecialidade != null && !this.idespecialidade.equals(other.idespecialidade))) {
             return false;
         }
         return true;
@@ -113,7 +102,7 @@ public class Especialidade implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Especialidade[ idEspecialidade=" + idEspecialidade + " ]";
+        return "br.com.asfecer.model.Especialidade[ idespecialidade=" + idespecialidade + " ]";
     }
     
 }

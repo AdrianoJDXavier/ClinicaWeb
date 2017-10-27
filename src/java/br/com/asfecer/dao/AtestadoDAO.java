@@ -14,7 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import br.com.asfecer.model.Consulta;
-import br.com.asfecer.model.TipoAtestado;
+import br.com.asfecer.model.Tipoatestado;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,7 +22,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class AtestadoDAO implements Serializable {
 
@@ -37,19 +37,19 @@ public class AtestadoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Atestado atestado) throws RollbackFailureException, RuntimeException {
+    public void create(Atestado atestado) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
             Consulta consulta = atestado.getConsulta();
             if (consulta != null) {
-                consulta = em.getReference(consulta.getClass(), consulta.getIdConsulta());
+                consulta = em.getReference(consulta.getClass(), consulta.getIdconsulta());
                 atestado.setConsulta(consulta);
             }
-            TipoAtestado tipoAtestado = atestado.getTipoAtestado();
+            Tipoatestado tipoAtestado = atestado.getTipoAtestado();
             if (tipoAtestado != null) {
-                tipoAtestado = em.getReference(tipoAtestado.getClass(), tipoAtestado.getIdTipoAtestado());
+                tipoAtestado = em.getReference(tipoAtestado.getClass(), tipoAtestado.getIdtipoatestado());
                 atestado.setTipoAtestado(tipoAtestado);
             }
             em.persist(atestado);
@@ -68,7 +68,7 @@ public class AtestadoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -76,22 +76,22 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Atestado atestado) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Atestado persistentAtestado = em.find(Atestado.class, atestado.getIdAtestado());
+            Atestado persistentAtestado = em.find(Atestado.class, atestado.getIdatestado());
             Consulta consultaOld = persistentAtestado.getConsulta();
             Consulta consultaNew = atestado.getConsulta();
-            TipoAtestado tipoAtestadoOld = persistentAtestado.getTipoAtestado();
-            TipoAtestado tipoAtestadoNew = atestado.getTipoAtestado();
+            Tipoatestado tipoAtestadoOld = persistentAtestado.getTipoAtestado();
+            Tipoatestado tipoAtestadoNew = atestado.getTipoAtestado();
             if (consultaNew != null) {
-                consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdConsulta());
+                consultaNew = em.getReference(consultaNew.getClass(), consultaNew.getIdconsulta());
                 atestado.setConsulta(consultaNew);
             }
             if (tipoAtestadoNew != null) {
-                tipoAtestadoNew = em.getReference(tipoAtestadoNew.getClass(), tipoAtestadoNew.getIdTipoAtestado());
+                tipoAtestadoNew = em.getReference(tipoAtestadoNew.getClass(), tipoAtestadoNew.getIdtipoatestado());
                 atestado.setTipoAtestado(tipoAtestadoNew);
             }
             atestado = em.merge(atestado);
@@ -120,12 +120,12 @@ public class AtestadoDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = atestado.getIdAtestado();
+                Integer id = atestado.getIdatestado();
                 if (findAtestado(id) == null) {
                     throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -133,7 +133,7 @@ public class AtestadoDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -141,7 +141,7 @@ public class AtestadoDAO implements Serializable {
             Atestado atestado;
             try {
                 atestado = em.getReference(Atestado.class, id);
-                atestado.getIdAtestado();
+                atestado.getIdatestado();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The atestado with id " + id + " no longer exists.", enfe);
             }
@@ -150,7 +150,7 @@ public class AtestadoDAO implements Serializable {
                 consulta.getAtestadoCollection().remove(atestado);
                 consulta = em.merge(consulta);
             }
-            TipoAtestado tipoAtestado = atestado.getTipoAtestado();
+            Tipoatestado tipoAtestado = atestado.getTipoAtestado();
             if (tipoAtestado != null) {
                 tipoAtestado.getAtestadoCollection().remove(atestado);
                 tipoAtestado = em.merge(tipoAtestado);
@@ -163,7 +163,7 @@ public class AtestadoDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

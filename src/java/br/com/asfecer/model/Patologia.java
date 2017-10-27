@@ -19,58 +19,48 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "patologia")
 @NamedQueries({
-    @NamedQuery(name = "Patologia.findAll", query = "SELECT p FROM Patologia p")
-    , @NamedQuery(name = "Patologia.findByIdPatologia", query = "SELECT p FROM Patologia p WHERE p.idPatologia = :idPatologia")
-    , @NamedQuery(name = "Patologia.findByPatologia", query = "SELECT p FROM Patologia p WHERE p.patologia = :patologia")})
+    @NamedQuery(name = "Patologia.findAll", query = "SELECT p FROM Patologia p")})
 public class Patologia implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idPatologia;
+    @Column(name = "IDPATOLOGIA")
+    private Integer idpatologia;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(nullable = false, length = 100)
+    @Column(name = "PATOLOGIA")
     private String patologia;
     @OneToMany(mappedBy = "patologia")
-    private Collection<TipoAtestado> tipoatestadoCollection;
+    private Collection<Tipoatestado> tipoatestadoCollection;
 
     public Patologia() {
     }
 
-    public Patologia(Integer idPatologia) {
-        this.idPatologia = idPatologia;
+    public Patologia(Integer idpatologia) {
+        this.idpatologia = idpatologia;
     }
 
-    public Patologia(String patologia) {
+    public Patologia(Integer idpatologia, String patologia) {
+        this.idpatologia = idpatologia;
         this.patologia = patologia;
     }
 
-    public Patologia(Integer idPatologia, String patologia) {
-        this.idPatologia = idPatologia;
-        this.patologia = patologia;
+    public Integer getIdpatologia() {
+        return idpatologia;
     }
 
-    public Integer getIdPatologia() {
-        return idPatologia;
-    }
-
-    public void setIdPatologia(Integer idPatologia) {
-        this.idPatologia = idPatologia;
+    public void setIdpatologia(Integer idpatologia) {
+        this.idpatologia = idpatologia;
     }
 
     public String getPatologia() {
@@ -81,19 +71,18 @@ public class Patologia implements Serializable {
         this.patologia = patologia;
     }
 
-    @XmlTransient
-    public Collection<TipoAtestado> getTipoAtestadoCollection() {
+    public Collection<Tipoatestado> getTipoatestadoCollection() {
         return tipoatestadoCollection;
     }
 
-    public void setTipoAtestadoCollection(Collection<TipoAtestado> tipoatestadoCollection) {
+    public void setTipoatestadoCollection(Collection<Tipoatestado> tipoatestadoCollection) {
         this.tipoatestadoCollection = tipoatestadoCollection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idPatologia != null ? idPatologia.hashCode() : 0);
+        hash += (idpatologia != null ? idpatologia.hashCode() : 0);
         return hash;
     }
 
@@ -104,7 +93,7 @@ public class Patologia implements Serializable {
             return false;
         }
         Patologia other = (Patologia) object;
-        if ((this.idPatologia == null && other.idPatologia != null) || (this.idPatologia != null && !this.idPatologia.equals(other.idPatologia))) {
+        if ((this.idpatologia == null && other.idpatologia != null) || (this.idpatologia != null && !this.idpatologia.equals(other.idpatologia))) {
             return false;
         }
         return true;
@@ -112,7 +101,7 @@ public class Patologia implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Patologia[ idPatologia=" + idPatologia + " ]";
+        return "br.com.asfecer.model.Patologia[ idpatologia=" + idpatologia + " ]";
     }
     
 }

@@ -39,46 +39,58 @@ import javax.transaction.UserTransaction;
 
 @WebServlet(name = "FuncionarioController", urlPatterns = {"/criaFuncionario.html", "/listaFuncionarios.html", "/excluiFuncionario.html", "/editaFuncionario.html"})
 public class FuncionarioController extends HttpServlet {
-    
+
     @PersistenceUnit
     private EntityManagerFactory emf;
-    
+
     @Resource
     private UserTransaction utx;
-    
-    public SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");  
+
+    public SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(request.getServletPath().contains("criaFuncionario.html")){
+        if (request.getServletPath().contains("criaFuncionario.html")) {
             criarGet(request, response);
-        }else if(request.getServletPath().contains("editaFuncionario.html")){
+        } else if (request.getServletPath().contains("editaFuncionario.html")) {
             editarGet(request, response);
-        }else if(request.getServletPath().contains("listaFuncionarios.html")){
+        } else if (request.getServletPath().contains("listaFuncionarios.html")) {
             listarGet(request, response);
-        }else if(request.getServletPath().contains("excluiFuncionario.html")){
-            excluirGet(request, response);
+        } else if (request.getServletPath().contains("excluiFuncionario.html")) {
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaFuncionarios.html");
-        } 
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        if(request.getServletPath().contains("/editaFuncionario.html")){
+
+        if (request.getServletPath().contains("/editaFuncionario.html")) {
             try {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        if(request.getServletPath().contains("/criaFuncionario.html")){
+        if (request.getServletPath().contains("/criaFuncionario.html")) {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(FuncionarioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -93,7 +105,7 @@ public class FuncionarioController extends HttpServlet {
         FuncionarioDAO dao = new FuncionarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idFuncionario"));
         Funcionario funcionario = dao.findFuncionario(id);
-        
+
         request.setAttribute("funcionario", funcionario);
         request.getRequestDispatcher("WEB-INF/views/editaFuncionario.jsp").forward(request, response);
     }
@@ -102,75 +114,79 @@ public class FuncionarioController extends HttpServlet {
         List<Funcionario> funcionarios = new ArrayList<>();
         FuncionarioDAO dao = new FuncionarioDAO(utx, emf);
         funcionarios = dao.findFuncionarioEntities();
-        
+
         request.setAttribute("funcionarios", funcionarios);
         request.getRequestDispatcher("WEB-INF/views/listaFuncionario.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         FuncionarioDAO dao = new FuncionarioDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idFuncionario"));
         dao.destroy(id);
-        
-        response.sendRedirect("listaFuncionarios.html");
-    }
- 
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
-        
-        CargoDAO carg = new CargoDAO(utx, emf);
-        EnderecoDAO ender = new EnderecoDAO(utx, emf);
-        EstadosDAO uf = new EstadosDAO(utx, emf);
-        
-        String nomeFuncionario = request.getParameter("nomeFuncionario");
-        Date dataNascimento = formatDate.parse(request.getParameter("dataNascimento"));
-        String cpf = request.getParameter("cpf");
-        String rg = request.getParameter("rg");
-        String orgaoEmissor = request.getParameter("orgaoEmissor");
-        String ctps = request.getParameter("ctps");
-        String pis = request.getParameter("pis");
-        String email  = request.getParameter("email");
-        String telefone = request.getParameter("telefone");
-        String celular = request.getParameter("celular");
-        String obs = request.getParameter("obs");
-        Cargo cargo = carg.findCargo(Integer.parseInt(request.getParameter("cargo")));
-        Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
-        Estados ufEmissor = uf.findEstados(request.getParameter("ufEmissor"));
-        
-        Funcionario funcionario = new Funcionario(nomeFuncionario, dataNascimento, cpf, rg, orgaoEmissor, ctps, pis, email, telefone, celular, obs, cargo, endereco, ufEmissor);
-        FuncionarioDAO dao = new FuncionarioDAO(utx, emf);
-        
-        dao.create(funcionario);
-        
+
         response.sendRedirect("listaFuncionarios.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
-        
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
+
         CargoDAO carg = new CargoDAO(utx, emf);
         EnderecoDAO ender = new EnderecoDAO(utx, emf);
         EstadosDAO uf = new EstadosDAO(utx, emf);
-        
-        int idFuncionario = Integer.parseInt(request.getParameter("idFuncionario"));
-        String nomeFuncionario = request.getParameter("nomeFuncionario");
-        Date dataNascimento = formatDate.parse(request.getParameter("dataNascimento"));
-        String cpf = request.getParameter("cpf");
-        String rg = request.getParameter("rg");
-        String orgaoEmissor = request.getParameter("orgaoEmissor");
-        String ctps = request.getParameter("ctps");
-        String pis = request.getParameter("pis");
-        String email  = request.getParameter("email");
-        String telefone = request.getParameter("telefone");
-        String celular = request.getParameter("celular");
-        String obs = request.getParameter("obs");
-        Cargo cargo = carg.findCargo(Integer.parseInt(request.getParameter("cargo")));
-        Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
-        Estados ufEmissor = uf.findEstados(request.getParameter("ufEmissor"));
-        
-        Funcionario funcionario = new Funcionario(idFuncionario, nomeFuncionario, dataNascimento, cpf, rg, orgaoEmissor, ctps, pis, email, telefone, celular, obs, cargo, endereco, ufEmissor);     
         FuncionarioDAO dao = new FuncionarioDAO(utx, emf);
-        
+        Funcionario funcionario = new Funcionario();
+
+        funcionario.setNomefuncionario(request.getParameter("nomeFuncionario"));
+        funcionario.setDatanascimento(formatDate.parse(request.getParameter("dataNascimento")));
+        funcionario.setCpf(request.getParameter("cpf"));
+        funcionario.setRg(request.getParameter("rg"));
+        funcionario.setOrgaoemissor(request.getParameter("orgaoEmissor"));
+        funcionario.setCtps(request.getParameter("ctps"));
+        funcionario.setPis(request.getParameter("pis"));
+        funcionario.setEmail(request.getParameter("email"));
+        funcionario.setTelefone(request.getParameter("telefone"));
+        funcionario.setCelular(request.getParameter("celular"));
+        funcionario.setObs(request.getParameter("obs"));
+        Cargo cargo = carg.findCargo(Integer.parseInt(request.getParameter("cargo")));
+        funcionario.setCargo(cargo);
+        Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
+        funcionario.setEndereco(endereco);
+        Estados ufEmissor = uf.findEstados(request.getParameter("ufEmissor"));
+        funcionario.setUfEmissor(ufEmissor);
+
+        dao.create(funcionario);
+
+        response.sendRedirect("listaFuncionarios.html");
+    }
+
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
+
+        CargoDAO carg = new CargoDAO(utx, emf);
+        EnderecoDAO ender = new EnderecoDAO(utx, emf);
+        EstadosDAO uf = new EstadosDAO(utx, emf);
+        FuncionarioDAO dao = new FuncionarioDAO(utx, emf);
+
+        int idFuncionario = Integer.parseInt(request.getParameter("idFuncionario"));
+        Funcionario funcionario = dao.findFuncionario(idFuncionario);
+        funcionario.setNomefuncionario(request.getParameter("nomeFuncionario"));
+        funcionario.setDatanascimento(formatDate.parse(request.getParameter("dataNascimento")));
+        funcionario.setCpf(request.getParameter("cpf"));
+        funcionario.setRg(request.getParameter("rg"));
+        funcionario.setOrgaoemissor(request.getParameter("orgaoEmissor"));
+        funcionario.setCtps(request.getParameter("ctps"));
+        funcionario.setPis(request.getParameter("pis"));
+        funcionario.setEmail(request.getParameter("email"));
+        funcionario.setTelefone(request.getParameter("telefone"));
+        funcionario.setCelular(request.getParameter("celular"));
+        funcionario.setObs(request.getParameter("obs"));
+        Cargo cargo = carg.findCargo(Integer.parseInt(request.getParameter("cargo")));
+        funcionario.setCargo(cargo);
+        Endereco endereco = ender.findEndereco(Integer.parseInt(request.getParameter("endereco")));
+        funcionario.setEndereco(endereco);
+        Estados ufEmissor = uf.findEstados(request.getParameter("ufEmissor"));
+        funcionario.setUfEmissor(ufEmissor);
+
         dao.edit(funcionario);
-        
-        response.sendRedirect("listaFuncionarios.html");   
+
+        response.sendRedirect("listaFuncionarios.html");
     }
 }

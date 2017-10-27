@@ -21,78 +21,60 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "atestado")
 @NamedQueries({
-    @NamedQuery(name = "Atestado.findAll", query = "SELECT a FROM Atestado a")
-    , @NamedQuery(name = "Atestado.findByIdAtestado", query = "SELECT a FROM Atestado a WHERE a.idAtestado = :idAtestado")
-    , @NamedQuery(name = "Atestado.findByDataAtestado", query = "SELECT a FROM Atestado a WHERE a.dataAtestado = :dataAtestado")})
+    @NamedQuery(name = "Atestado.findAll", query = "SELECT a FROM Atestado a")})
 public class Atestado implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idAtestado;
+    @Column(name = "IDATESTADO")
+    private Integer idatestado;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "DATAATESTADO")
     @Temporal(TemporalType.DATE)
-    private Date dataAtestado;
-    @JoinColumn(name = "Consulta", referencedColumnName = "idConsulta", nullable = false)
+    private Date dataatestado;
+    @JoinColumn(name = "Consulta", referencedColumnName = "IDCONSULTA")
     @ManyToOne(optional = false)
     private Consulta consulta;
-    @JoinColumn(name = "TipoAtestado", referencedColumnName = "idTipoAtestado", nullable = false)
+    @JoinColumn(name = "TipoAtestado", referencedColumnName = "IDTIPOATESTADO")
     @ManyToOne(optional = false)
-    private TipoAtestado tipoAtestado;
+    private Tipoatestado tipoAtestado;
 
     public Atestado() {
     }
 
-    public Atestado(Integer idAtestado) {
-        this.idAtestado = idAtestado;
+    public Atestado(Integer idatestado) {
+        this.idatestado = idatestado;
     }
 
-    public Atestado(Integer idAtestado, Date dataAtestado) {
-        this.idAtestado = idAtestado;
-        this.dataAtestado = dataAtestado;
+    public Atestado(Integer idatestado, Date dataatestado) {
+        this.idatestado = idatestado;
+        this.dataatestado = dataatestado;
     }
 
-    public Atestado(Date dataAtestado, Consulta consulta, TipoAtestado tipoAtestado) {
-        this.dataAtestado = dataAtestado;
-        this.consulta = consulta;
-        this.tipoAtestado = tipoAtestado;
+    public Integer getIdatestado() {
+        return idatestado;
     }
 
-    public Atestado(Integer idAtestado, Date dataAtestado, Consulta consulta, TipoAtestado tipoAtestado) {
-        this.idAtestado = idAtestado;
-        this.dataAtestado = dataAtestado;
-        this.consulta = consulta;
-        this.tipoAtestado = tipoAtestado;
+    public void setIdatestado(Integer idatestado) {
+        this.idatestado = idatestado;
     }
 
-    public Integer getIdAtestado() {
-        return idAtestado;
+    public Date getDataatestado() {
+        return dataatestado;
     }
 
-    public void setIdAtestado(Integer idAtestado) {
-        this.idAtestado = idAtestado;
-    }
-
-    public Date getDataAtestado() {
-        return dataAtestado;
-    }
-
-    public void setDataAtestado(Date dataAtestado) {
-        this.dataAtestado = dataAtestado;
+    public void setDataatestado(Date dataatestado) {
+        this.dataatestado = dataatestado;
     }
 
     public Consulta getConsulta() {
@@ -103,18 +85,18 @@ public class Atestado implements Serializable {
         this.consulta = consulta;
     }
 
-    public TipoAtestado getTipoAtestado() {
+    public Tipoatestado getTipoAtestado() {
         return tipoAtestado;
     }
 
-    public void setTipoAtestado(TipoAtestado tipoAtestado) {
+    public void setTipoAtestado(Tipoatestado tipoAtestado) {
         this.tipoAtestado = tipoAtestado;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idAtestado != null ? idAtestado.hashCode() : 0);
+        hash += (idatestado != null ? idatestado.hashCode() : 0);
         return hash;
     }
 
@@ -125,7 +107,7 @@ public class Atestado implements Serializable {
             return false;
         }
         Atestado other = (Atestado) object;
-        if ((this.idAtestado == null && other.idAtestado != null) || (this.idAtestado != null && !this.idAtestado.equals(other.idAtestado))) {
+        if ((this.idatestado == null && other.idatestado != null) || (this.idatestado != null && !this.idatestado.equals(other.idatestado))) {
             return false;
         }
         return true;
@@ -133,7 +115,7 @@ public class Atestado implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Atestado[ idAtestado=" + idAtestado + " ]";
+        return "br.com.asfecer.model.Atestado[ idatestado=" + idatestado + " ]";
     }
     
 }

@@ -1,6 +1,6 @@
 package br.com.asfecer.dao.exceptions;
 
-public class NonexistentEntityException extends RuntimeException {
+public class NonexistentEntityException extends Exception {
     public NonexistentEntityException(String message, Throwable cause) {
         super(message, cause);
     }

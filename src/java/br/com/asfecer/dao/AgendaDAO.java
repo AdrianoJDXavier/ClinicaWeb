@@ -26,7 +26,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class AgendaDAO implements Serializable {
 
@@ -41,7 +41,7 @@ public class AgendaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Agenda agenda) throws RollbackFailureException, RuntimeException {
+    public void create(Agenda agenda) throws RollbackFailureException, Exception {
         if (agenda.getConsultaCollection() == null) {
             agenda.setConsultaCollection(new ArrayList<Consulta>());
         }
@@ -51,22 +51,22 @@ public class AgendaDAO implements Serializable {
             em = getEntityManager();
             Horario medico = agenda.getMedico();
             if (medico != null) {
-                medico = em.getReference(medico.getClass(), medico.getIdHorario());
+                medico = em.getReference(medico.getClass(), medico.getIdhorario());
                 agenda.setMedico(medico);
             }
             Paciente paciente = agenda.getPaciente();
             if (paciente != null) {
-                paciente = em.getReference(paciente.getClass(), paciente.getIdPaciente());
+                paciente = em.getReference(paciente.getClass(), paciente.getIdpaciente());
                 agenda.setPaciente(paciente);
             }
             Usuario usuario = agenda.getUsuario();
             if (usuario != null) {
-                usuario = em.getReference(usuario.getClass(), usuario.getIdUsuario());
+                usuario = em.getReference(usuario.getClass(), usuario.getIdusuario());
                 agenda.setUsuario(usuario);
             }
             Collection<Consulta> attachedConsultaCollection = new ArrayList<Consulta>();
             for (Consulta consultaCollectionConsultaToAttach : agenda.getConsultaCollection()) {
-                consultaCollectionConsultaToAttach = em.getReference(consultaCollectionConsultaToAttach.getClass(), consultaCollectionConsultaToAttach.getIdConsulta());
+                consultaCollectionConsultaToAttach = em.getReference(consultaCollectionConsultaToAttach.getClass(), consultaCollectionConsultaToAttach.getIdconsulta());
                 attachedConsultaCollection.add(consultaCollectionConsultaToAttach);
             }
             agenda.setConsultaCollection(attachedConsultaCollection);
@@ -99,7 +99,7 @@ public class AgendaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -107,12 +107,12 @@ public class AgendaDAO implements Serializable {
         }
     }
 
-    public void edit(Agenda agenda) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Agenda agenda) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Agenda persistentAgenda = em.find(Agenda.class, agenda.getRegistroAgenda());
+            Agenda persistentAgenda = em.find(Agenda.class, agenda.getRegistroagenda());
             Horario medicoOld = persistentAgenda.getMedico();
             Horario medicoNew = agenda.getMedico();
             Paciente pacienteOld = persistentAgenda.getPaciente();
@@ -122,20 +122,20 @@ public class AgendaDAO implements Serializable {
             Collection<Consulta> consultaCollectionOld = persistentAgenda.getConsultaCollection();
             Collection<Consulta> consultaCollectionNew = agenda.getConsultaCollection();
             if (medicoNew != null) {
-                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdHorario());
+                medicoNew = em.getReference(medicoNew.getClass(), medicoNew.getIdhorario());
                 agenda.setMedico(medicoNew);
             }
             if (pacienteNew != null) {
-                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getIdPaciente());
+                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getIdpaciente());
                 agenda.setPaciente(pacienteNew);
             }
             if (usuarioNew != null) {
-                usuarioNew = em.getReference(usuarioNew.getClass(), usuarioNew.getIdUsuario());
+                usuarioNew = em.getReference(usuarioNew.getClass(), usuarioNew.getIdusuario());
                 agenda.setUsuario(usuarioNew);
             }
             Collection<Consulta> attachedConsultaCollectionNew = new ArrayList<Consulta>();
             for (Consulta consultaCollectionNewConsultaToAttach : consultaCollectionNew) {
-                consultaCollectionNewConsultaToAttach = em.getReference(consultaCollectionNewConsultaToAttach.getClass(), consultaCollectionNewConsultaToAttach.getIdConsulta());
+                consultaCollectionNewConsultaToAttach = em.getReference(consultaCollectionNewConsultaToAttach.getClass(), consultaCollectionNewConsultaToAttach.getIdconsulta());
                 attachedConsultaCollectionNew.add(consultaCollectionNewConsultaToAttach);
             }
             consultaCollectionNew = attachedConsultaCollectionNew;
@@ -191,12 +191,12 @@ public class AgendaDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = agenda.getRegistroAgenda();
+                Integer id = agenda.getRegistroagenda();
                 if (findAgenda(id) == null) {
                     throw new NonexistentEntityException("The agenda with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -204,7 +204,7 @@ public class AgendaDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -212,7 +212,7 @@ public class AgendaDAO implements Serializable {
             Agenda agenda;
             try {
                 agenda = em.getReference(Agenda.class, id);
-                agenda.getRegistroAgenda();
+                agenda.getRegistroagenda();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The agenda with id " + id + " no longer exists.", enfe);
             }
@@ -244,7 +244,7 @@ public class AgendaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

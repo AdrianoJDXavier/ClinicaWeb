@@ -20,68 +20,59 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "convenio")
 @NamedQueries({
-    @NamedQuery(name = "Convenio.findAll", query = "SELECT c FROM Convenio c")
-    , @NamedQuery(name = "Convenio.findByIdConvenio", query = "SELECT c FROM Convenio c WHERE c.idConvenio = :idConvenio")
-    , @NamedQuery(name = "Convenio.findByEmpresaConvenio", query = "SELECT c FROM Convenio c WHERE c.empresaConvenio = :empresaConvenio")
-    , @NamedQuery(name = "Convenio.findByTipoConvenio", query = "SELECT c FROM Convenio c WHERE c.tipoConvenio = :tipoConvenio")
-    , @NamedQuery(name = "Convenio.findByTelefone", query = "SELECT c FROM Convenio c WHERE c.telefone = :telefone")
-    , @NamedQuery(name = "Convenio.findByStatus", query = "SELECT c FROM Convenio c WHERE c.status = :status")
-    , @NamedQuery(name = "Convenio.findByObs", query = "SELECT c FROM Convenio c WHERE c.obs = :obs")})
+    @NamedQuery(name = "Convenio.findAll", query = "SELECT c FROM Convenio c")})
 public class Convenio implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idConvenio;
+    @Column(name = "IDCONVENIO")
+    private Integer idconvenio;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 60)
-    @Column(name = "empresa_convenio", nullable = false, length = 60)
+    @Column(name = "empresa_convenio")
     private String empresaConvenio;
-    @Size(max = 30)
-    @Column(name = "tipo_convenio", length = 30)
-    private String tipoConvenio;
-    @Size(max = 20)
-    @Column(length = 20)
-    private String telefone;
-    private Boolean status;
     @Size(max = 300)
-    @Column(length = 300)
+    @Column(name = "OBS")
     private String obs;
+    @Column(name = "STATUS")
+    private Boolean status;
+    @Size(max = 20)
+    @Column(name = "TELEFONE")
+    private String telefone;
+    @Size(max = 30)
+    @Column(name = "tipo_convenio")
+    private String tipoConvenio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
     private Collection<Paciente> pacienteCollection;
 
     public Convenio() {
     }
 
-    public Convenio(Integer idConvenio) {
-        this.idConvenio = idConvenio;
+    public Convenio(Integer idconvenio) {
+        this.idconvenio = idconvenio;
     }
 
-    public Convenio(Integer idConvenio, String empresaConvenio) {
-        this.idConvenio = idConvenio;
+    public Convenio(Integer idconvenio, String empresaConvenio) {
+        this.idconvenio = idconvenio;
         this.empresaConvenio = empresaConvenio;
     }
 
-    public Integer getIdConvenio() {
-        return idConvenio;
+    public Integer getIdconvenio() {
+        return idconvenio;
     }
 
-    public void setIdConvenio(Integer idConvenio) {
-        this.idConvenio = idConvenio;
+    public void setIdconvenio(Integer idconvenio) {
+        this.idconvenio = idconvenio;
     }
 
     public String getEmpresaConvenio() {
@@ -92,20 +83,12 @@ public class Convenio implements Serializable {
         this.empresaConvenio = empresaConvenio;
     }
 
-    public String getTipoConvenio() {
-        return tipoConvenio;
+    public String getObs() {
+        return obs;
     }
 
-    public void setTipoConvenio(String tipoConvenio) {
-        this.tipoConvenio = tipoConvenio;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setObs(String obs) {
+        this.obs = obs;
     }
 
     public Boolean getStatus() {
@@ -116,15 +99,22 @@ public class Convenio implements Serializable {
         this.status = status;
     }
 
-    public String getObs() {
-        return obs;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setObs(String obs) {
-        this.obs = obs;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
-    @XmlTransient
+    public String getTipoConvenio() {
+        return tipoConvenio;
+    }
+
+    public void setTipoConvenio(String tipoConvenio) {
+        this.tipoConvenio = tipoConvenio;
+    }
+
     public Collection<Paciente> getPacienteCollection() {
         return pacienteCollection;
     }
@@ -136,7 +126,7 @@ public class Convenio implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idConvenio != null ? idConvenio.hashCode() : 0);
+        hash += (idconvenio != null ? idconvenio.hashCode() : 0);
         return hash;
     }
 
@@ -147,7 +137,7 @@ public class Convenio implements Serializable {
             return false;
         }
         Convenio other = (Convenio) object;
-        if ((this.idConvenio == null && other.idConvenio != null) || (this.idConvenio != null && !this.idConvenio.equals(other.idConvenio))) {
+        if ((this.idconvenio == null && other.idconvenio != null) || (this.idconvenio != null && !this.idconvenio.equals(other.idconvenio))) {
             return false;
         }
         return true;
@@ -155,7 +145,7 @@ public class Convenio implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Convenio[ idConvenio=" + idConvenio + " ]";
+        return "br.com.asfecer.model.Convenio[ idconvenio=" + idconvenio + " ]";
     }
     
 }

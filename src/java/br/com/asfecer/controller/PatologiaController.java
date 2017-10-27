@@ -43,7 +43,15 @@ public class PatologiaController extends HttpServlet {
         }else if(request.getServletPath().contains("listaPatologias.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiPatologia.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaPatologias.html");
         } 
     }
@@ -57,6 +65,8 @@ public class PatologiaController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -64,6 +74,8 @@ public class PatologiaController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(PatologiaController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -92,7 +104,7 @@ public class PatologiaController extends HttpServlet {
         request.getRequestDispatcher("WEB-INF/views/listaPatologia.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
         PatologiaDAO dao = new PatologiaDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idPatologia"));
         dao.destroy(id);
@@ -100,11 +112,11 @@ public class PatologiaController extends HttpServlet {
         response.sendRedirect("listaPatologias.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
+        Patologia patologia = new Patologia();
         
-        String nomePatologia = request.getParameter("patologia");
+        patologia.setPatologia(request.getParameter("patologia"));
                 
-        Patologia patologia = new Patologia(nomePatologia);
         PatologiaDAO dao = new PatologiaDAO(utx, emf);
         
         dao.create(patologia);
@@ -112,14 +124,13 @@ public class PatologiaController extends HttpServlet {
         response.sendRedirect("listaPatologias.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
        
+        PatologiaDAO dao = new PatologiaDAO(utx, emf);
         
         int idPatologia = Integer.parseInt(request.getParameter("idPatologia"));
-        String nomePatologia = request.getParameter("patologia");
-        
-        Patologia patologia = new Patologia(idPatologia, nomePatologia);
-        PatologiaDAO dao = new PatologiaDAO(utx, emf);
+        Patologia patologia = dao.findPatologia(idPatologia);
+        patologia.setPatologia(request.getParameter("patologia"));
         
         dao.edit(patologia);
         

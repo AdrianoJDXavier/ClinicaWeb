@@ -13,7 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import br.com.asfecer.model.TipoAtestado;
+import br.com.asfecer.model.Tipoatestado;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +23,7 @@ import javax.transaction.UserTransaction;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 public class PatologiaDAO implements Serializable {
 
@@ -38,28 +38,28 @@ public class PatologiaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Patologia patologia) throws RollbackFailureException, RuntimeException {
-        if (patologia.getTipoAtestadoCollection() == null) {
-            patologia.setTipoAtestadoCollection(new ArrayList<TipoAtestado>());
+    public void create(Patologia patologia) throws RollbackFailureException, Exception {
+        if (patologia.getTipoatestadoCollection() == null) {
+            patologia.setTipoatestadoCollection(new ArrayList<Tipoatestado>());
         }
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Collection<TipoAtestado> attachedTipoAtestadoCollection = new ArrayList<TipoAtestado>();
-            for (TipoAtestado tipoatestadoCollectionTipoAtestadoToAttach : patologia.getTipoAtestadoCollection()) {
-                tipoatestadoCollectionTipoAtestadoToAttach = em.getReference(tipoatestadoCollectionTipoAtestadoToAttach.getClass(), tipoatestadoCollectionTipoAtestadoToAttach.getIdTipoAtestado());
-                attachedTipoAtestadoCollection.add(tipoatestadoCollectionTipoAtestadoToAttach);
+            Collection<Tipoatestado> attachedTipoatestadoCollection = new ArrayList<Tipoatestado>();
+            for (Tipoatestado tipoatestadoCollectionTipoatestadoToAttach : patologia.getTipoatestadoCollection()) {
+                tipoatestadoCollectionTipoatestadoToAttach = em.getReference(tipoatestadoCollectionTipoatestadoToAttach.getClass(), tipoatestadoCollectionTipoatestadoToAttach.getIdtipoatestado());
+                attachedTipoatestadoCollection.add(tipoatestadoCollectionTipoatestadoToAttach);
             }
-            patologia.setTipoAtestadoCollection(attachedTipoAtestadoCollection);
+            patologia.setTipoatestadoCollection(attachedTipoatestadoCollection);
             em.persist(patologia);
-            for (TipoAtestado tipoatestadoCollectionTipoAtestado : patologia.getTipoAtestadoCollection()) {
-                Patologia oldPatologiaOfTipoAtestadoCollectionTipoAtestado = tipoatestadoCollectionTipoAtestado.getPatologia();
-                tipoatestadoCollectionTipoAtestado.setPatologia(patologia);
-                tipoatestadoCollectionTipoAtestado = em.merge(tipoatestadoCollectionTipoAtestado);
-                if (oldPatologiaOfTipoAtestadoCollectionTipoAtestado != null) {
-                    oldPatologiaOfTipoAtestadoCollectionTipoAtestado.getTipoAtestadoCollection().remove(tipoatestadoCollectionTipoAtestado);
-                    oldPatologiaOfTipoAtestadoCollectionTipoAtestado = em.merge(oldPatologiaOfTipoAtestadoCollectionTipoAtestado);
+            for (Tipoatestado tipoatestadoCollectionTipoatestado : patologia.getTipoatestadoCollection()) {
+                Patologia oldPatologiaOfTipoatestadoCollectionTipoatestado = tipoatestadoCollectionTipoatestado.getPatologia();
+                tipoatestadoCollectionTipoatestado.setPatologia(patologia);
+                tipoatestadoCollectionTipoatestado = em.merge(tipoatestadoCollectionTipoatestado);
+                if (oldPatologiaOfTipoatestadoCollectionTipoatestado != null) {
+                    oldPatologiaOfTipoatestadoCollectionTipoatestado.getTipoatestadoCollection().remove(tipoatestadoCollectionTipoatestado);
+                    oldPatologiaOfTipoatestadoCollectionTipoatestado = em.merge(oldPatologiaOfTipoatestadoCollectionTipoatestado);
                 }
             }
             utx.commit();
@@ -69,7 +69,7 @@ public class PatologiaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -77,36 +77,36 @@ public class PatologiaDAO implements Serializable {
         }
     }
 
-    public void edit(Patologia patologia) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void edit(Patologia patologia) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-            Patologia persistentPatologia = em.find(Patologia.class, patologia.getIdPatologia());
-            Collection<TipoAtestado> tipoatestadoCollectionOld = persistentPatologia.getTipoAtestadoCollection();
-            Collection<TipoAtestado> tipoatestadoCollectionNew = patologia.getTipoAtestadoCollection();
-            Collection<TipoAtestado> attachedTipoAtestadoCollectionNew = new ArrayList<TipoAtestado>();
-            for (TipoAtestado tipoatestadoCollectionNewTipoAtestadoToAttach : tipoatestadoCollectionNew) {
-                tipoatestadoCollectionNewTipoAtestadoToAttach = em.getReference(tipoatestadoCollectionNewTipoAtestadoToAttach.getClass(), tipoatestadoCollectionNewTipoAtestadoToAttach.getIdTipoAtestado());
-                attachedTipoAtestadoCollectionNew.add(tipoatestadoCollectionNewTipoAtestadoToAttach);
+            Patologia persistentPatologia = em.find(Patologia.class, patologia.getIdpatologia());
+            Collection<Tipoatestado> tipoatestadoCollectionOld = persistentPatologia.getTipoatestadoCollection();
+            Collection<Tipoatestado> tipoatestadoCollectionNew = patologia.getTipoatestadoCollection();
+            Collection<Tipoatestado> attachedTipoatestadoCollectionNew = new ArrayList<Tipoatestado>();
+            for (Tipoatestado tipoatestadoCollectionNewTipoatestadoToAttach : tipoatestadoCollectionNew) {
+                tipoatestadoCollectionNewTipoatestadoToAttach = em.getReference(tipoatestadoCollectionNewTipoatestadoToAttach.getClass(), tipoatestadoCollectionNewTipoatestadoToAttach.getIdtipoatestado());
+                attachedTipoatestadoCollectionNew.add(tipoatestadoCollectionNewTipoatestadoToAttach);
             }
-            tipoatestadoCollectionNew = attachedTipoAtestadoCollectionNew;
-            patologia.setTipoAtestadoCollection(tipoatestadoCollectionNew);
+            tipoatestadoCollectionNew = attachedTipoatestadoCollectionNew;
+            patologia.setTipoatestadoCollection(tipoatestadoCollectionNew);
             patologia = em.merge(patologia);
-            for (TipoAtestado tipoatestadoCollectionOldTipoAtestado : tipoatestadoCollectionOld) {
-                if (!tipoatestadoCollectionNew.contains(tipoatestadoCollectionOldTipoAtestado)) {
-                    tipoatestadoCollectionOldTipoAtestado.setPatologia(null);
-                    tipoatestadoCollectionOldTipoAtestado = em.merge(tipoatestadoCollectionOldTipoAtestado);
+            for (Tipoatestado tipoatestadoCollectionOldTipoatestado : tipoatestadoCollectionOld) {
+                if (!tipoatestadoCollectionNew.contains(tipoatestadoCollectionOldTipoatestado)) {
+                    tipoatestadoCollectionOldTipoatestado.setPatologia(null);
+                    tipoatestadoCollectionOldTipoatestado = em.merge(tipoatestadoCollectionOldTipoatestado);
                 }
             }
-            for (TipoAtestado tipoatestadoCollectionNewTipoAtestado : tipoatestadoCollectionNew) {
-                if (!tipoatestadoCollectionOld.contains(tipoatestadoCollectionNewTipoAtestado)) {
-                    Patologia oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado = tipoatestadoCollectionNewTipoAtestado.getPatologia();
-                    tipoatestadoCollectionNewTipoAtestado.setPatologia(patologia);
-                    tipoatestadoCollectionNewTipoAtestado = em.merge(tipoatestadoCollectionNewTipoAtestado);
-                    if (oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado != null && !oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado.equals(patologia)) {
-                        oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado.getTipoAtestadoCollection().remove(tipoatestadoCollectionNewTipoAtestado);
-                        oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado = em.merge(oldPatologiaOfTipoAtestadoCollectionNewTipoAtestado);
+            for (Tipoatestado tipoatestadoCollectionNewTipoatestado : tipoatestadoCollectionNew) {
+                if (!tipoatestadoCollectionOld.contains(tipoatestadoCollectionNewTipoatestado)) {
+                    Patologia oldPatologiaOfTipoatestadoCollectionNewTipoatestado = tipoatestadoCollectionNewTipoatestado.getPatologia();
+                    tipoatestadoCollectionNewTipoatestado.setPatologia(patologia);
+                    tipoatestadoCollectionNewTipoatestado = em.merge(tipoatestadoCollectionNewTipoatestado);
+                    if (oldPatologiaOfTipoatestadoCollectionNewTipoatestado != null && !oldPatologiaOfTipoatestadoCollectionNewTipoatestado.equals(patologia)) {
+                        oldPatologiaOfTipoatestadoCollectionNewTipoatestado.getTipoatestadoCollection().remove(tipoatestadoCollectionNewTipoatestado);
+                        oldPatologiaOfTipoatestadoCollectionNewTipoatestado = em.merge(oldPatologiaOfTipoatestadoCollectionNewTipoatestado);
                     }
                 }
             }
@@ -119,12 +119,12 @@ public class PatologiaDAO implements Serializable {
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = patologia.getIdPatologia();
+                Integer id = patologia.getIdpatologia();
                 if (findPatologia(id) == null) {
                     throw new NonexistentEntityException("The patologia with id " + id + " no longer exists.");
                 }
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -132,7 +132,7 @@ public class PatologiaDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, RuntimeException {
+    public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
@@ -140,14 +140,14 @@ public class PatologiaDAO implements Serializable {
             Patologia patologia;
             try {
                 patologia = em.getReference(Patologia.class, id);
-                patologia.getIdPatologia();
+                patologia.getIdpatologia();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The patologia with id " + id + " no longer exists.", enfe);
             }
-            Collection<TipoAtestado> tipoatestadoCollection = patologia.getTipoAtestadoCollection();
-            for (TipoAtestado tipoatestadoCollectionTipoAtestado : tipoatestadoCollection) {
-                tipoatestadoCollectionTipoAtestado.setPatologia(null);
-                tipoatestadoCollectionTipoAtestado = em.merge(tipoatestadoCollectionTipoAtestado);
+            Collection<Tipoatestado> tipoatestadoCollection = patologia.getTipoatestadoCollection();
+            for (Tipoatestado tipoatestadoCollectionTipoatestado : tipoatestadoCollection) {
+                tipoatestadoCollectionTipoatestado.setPatologia(null);
+                tipoatestadoCollectionTipoatestado = em.merge(tipoatestadoCollectionTipoatestado);
             }
             em.remove(patologia);
             utx.commit();
@@ -157,7 +157,7 @@ public class PatologiaDAO implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            throw new RuntimeException(ex);
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

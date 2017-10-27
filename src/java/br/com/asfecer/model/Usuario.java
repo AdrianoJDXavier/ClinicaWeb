@@ -20,132 +20,102 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author PToledo
+ * @author Adriano Xavier
  */
 @Entity
-@Table(catalog = "db_asfecer", schema = "")
-@XmlRootElement
+@Table(name = "usuario")
 @NamedQueries({
-    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")
-    , @NamedQuery(name = "Usuario.findByIdUsuario", query = "SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario")
-    , @NamedQuery(name = "Usuario.findByTipoUsuario", query = "SELECT u FROM Usuario u WHERE u.tipoUsuario = :tipoUsuario")
-    , @NamedQuery(name = "Usuario.findByStatus", query = "SELECT u FROM Usuario u WHERE u.status = :status")
-    , @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login")
-    , @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")
-    , @NamedQuery(name = "Usuario.findByModuloAdministrativo", query = "SELECT u FROM Usuario u WHERE u.moduloAdministrativo = :moduloAdministrativo")
-    , @NamedQuery(name = "Usuario.findByModuloAgendamento", query = "SELECT u FROM Usuario u WHERE u.moduloAgendamento = :moduloAgendamento")
-    , @NamedQuery(name = "Usuario.findByModuloAtendimento", query = "SELECT u FROM Usuario u WHERE u.moduloAtendimento = :moduloAtendimento")
-    , @NamedQuery(name = "Usuario.findByModuloAcesso", query = "SELECT u FROM Usuario u WHERE u.moduloAcesso = :moduloAcesso")
-    , @NamedQuery(name = "Usuario.findByModuloAdmBD", query = "SELECT u FROM Usuario u WHERE u.moduloAdmBD = :moduloAdmBD")})
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
 public class Usuario implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(nullable = false)
-    private Integer idUsuario;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(nullable = false, length = 20)
-    private String tipoUsuario;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private char status;
+    @Column(name = "IDUSUARIO")
+    private Integer idusuario;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
-    @Column(nullable = false, length = 30)
+    @Column(name = "LOGIN")
     private String login;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "MODULOACESSO")
+    private Character moduloacesso;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "MODULOADMBD")
+    private Character moduloadmbd;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "MODULOADMINISTRATIVO")
+    private Character moduloadministrativo;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "MODULOAGENDAMENTO")
+    private Character moduloagendamento;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "MODULOATENDIMENTO")
+    private Character moduloatendimento;
+    @Basic(optional = false)
+    @NotNull
     @Size(min = 1, max = 12)
-    @Column(nullable = false, length = 12)
+    @Column(name = "SENHA")
     private String senha;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
-    private char moduloAdministrativo;
+    @Column(name = "STATUS")
+    private Character status;
     @Basic(optional = false)
     @NotNull
-    @Column(nullable = false)
-    private char moduloAgendamento;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private char moduloAtendimento;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private char moduloAcesso;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private char moduloAdmBD;
+    @Size(min = 1, max = 20)
+    @Column(name = "TIPOUSUARIO")
+    private String tipousuario;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Collection<Agenda> agendaCollection;
 
     public Usuario() {
     }
-
-    public Usuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Usuario(String tipoUsuario, char status, String login, String senha, char moduloAdministrativo, char moduloAgendamento, char moduloAtendimento, char moduloAcesso, char moduloAdmBD) {
-        this.tipoUsuario = tipoUsuario;
+    
+    public Usuario(String tipoUsuario, Character status, String login, String senha, Character moduloAdministrativo, Character moduloAgendamento, Character moduloAtendimento, Character moduloAcesso, Character moduloAdmBD){
+        this.tipousuario = tipoUsuario;
         this.status = status;
         this.login = login;
         this.senha = senha;
-        this.moduloAdministrativo = moduloAdministrativo;
-        this.moduloAgendamento = moduloAgendamento;
-        this.moduloAtendimento = moduloAtendimento;
-        this.moduloAcesso = moduloAcesso;
-        this.moduloAdmBD = moduloAdmBD;
+        this.moduloacesso = moduloAcesso;
+        this.moduloadmbd = moduloAdmBD;
+        this.moduloadministrativo = moduloAdministrativo;
+        this.moduloagendamento = moduloAgendamento;
+        this.moduloatendimento = moduloAtendimento;
     }
 
-    public Usuario(Integer idUsuario, String tipoUsuario, char status, String login, String senha, char moduloAdministrativo, char moduloAgendamento, char moduloAtendimento, char moduloAcesso, char moduloAdmBD) {
-        this.idUsuario = idUsuario;
-        this.tipoUsuario = tipoUsuario;
-        this.status = status;
+    public Usuario(Integer idusuario) {
+        this.idusuario = idusuario;
+    }
+
+    public Usuario(Integer idusuario, String login, Character moduloacesso, Character moduloadmbd, Character moduloadministrativo, Character moduloagendamento, Character moduloatendimento, String senha, Character status, String tipousuario) {
+        this.idusuario = idusuario;
         this.login = login;
+        this.moduloacesso = moduloacesso;
+        this.moduloadmbd = moduloadmbd;
+        this.moduloadministrativo = moduloadministrativo;
+        this.moduloagendamento = moduloagendamento;
+        this.moduloatendimento = moduloatendimento;
         this.senha = senha;
-        this.moduloAdministrativo = moduloAdministrativo;
-        this.moduloAgendamento = moduloAgendamento;
-        this.moduloAtendimento = moduloAtendimento;
-        this.moduloAcesso = moduloAcesso;
-        this.moduloAdmBD = moduloAdmBD;
-    }
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
-    public char getStatus() {
-        return status;
-    }
-
-    public void setStatus(char status) {
         this.status = status;
+        this.tipousuario = tipousuario;
+    }
+
+    public Integer getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(Integer idusuario) {
+        this.idusuario = idusuario;
     }
 
     public String getLogin() {
@@ -156,6 +126,46 @@ public class Usuario implements Serializable {
         this.login = login;
     }
 
+    public Character getModuloacesso() {
+        return moduloacesso;
+    }
+
+    public void setModuloacesso(Character moduloacesso) {
+        this.moduloacesso = moduloacesso;
+    }
+
+    public Character getModuloadmbd() {
+        return moduloadmbd;
+    }
+
+    public void setModuloadmbd(Character moduloadmbd) {
+        this.moduloadmbd = moduloadmbd;
+    }
+
+    public Character getModuloadministrativo() {
+        return moduloadministrativo;
+    }
+
+    public void setModuloadministrativo(Character moduloadministrativo) {
+        this.moduloadministrativo = moduloadministrativo;
+    }
+
+    public Character getModuloagendamento() {
+        return moduloagendamento;
+    }
+
+    public void setModuloagendamento(Character moduloagendamento) {
+        this.moduloagendamento = moduloagendamento;
+    }
+
+    public Character getModuloatendimento() {
+        return moduloatendimento;
+    }
+
+    public void setModuloatendimento(Character moduloatendimento) {
+        this.moduloatendimento = moduloatendimento;
+    }
+
     public String getSenha() {
         return senha;
     }
@@ -164,47 +174,22 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public char getModuloAdministrativo() {
-        return moduloAdministrativo;
+    public Character getStatus() {
+        return status;
     }
 
-    public void setModuloAdministrativo(char moduloAdministrativo) {
-        this.moduloAdministrativo = moduloAdministrativo;
+    public void setStatus(Character status) {
+        this.status = status;
     }
 
-    public char getModuloAgendamento() {
-        return moduloAgendamento;
+    public String getTipousuario() {
+        return tipousuario;
     }
 
-    public void setModuloAgendamento(char moduloAgendamento) {
-        this.moduloAgendamento = moduloAgendamento;
+    public void setTipousuario(String tipousuario) {
+        this.tipousuario = tipousuario;
     }
 
-    public char getModuloAtendimento() {
-        return moduloAtendimento;
-    }
-
-    public void setModuloAtendimento(char moduloAtendimento) {
-        this.moduloAtendimento = moduloAtendimento;
-    }
-
-    public char getModuloAcesso() {
-        return moduloAcesso;
-    }
-
-    public void setModuloAcesso(char moduloAcesso) {
-        this.moduloAcesso = moduloAcesso;
-    }
-
-    public char getModuloAdmBD() {
-        return moduloAdmBD;
-    }
-
-    public void setModuloAdmBD(char moduloAdmBD) {
-        this.moduloAdmBD = moduloAdmBD;
-    }
-
-    @XmlTransient
     public Collection<Agenda> getAgendaCollection() {
         return agendaCollection;
     }
@@ -216,7 +201,7 @@ public class Usuario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idUsuario != null ? idUsuario.hashCode() : 0);
+        hash += (idusuario != null ? idusuario.hashCode() : 0);
         return hash;
     }
 
@@ -227,7 +212,7 @@ public class Usuario implements Serializable {
             return false;
         }
         Usuario other = (Usuario) object;
-        if ((this.idUsuario == null && other.idUsuario != null) || (this.idUsuario != null && !this.idUsuario.equals(other.idUsuario))) {
+        if ((this.idusuario == null && other.idusuario != null) || (this.idusuario != null && !this.idusuario.equals(other.idusuario))) {
             return false;
         }
         return true;
@@ -235,7 +220,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.asfecer.model.Usuario[ idUsuario=" + idUsuario + " ]";
+        return "br.com.asfecer.model.Usuario[ idusuario=" + idusuario + " ]";
     }
     
 }

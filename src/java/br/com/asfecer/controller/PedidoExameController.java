@@ -2,12 +2,12 @@ package br.com.asfecer.controller;
 
 import br.com.asfecer.dao.ConsultaDAO;
 import br.com.asfecer.dao.ExameDAO;
-import br.com.asfecer.dao.PedidoExameDAO;
+import br.com.asfecer.dao.PedidoexameDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import br.com.asfecer.model.Consulta;
 import br.com.asfecer.model.Exame;
-import br.com.asfecer.model.PedidoExame;
+import br.com.asfecer.model.Pedidoexame;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,7 +47,15 @@ public class PedidoExameController extends HttpServlet {
         }else if(request.getServletPath().contains("listaPedidoExames.html")){
             listarGet(request, response);
         }else if(request.getServletPath().contains("excluiPedidoExame.html")){
-            excluirGet(request, response);
+            try {
+                excluirGet(request, response);
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RuntimeException ex) {
+                Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             response.sendRedirect("listaPedidoExames.html");
         } 
     }
@@ -61,6 +69,8 @@ public class PedidoExameController extends HttpServlet {
                 editarPost(request, response);
             } catch (ParseException ex) {
                 Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -68,6 +78,8 @@ public class PedidoExameController extends HttpServlet {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
+                Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(PedidoExameController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -79,61 +91,64 @@ public class PedidoExameController extends HttpServlet {
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PedidoExameDAO dao = new PedidoExameDAO(utx, emf);
+        PedidoexameDAO dao = new PedidoexameDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idPedidoExame"));
-        PedidoExame pedidoExame = dao.findPedidoExame(id);
+        Pedidoexame pedidoExame = dao.findPedidoexame(id);
         
         request.setAttribute("pedidoExame", pedidoExame);
         request.getRequestDispatcher("WEB-INF/views/editaPedidoExame.jsp").forward(request, response);
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<PedidoExame> pedidoExames = new ArrayList<>();
-        PedidoExameDAO dao = new PedidoExameDAO(utx, emf);
-        pedidoExames = dao.findPedidoExameEntities();
+        List<Pedidoexame> pedidoExames = new ArrayList<>();
+        PedidoexameDAO dao = new PedidoexameDAO(utx, emf);
+        pedidoExames = dao.findPedidoexameEntities();
         
         request.setAttribute("pedidoExames", pedidoExames);
         request.getRequestDispatcher("WEB-INF/views/listaPedidoExame.jsp").forward(request, response);
     }
 
-    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException {
-        PedidoExameDAO dao = new PedidoExameDAO(utx, emf);
+    private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
+        PedidoexameDAO dao = new PedidoexameDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idPedidoExame"));
         dao.destroy(id);
         
         response.sendRedirect("listaPedidoExames.html");
     }
  
-    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+    private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         
         ConsultaDAO cons = new ConsultaDAO(utx, emf);
         ExameDAO exm = new ExameDAO(utx, emf);
+        Pedidoexame pedidoExame = new Pedidoexame();
         
-        Date data = formatDate.parse(request.getParameter("data"));
+        pedidoExame.setData(formatDate.parse(request.getParameter("data")));
         Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
+        pedidoExame.setConsulta(consulta);
         Exame exame = exm.findExame(Integer.parseInt(request.getParameter("exame")));
+        pedidoExame.setExame(exame);
         
-        PedidoExame pedidoExame = new PedidoExame(data, consulta, exame);
-        PedidoExameDAO dao = new PedidoExameDAO(utx, emf);
+        PedidoexameDAO dao = new PedidoexameDAO(utx, emf);
         
         dao.create(pedidoExame);
         
         response.sendRedirect("listaPedidoExames.html");
     }
 
-    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, RollbackFailureException, Exception {
        
         
         ConsultaDAO cons = new ConsultaDAO(utx, emf);
         ExameDAO exm = new ExameDAO(utx, emf);
+        PedidoexameDAO dao = new PedidoexameDAO(utx, emf);
         
         int idPedidoExame = Integer.parseInt(request.getParameter("idPedidoExame"));
-        Date data = formatDate.parse(request.getParameter("data"));
+        Pedidoexame pedidoExame = dao.findPedidoexame(idPedidoExame);
+        pedidoExame.setData(formatDate.parse(request.getParameter("data")));
         Consulta consulta = cons.findConsulta(Integer.parseInt(request.getParameter("consulta")));
+        pedidoExame.setConsulta(consulta);
         Exame exame = exm.findExame(Integer.parseInt(request.getParameter("exame")));
-        
-        PedidoExame pedidoExame = new PedidoExame(idPedidoExame, data, consulta, exame);
-        PedidoExameDAO dao = new PedidoExameDAO(utx, emf);
+        pedidoExame.setExame(exame);
         
         dao.edit(pedidoExame);
         
