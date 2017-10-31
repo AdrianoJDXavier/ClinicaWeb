@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="includes/header.jsp"></jsp:include>
 <div class="row">
         <div class="main col-md-10 col-md-push-2">
@@ -13,25 +14,26 @@
                             <thead>
                                 <tr>
                                     <th>Id</th>
-                                    <th>Nome</th>
+                                    <th>Paciente</th>
                                     <th>Cidade</th>
                                     <th></th>
                                 </tr>
                                 <tr>
                                     <th><input class="form-control" type="text" id="txtColuna1" style="width: 100px" placeholder="Id!"/></th>
-                                    <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por nome!"/></th>
-                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por cidade!"/></th>
-				</tr>
+                                    <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por convênio!"/></th>
+                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por tipo de convênio!"/></th>
+                                    <th><a href="criaPaciente.html"><button class="btn btn-info btn-block"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Adicionar Paciente</span></button></a></th>
+                                </tr>
                             </thead>
                             <tbody style="text-align: left">
-                            <c:forEach var="paciente" items="${pacientes}">
+                            <c:forEach var="paciente" items="${paciente}">
                             <tr>
-                                <td>02539624</td>
-                                <td>Adriano José Dias Xavier</td>
-                                <td>juiz de Fora</td>
+                                <td>${paciente.idpaciente}</td>
+                                <td>${paciente.nomepaciente}</td>
+                                <td>${paciente.naturalidadeCidade.cidade}</td>
                                 <td>
-                                    <button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button>
-                                    <button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button>
+                                    <a href="excluiPaciente.html?idPaciente=${paciente.idpaciente}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
+                                    <a href="editaPaciente.html?idPaciente=${paciente.idpaciente}&idCidade=${paciente.naturalidadeCidade.idcidade}&idConvenio=${paciente.convenio.idconvenio}&idEndereco=${paciente.endereco.idendereco}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
                                 </td>
                             </tr>
                         </c:forEach>

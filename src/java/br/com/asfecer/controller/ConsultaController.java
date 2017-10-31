@@ -37,8 +37,8 @@ public class ConsultaController extends HttpServlet {
     @Resource
     private UserTransaction utx;
     
-    public SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");  
-    public SimpleDateFormat formatHour = new SimpleDateFormat("hh:mm");  
+    SimpleDateFormat formatDate = new SimpleDateFormat("dd-MM-yyyy");  
+    SimpleDateFormat formatHour = new SimpleDateFormat("hh:mm");  
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,7 +59,6 @@ public class ConsultaController extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(ConsultaController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("listaConsultas.html");
         } 
     }
 
@@ -92,14 +91,31 @@ public class ConsultaController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Medico> medico = new ArrayList<>();
+        List<Paciente> paciente = new ArrayList<>();
+        MedicoDAO med = new MedicoDAO(utx, emf);
+        PacienteDAO pac = new PacienteDAO(utx, emf);
+        paciente = pac.findPacienteEntities();
+        medico = med.findMedicoEntities();
+        
+        request.setAttribute("medico", medico);
+        request.setAttribute("paciente", paciente);
         request.getRequestDispatcher("WEB-INF/views/cadastroConsulta.jsp").forward(request, response);
     }
 
-    private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
+        List<Medico> medico = new ArrayList<>();
+        List<Paciente> paciente = new ArrayList<>();
+        MedicoDAO med = new MedicoDAO(utx, emf);
+        PacienteDAO pac = new PacienteDAO(utx, emf);
         ConsultaDAO dao = new ConsultaDAO(utx, emf);
+        paciente = pac.findPacienteEntities();
+        medico = med.findMedicoEntities();
         int id = Integer.parseInt(request.getParameter("idConsulta"));
         Consulta consulta = dao.findConsulta(id);
         
+        request.setAttribute("medico", medico);
+        request.setAttribute("paciente", paciente);
         request.setAttribute("consulta", consulta);
         request.getRequestDispatcher("WEB-INF/views/editaConsulta.jsp").forward(request, response);
     }
@@ -127,15 +143,16 @@ public class ConsultaController extends HttpServlet {
         MedicoDAO med = new MedicoDAO(utx, emf);
         PacienteDAO pac = new PacienteDAO(utx, emf);
         Consulta consulta = new Consulta();
-        
-        consulta.setDataconsulta(formatDate.parse(request.getParameter("dataConsulta")));
-        consulta.setHoraconsulta(formatHour.parse(request.getParameter("horaConsulta")));
+        Date data = formatDate.parse(request.getParameter("dataConsulta"));
+        Date hora = formatHour.parse(request.getParameter("horaConsulta"));
+        consulta.setDataconsulta(data);
+        consulta.setHoraconsulta(hora);
         Agenda agenda = agd.findAgenda(Integer.parseInt(request.getParameter("agenda")));
         consulta.setAgenda(agenda);
         Medico medico = med.findMedico(Integer.parseInt(request.getParameter("medico")));
         consulta.setMedico(medico);
         Paciente paciente = pac.findPaciente(Integer.parseInt(request.getParameter("paciente")));
-        consulta.setMedico(medico);
+        consulta.setPaciente(paciente);
         
         ConsultaDAO dao = new ConsultaDAO(utx, emf);
         
@@ -150,11 +167,14 @@ public class ConsultaController extends HttpServlet {
         MedicoDAO med = new MedicoDAO(utx, emf);
         PacienteDAO pac = new PacienteDAO(utx, emf);
         ConsultaDAO dao = new ConsultaDAO(utx, emf);
+
+        Date data = formatDate.parse(request.getParameter("dataConsulta"));
+        Date hora = formatHour.parse(request.getParameter("horaConsulta"));
         
         int idConsulta = Integer.parseInt(request.getParameter("idConsulta"));
         Consulta consulta = dao.findConsulta(idConsulta);
-        consulta.setDataconsulta(formatDate.parse(request.getParameter("dataConsulta")));
-        consulta.setHoraconsulta(formatHour.parse(request.getParameter("horaConsulta")));
+        consulta.setDataconsulta(data);
+        consulta.setHoraconsulta(hora);
         Agenda agenda = agd.findAgenda(Integer.parseInt(request.getParameter("agenda")));
         consulta.setAgenda(agenda);
         Medico medico = med.findMedico(Integer.parseInt(request.getParameter("medico")));

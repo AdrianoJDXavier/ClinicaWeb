@@ -5,7 +5,7 @@
 
             <div class="panel panel-default" style="margin:10px;">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Lista de Convênios</h3>
+                    <h3 class="panel-title">Lista de Médicos</h3>
                 </div>
                 <div class="panel-body">
 
@@ -14,26 +14,26 @@
                             <thead>
                                 <tr>
                                     <th>Id</th>
-                                    <th>Convenio</th>
-                                    <th>Tipo de Convenio</th>
+                                    <th>Médico</th>
+                                    <th>Especialidade</th>
                                     <th></th>
                                 </tr>
                                 <tr>
                                     <th><input class="form-control" type="text" id="txtColuna1" style="width: 100px" placeholder="Id!"/></th>
-                                    <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por convênio!"/></th>
-                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por tipo de convênio!"/></th>
-                                    <th><a href="criaConvenio.html"><button class="btn btn-info btn-block"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Adicionar Convênio</span></button></a></th>
+                                    <th><input class="form-control" type="text" id="txtColuna2" placeholder="Pesquise por médico!"/></th>
+                                    <th><input class="form-control" type="text" id="txtColuna3" placeholder="Pesquise por CRM!"/></th>
+                                    <th><a href="criaMedico.html"><button class="btn btn-info btn-block"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Adicionar Médico</span></button></a></th>
                                 </tr>
                             </thead>
                             <tbody style="text-align: left">
-                            <c:forEach var="convenio" items="${convenios}">
+                            <c:forEach var="medico" items="${medicos}">
                             <tr>
-                                <td>${convenio.idconvenio}</td>
-                                <td>${convenio.empresaConvenio}</td>
-                                <td>${convenio.tipoConvenio}</td>
+                                <td>${medico.idmedico}</td>
+                                <td>${medico.nomemedico}</td>
+                                <td>${medico.especialidade.descricao}</td>
                                 <td>
-                                    <a href="excluiConvenio.html?idConvenio=${convenio.idconvenio}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
-                                    <a href="editaConvenio.html?idConvenio=${convenio.idconvenio}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
+                                    <a href="excluiMedico.html?idMedico=${medico.idmedico}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
+                                    <a href="editaMedico.html?idMedico=${medico.idmedico}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
                                 </td>
                             </tr>
                         </c:forEach>

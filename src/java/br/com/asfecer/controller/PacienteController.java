@@ -3,12 +3,14 @@ package br.com.asfecer.controller;
 import br.com.asfecer.dao.CidadeDAO;
 import br.com.asfecer.dao.ConvenioDAO;
 import br.com.asfecer.dao.EnderecoDAO;
+import br.com.asfecer.dao.EstadosDAO;
 import br.com.asfecer.dao.PacienteDAO;
 import br.com.asfecer.dao.exceptions.NonexistentEntityException;
 import br.com.asfecer.dao.exceptions.RollbackFailureException;
 import br.com.asfecer.model.Cidade;
 import br.com.asfecer.model.Convenio;
 import br.com.asfecer.model.Endereco;
+import br.com.asfecer.model.Estados;
 import br.com.asfecer.model.Paciente;
 import java.io.IOException;
 import java.text.ParseException;
@@ -30,29 +32,25 @@ import javax.transaction.UserTransaction;
 
 @WebServlet(name = "PacienteController", urlPatterns = {"/criaPaciente.html", "/listaPacientes.html", "/excluiPaciente.html", "/editaPaciente.html"})
 public class PacienteController extends HttpServlet {
-    
+
     @PersistenceUnit
     private EntityManagerFactory emf;
-    
+
     @Resource
     private UserTransaction utx;
-    
-    SimpleDateFormat formatDate;  
 
-    public PacienteController() {
-        this.formatDate = new SimpleDateFormat("dd/MM/yyyy");
-    }
+    SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(request.getServletPath().contains("criaPaciente.html")){
+        if (request.getServletPath().contains("criaPaciente.html")) {
             criarGet(request, response);
-        }else if(request.getServletPath().contains("editaPaciente.html")){
+        } else if (request.getServletPath().contains("editaPaciente.html")) {
             editarGet(request, response);
-        }else if(request.getServletPath().contains("listaPacientes.html")){
+        } else if (request.getServletPath().contains("listaPacientes.html")) {
             listarGet(request, response);
-        }else if(request.getServletPath().contains("excluiPaciente.html")){
+        } else if (request.getServletPath().contains("excluiPaciente.html")) {
             try {
                 excluirGet(request, response);
             } catch (RollbackFailureException ex) {
@@ -62,15 +60,14 @@ public class PacienteController extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(PacienteController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("listaPacientes.html");
-        } 
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        if(request.getServletPath().contains("/editaPaciente.html")){
+
+        if (request.getServletPath().contains("/editaPaciente.html")) {
             try {
                 editarPost(request, response);
             } catch (ParseException ex) {
@@ -82,7 +79,7 @@ public class PacienteController extends HttpServlet {
             }
         }
 
-        if(request.getServletPath().contains("/criaPaciente.html")){
+        if (request.getServletPath().contains("/criaPaciente.html")) {
             try {
                 criarPost(request, response);
             } catch (ParseException ex) {
@@ -95,27 +92,53 @@ public class PacienteController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cidade cid = new Cidade();
-        
-        request.setAttribute("cidade", cid);
+        List<Cidade> cidades = new ArrayList<>();
+        List<Estados> estados = new ArrayList<>();
+        List<Convenio> convenios = new ArrayList<>();
+        CidadeDAO cid = new CidadeDAO(utx, emf);
+        EstadosDAO est = new EstadosDAO(utx, emf);
+        ConvenioDAO conv = new ConvenioDAO(utx, emf);
+        estados = est.findEstadosEntities();
+        cidades = cid.findCidadeEntities();
+        convenios = conv.findConvenioEntities();
+
+        request.setAttribute("cidades", cidades);
+        request.setAttribute("estados", estados);
+        request.setAttribute("convenios", convenios);
         request.getRequestDispatcher("WEB-INF/views/cadastroPaciente.jsp").forward(request, response);
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PacienteDAO dao = new PacienteDAO(utx, emf);
-        int id = Integer.parseInt(request.getParameter("idPaciente"));
-        Paciente paciente = dao.findPaciente(id);
-        
-        request.setAttribute("paciente", paciente);
-        request.getRequestDispatcher("WEB-INF/views/editaPaciente.jsp").forward(request, response);
+        try {
+            List<Cidade> cidades = new ArrayList<>();
+            List<Estados> estados = new ArrayList<>();
+            List<Convenio> convenios = new ArrayList<>();
+            CidadeDAO cid = new CidadeDAO(utx, emf);
+            EstadosDAO est = new EstadosDAO(utx, emf);
+            ConvenioDAO conv = new ConvenioDAO(utx, emf);
+            PacienteDAO dao = new PacienteDAO(utx, emf);
+            int id = Integer.parseInt(request.getParameter("idPaciente"));
+            Paciente paciente = dao.findPaciente(id);
+            cidades = cid.findCidadeEntities();
+            estados = est.findEstadosEntities();
+            convenios = conv.findConvenioEntities();
+
+            request.setAttribute("paciente", paciente);
+            request.setAttribute("cidades", cidades);
+            request.setAttribute("estados", estados);
+            request.setAttribute("convenios", convenios);
+            request.getRequestDispatcher("WEB-INF/views/editaPaciente.jsp").forward(request, response);
+        } catch (Exception e) {
+            response.sendRedirect("listaPaciente.html");
+        }
     }
 
     private void listarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Paciente> pacientes = new ArrayList<>();
         PacienteDAO dao = new PacienteDAO(utx, emf);
         pacientes = dao.findPacienteEntities();
-        
-        request.setAttribute("pacientes", pacientes);
+
+        request.setAttribute("paciente", pacientes);
         request.getRequestDispatcher("WEB-INF/views/listarPacientes.jsp").forward(request, response);
     }
 
@@ -123,21 +146,32 @@ public class PacienteController extends HttpServlet {
         PacienteDAO dao = new PacienteDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idPaciente"));
         dao.destroy(id);
-        
+
         response.sendRedirect("listaPacientes.html");
     }
- 
+
     private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
-        
+
         Paciente paciente = new Paciente();
         ConvenioDAO conv = new ConvenioDAO(utx, emf);
         Endereco endereco = new Endereco();
         EnderecoDAO ender = new EnderecoDAO(utx, emf);
         CidadeDAO cidd = new CidadeDAO(utx, emf);
-        
+        Convenio convenio = conv.findConvenio(Integer.parseInt(request.getParameter("convenio")));
+        Date data = formato.parse(request.getParameter("dataNascimento"));
+
+        endereco.setNomeNogradouro(request.getParameter("endereco"));
+        endereco.setBairro(request.getParameter("bairro"));
+        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
+        endereco.setComplemento(request.getParameter("complemeto"));
+        endereco.setTipoLogradouro(request.getParameter("tipo_endereço"));
+        endereco.setCep(request.getParameter("cep"));
+        endereco.setCidade(cidd.findCidade(Integer.parseInt(request.getParameter("cidade"))));
+
+        ender.create(endereco);
+
         paciente.setNomepaciente(request.getParameter("nomePaciente"));
-        paciente.setDatanascimento(formatDate.parse(request.getParameter("dataNascimento")));
-        paciente.setNomemae(request.getParameter("nomeMae"));
+        paciente.setDatanascimento(data);
         paciente.setCpf(request.getParameter("cpf"));
         paciente.setCartaoconvenio(request.getParameter("cartaoConvenio"));
         paciente.setTiposanguineo(request.getParameter("tipoSanguineo"));
@@ -146,41 +180,40 @@ public class PacienteController extends HttpServlet {
         paciente.setEmail(request.getParameter("email"));
         paciente.setTelefone(request.getParameter("telefone"));
         paciente.setCelular(request.getParameter("celular"));
+        paciente.setConvenio(convenio);
         paciente.setObs(request.getParameter("obs"));
-        endereco.setNomeNogradouro(request.getParameter("endereco"));
-        endereco.setBairro(request.getParameter("bairro"));
-        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
-        endereco.setComplemento(request.getParameter("complemeto"));
-        
-        ender.create(endereco);
-        Convenio convenio = conv.findConvenio(Integer.parseInt(request.getParameter("convenio"))) ;
-        Cidade cidade = cidd.findCidade(Integer.parseInt(request.getParameter("naturalidadeCidade")));
-        
+        paciente.setEndereco(endereco);
+        paciente.setNaturalidadeCidade(cidd.findCidade(Integer.parseInt(request.getParameter("cidade"))));
+
         PacienteDAO dao = new PacienteDAO(utx, emf);
-        
+
         dao.create(paciente);
-        
         response.sendRedirect("listaPacientes.html");
     }
 
     private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, NonexistentEntityException, RollbackFailureException, Exception {
-        
+        int idPaciente = Integer.parseInt(request.getParameter("idPaciente"));
+        PacienteDAO dao = new PacienteDAO(utx, emf);
+        Paciente paciente = dao.findPaciente(idPaciente);
+
         ConvenioDAO conv = new ConvenioDAO(utx, emf);
+        Endereco endereco = new Endereco();
         EnderecoDAO ender = new EnderecoDAO(utx, emf);
         CidadeDAO cidd = new CidadeDAO(utx, emf);
-        PacienteDAO dao = new PacienteDAO(utx, emf);
         
-        int idPaciente = Integer.parseInt(request.getParameter("idPaciente"));
-        int idEndereco = Integer.parseInt(request.getParameter("idPaciente"));
-        int idCidade = Integer.parseInt(request.getParameter("idPaciente"));
-        int idConvenio = Integer.parseInt(request.getParameter("idPaciente"));
-        Endereco endereco = ender.findEndereco(idEndereco);
-        Convenio convenio = conv.findConvenio(idConvenio);
-        Cidade cidade = cidd.findCidade(idCidade);
-        Paciente paciente = dao.findPaciente(idPaciente);
+        Convenio convenio = conv.findConvenio(Integer.parseInt(request.getParameter("convenio")));
+
+        endereco.setNomeNogradouro(request.getParameter("endereco"));
+        endereco.setBairro(request.getParameter("bairro"));
+        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
+        endereco.setComplemento(request.getParameter("complemeto"));
+        endereco.setTipoLogradouro(request.getParameter("tipo_endereço"));
+        endereco.setCep(request.getParameter("cep"));
+        endereco.setCidade(cidd.findCidade(Integer.parseInt(request.getParameter("cidade"))));
+
+        ender.create(endereco);
+
         paciente.setNomepaciente(request.getParameter("nomePaciente"));
-        paciente.setDatanascimento(formatDate.parse(request.getParameter("dataNascimento")));
-        paciente.setNomemae(request.getParameter("nomeMae"));
         paciente.setCpf(request.getParameter("cpf"));
         paciente.setCartaoconvenio(request.getParameter("cartaoConvenio"));
         paciente.setTiposanguineo(request.getParameter("tipoSanguineo"));
@@ -189,19 +222,12 @@ public class PacienteController extends HttpServlet {
         paciente.setEmail(request.getParameter("email"));
         paciente.setTelefone(request.getParameter("telefone"));
         paciente.setCelular(request.getParameter("celular"));
+        paciente.setConvenio(convenio);
         paciente.setObs(request.getParameter("obs"));
-        endereco.setNomeNogradouro(request.getParameter("endereco"));
-        endereco.setBairro(request.getParameter("bairro"));
-        endereco.setNumero(Integer.parseInt(request.getParameter("numero")));
-        endereco.setComplemento(request.getParameter("complemeto"));
-        convenio.setIdconvenio(idConvenio);
-        cidade.setIdcidade(idCidade);
-        
-        cidd.edit(cidade);
-        conv.edit(convenio);
-        ender.edit(endereco);
+        paciente.setEndereco(endereco);
+        paciente.setNaturalidadeCidade(cidd.findCidade(Integer.parseInt(request.getParameter("cidade"))));
+
         dao.edit(paciente);
-        
-        response.sendRedirect("listaPacientes.html");   
+        response.sendRedirect("listaPacientes.html");
     }
 }

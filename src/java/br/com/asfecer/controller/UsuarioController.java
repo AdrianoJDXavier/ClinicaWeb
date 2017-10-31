@@ -45,11 +45,11 @@ public class UsuarioController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (request.getServletPath().contains("/editaUsuario.html")) {
+        if (request.getServletPath().contains("editaUsuario.html")) {
             editarPost(request, response);
         }
 
-        if (request.getServletPath().contains("/criaUsuario.html")) {
+        if (request.getServletPath().contains("criaUsuario.html")) {
             try {
                 criarPost(request, response);
             } catch (Exception ex) {
@@ -64,13 +64,13 @@ public class UsuarioController extends HttpServlet {
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    try {
-        UsuarioDAO dao = new UsuarioDAO(utx, emf);
-        int id = Integer.parseInt(request.getParameter("idUsuario"));
-        Usuario usuario = dao.findUsuario(id);
-        
-        request.setAttribute("usuario", usuario);
-        request.getRequestDispatcher("WEB-INF/views/editaUsuario.jsp").forward(request, response);
+        try {
+            UsuarioDAO dao = new UsuarioDAO(utx, emf);
+            int id = Integer.parseInt(request.getParameter("idUsuario"));
+            Usuario usuario = dao.findUsuario(id);
+
+            request.setAttribute("usuario", usuario);
+            request.getRequestDispatcher("WEB-INF/views/editaUsuario.jsp").forward(request, response);
         } catch (Exception e) {
             response.sendRedirect("listaUsuarios.html");
         }

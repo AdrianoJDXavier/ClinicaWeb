@@ -4,7 +4,7 @@
 
             <div class="panel panel-default" style="margin:10px;">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Cadastrar Usuário</h3>
+                    <h3 class="panel-title">Editar Usuário</h3>
                 </div>
                 <div class="panel-body">
 

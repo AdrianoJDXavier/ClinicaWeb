@@ -5,14 +5,14 @@
 
             <div class="panel panel-default" style="margin:10px;">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Cadastrar Paciente</h3>
+                    <h3 class="panel-title">Editar Paciente</h3>
                 </div>
                 <div class="panel-body">
 
 
                     <form action="" method="POST"  style="margin: 0% 0;">
                         <label>Nome Completo</label>
-                        <input class="form-control" type="text" name="nomePaciente" placeholder="Nome Completo" />
+                        <input class="form-control" type="text" name="nomePaciente" value="${paciente.nomepaciente}" />
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Tipo de Endereço</label>
@@ -48,25 +48,25 @@
                             </div>
                             <div class="col-md-6">
                                 <label>Endereço</label>
-                                <input class="form-control" type="text" name="endereco" placeholder="Endereço" />
+                                <input class="form-control" type="text" name="endereco" value="${paciente.endereco.nomeNogradouro}" />
                             </div>
                             <div class="col-md-3">
                                 <label>cep</label>
-                                <input class="form-control" type="text" name="cep" placeholder="cep" />
+                                <input class="form-control" type="text" name="cep" value="${paciente.endereco.cep}" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <label>Bairro</label>
-                                <input class="form-control" type="text" name="bairro" placeholder="Bairro" />
+                                <input class="form-control" type="text" name="bairro" value="${paciente.endereco.bairro}" />
                             </div>
                             <div class="col-md-4">
                                 <label>Complemeto</label>
-                                <input class="form-control" type="text" name="complemeto" placeholder="Complemento" />
+                                <input class="form-control" type="text" name="complemeto" value="${paciente.endereco.complemento}" />
                             </div>
                             <div class="col-md-2">
                                 <label>Número</label>
-                                <input class="form-control" type="text" name="numero" placeholder="Número" />
+                                <input class="form-control" type="text" name="numero" value="${paciente.endereco.numero}" />
                             </div>
                             <div class="col-md-2">
                                 <label>Sexo</label>
@@ -97,7 +97,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label>CPF</label>
-                            <input class="form-control" type="text" name="cpf" placeholder="CPF" />
+                            <input class="form-control" type="text" name="cpf" value="${paciente.cpf}" />
                         </div>
                         <div class="col-md-4">
                             <label>Tipo Sanguineo</label>
@@ -119,7 +119,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label>Cartão Convênio</label>
-                            <input class="form-control" type="text" name="cartaoConvenio" placeholder="Número do SUS" />
+                            <input class="form-control" type="text" name="cartaoConvenio" value="${paciente.cartaoconvenio}" />
                         </div>
                         <div class="col-md-4">
                             <label>Convênio</label>
@@ -131,21 +131,21 @@
                         </div>
                         <div class="col-md-4">
                             <label>Nascimento</label>
-                            <input class="form-control" type="date" name="dataNascimento" placeholder="Data de Nascimento" />
+                            <input class="form-control" type="date" name="dataNascimento" value="${paciente.datanascimento}" readonly="true"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <label>Telefone</label>
-                            <input class="form-control" type="tel" name="telefone" placeholder="Telefone" />
+                            <input class="form-control" type="tel" name="telefone" value="${paciente.telefone}" />
                         </div>
                         <div class="col-md-4">
                             <label>Celular</label>
-                            <input class="form-control" type="tel" name="celular" placeholder="Celular" />
+                            <input class="form-control" type="tel" name="celular" value="${paciente.celular}" />
                         </div>
                         <div class="col-md-4">
                             <label>Email</label>
-                            <input class="form-control" type="email" name="email" placeholder="Email" />
+                            <input class="form-control" type="email" name="email" value="${paciente.email}" />
                         </div>
                     </div>
                     <div class="col-sm-offset-2 col-sm-10">

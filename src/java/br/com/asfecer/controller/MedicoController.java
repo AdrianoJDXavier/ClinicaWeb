@@ -53,7 +53,6 @@ public class MedicoController extends HttpServlet {
             } catch (Exception ex) {
                 Logger.getLogger(MedicoController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("listaMedicos.html");
         } 
     }
 
@@ -86,14 +85,23 @@ public class MedicoController extends HttpServlet {
     }
 
     private void criarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Estados> estados = new ArrayList<>();
+        EstadosDAO uf = new EstadosDAO(utx, emf);
+        estados = uf.findEstadosEntities();
+        
+        request.setAttribute("estados", estados);
         request.getRequestDispatcher("WEB-INF/views/cadastroMedico.jsp").forward(request, response);
     }
 
     private void editarGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Estados> estados = new ArrayList<>();
+        EstadosDAO uf = new EstadosDAO(utx, emf);
+        estados = uf.findEstadosEntities();
         MedicoDAO dao = new MedicoDAO(utx, emf);
         int id = Integer.parseInt(request.getParameter("idMedico"));
         Medico medico = dao.findMedico(id);
         
+        request.setAttribute("estados", estados);
         request.setAttribute("medico", medico);
         request.getRequestDispatcher("WEB-INF/views/editaMedico.jsp").forward(request, response);
     }
@@ -104,7 +112,7 @@ public class MedicoController extends HttpServlet {
         medicos = dao.findMedicoEntities();
         
         request.setAttribute("medicos", medicos);
-        request.getRequestDispatcher("WEB-INF/views/listaMedico.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/listaMedicos.jsp").forward(request, response);
     }
 
     private void excluirGet(HttpServletRequest request, HttpServletResponse response) throws IOException, NonexistentEntityException, RollbackFailureException, RuntimeException, Exception {
@@ -118,15 +126,16 @@ public class MedicoController extends HttpServlet {
     private void criarPost(HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException, Exception {
         
         EspecialidadeDAO esp = new EspecialidadeDAO(utx, emf);
+        Especialidade espec = new Especialidade();
         EstadosDAO uf = new EstadosDAO(utx, emf);
         Medico medico = new Medico();
+        espec.setDescricao(request.getParameter("especialidade"));
+        esp.create(espec);
         
         medico.setNomemedico(request.getParameter("nomeMedico"));
         medico.setCrm(Integer.parseInt(request.getParameter("crm")));
-        Especialidade especialidade = esp.findEspecialidade(Integer.parseInt(request.getParameter("especialidade")));
-        medico.setEspecialidade(especialidade);
-        Estados ufCrm = uf.findEstados(request.getParameter("ufCrm"));
-        medico.setUfCrm(ufCrm);
+        medico.setEspecialidade(espec);
+        medico.setUfCrm(uf.findEstados((request.getParameter("estados-brasil"))));
         
         MedicoDAO dao = new MedicoDAO(utx, emf);
         
@@ -138,17 +147,18 @@ public class MedicoController extends HttpServlet {
     private void editarPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException, NonexistentEntityException, RollbackFailureException, Exception {
        
         EspecialidadeDAO esp = new EspecialidadeDAO(utx, emf);
+        Especialidade espec = new Especialidade();
         EstadosDAO uf = new EstadosDAO(utx, emf);
         MedicoDAO dao = new MedicoDAO(utx, emf);
+        espec.setDescricao(request.getParameter("especialidade"));
+        esp.create(espec);
         
         int idMedico = Integer.parseInt(request.getParameter("idMedico"));
         Medico medico = dao.findMedico(idMedico);
         medico.setNomemedico(request.getParameter("nomeMedico"));
         medico.setCrm(Integer.parseInt(request.getParameter("crm")));
-        Especialidade especialidade = esp.findEspecialidade(Integer.parseInt(request.getParameter("especialidade")));
-        medico.setEspecialidade(especialidade);
-        Estados ufCrm = uf.findEstados(request.getParameter("ufCrm"));
-        medico.setUfCrm(ufCrm);
+        medico.setEspecialidade(espec);
+        medico.setUfCrm(uf.findEstados((request.getParameter("estados-brasil"))));
         
         dao.edit(medico);
         
