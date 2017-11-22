@@ -20,7 +20,7 @@
                         <label>Consulta</label>
                         <select class="form-control" name="consulta"/>
                     <c:forEach var="consulta" items="${consultas}">
-                        <option value="${consulta.idconsulta}">Paciente: ${consulta.paciente.nomepaciente}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Médico: ${consulta.medico.nomemedico}</option>
+                        <option value="${consulta.idconsulta}">Paciente: ${consulta.paciente.nomepaciente}</option>
                     </c:forEach>           
                     </select> 
                     <label>Exame</label>

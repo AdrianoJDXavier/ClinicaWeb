@@ -31,7 +31,7 @@
                             <tr>
                                 <td>${pedidoExame.exame.exame}</td>
                                 <td>${pedidoExame.consulta.paciente.nomepaciente}</td>
-                                <td><fmt:formatDate value="${pedidoExame.data}" type="date" dateStyle="default" /> </td>
+                                <td><fmt:formatDate value="${pedidoExame.data}" type="date" dateStyle="long" pattern="dd/MM/yyyy" /> </td>
                                 <td>
                                     <a href="excluiPedidoExame.html?idPedidoExame=${pedidoExame.idpedidoexame}"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"> Excluir</span></button></a>
                                     <a href="editaPedidoExame.html?idPedidoExame=${pedidoExame.idpedidoexame}"><button class="btn btn-success"><span class="glyphicon glyphicon-check" aria-hidden="true"> Editar</span></button></a>
