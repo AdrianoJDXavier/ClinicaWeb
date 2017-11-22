@@ -9,13 +9,15 @@
             <img src="icones/paciente.png" title="Paciente" class="img-responsive img-circle">    
         </button>
     </a>
-    <a href="listaExames.html">
+    <a href="listaPedidoExames.html">
         <button type="button" class="btn-primary" aria-label="Left Align">
             <img src="icones/exame.png" title="Exame" class="img-responsive img-circle">    
         </button>
     </a>
-    <button type="button" class="btn-primary" aria-label="Left Align">
-        <img src="icones/relatorio.png" title="Relatórios" class="img-responsive img-circle">    
-    </button>
+    <a href="relatoriosController">
+        <button type="button" class="btn-primary" aria-label="Left Align">
+            <img src="icones/relatorio.png" title="Relatórios" class="img-responsive img-circle">    
+        </button>
+    </a>
 </div>
 </div>

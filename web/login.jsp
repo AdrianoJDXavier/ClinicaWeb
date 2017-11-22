@@ -13,7 +13,7 @@
             <div class="middle">
                 <div id="login">
                     <div style="color: red;"><strong>${erro}</strong></div>
-                    <form action="login" method="get">
+                    <form action="login.html" method="POST">
 
                         <fieldset class="clearfix">
 
